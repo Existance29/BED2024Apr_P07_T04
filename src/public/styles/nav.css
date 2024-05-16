@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap');
 
+/*set default font for navbar */
 .navbar{
     font-family: "Libre Franklin", sans-serif;
     font-optical-sizing: auto;
@@ -10,14 +11,17 @@
 }
 
 .login-btn{
-    color: white;
     background: #245D51;
+    /*font css*/
+    color: white;
+    font-size: 14px;
+    /*button size*/
     padding-left: 2vw;
     padding-right: 2vw;
     border-radius: 20px;
-    font-size: 14px;
 }
 
+/*set horizontal spacing between nav items*/
 li{
     margin: 0 1vw;
 }
