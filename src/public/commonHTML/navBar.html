@@ -1,11 +1,39 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="gamestyle.css" rel="stylesheet" type="text/css" />
-  </head>
-  <body> 
-    
-  </body>
-</html>
+<link href="../styles/nav.css" rel="stylesheet">
+<nav class="navbar navbar-expand-lg" style="background-color: #ffffff;">
+    <div class="container-fluid">
+        <!-- Logo-->
+        <a class="navbar-brand" href="../index.html" style="font-weight:700; font-size: 16px; margin-left: 10%;">
+            <div class = "d-flex">
+                <img src="../assets/Logo-icon.png" alt="Logo" height = 24 class="d-inline-block">
+                <div class="d-flex align-items-center" style="margin-left: 5%;">ITMastermindz</div>
+            </div>
+        </a>
+
+        <!-- Toggle button for small screens-->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Other options-->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0 ms-auto" style="margin-right: 10%;">
+            <!-- home link-->
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="../index.html" style="color: #245D51;">Home</a>
+            </li>
+             <!-- How it works link-->
+            <li class="nav-item">
+                <a class="nav-link" href="#" style="color: black;">How it Works</a>
+            </li>
+
+            <li class="nav-item d-flex align-items-center">
+                <img src="../assets/search-icon.png" alt="Logo" height = 14 class="d-inline-block">
+            </li>
+
+            <li class="nav-item">
+                <a class="btn login-btn" href="#" role="button">Login</a>
+            </li>
+        </ul>
+        </div>
+    </div>
+</nav>

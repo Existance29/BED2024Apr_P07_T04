@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap');
+
+.navbar{
+    font-family: "Libre Franklin", sans-serif;
+    font-optical-sizing: auto;
+    font-weight:500;
+    font-style: normal;
+    font-size: 14px;
+    color: black;
+}
+
+.login-btn{
+    color: white;
+    background: #245D51;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+li{
+    margin: 0 1vw;
+}
