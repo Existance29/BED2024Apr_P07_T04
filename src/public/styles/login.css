@@ -1,0 +1,54 @@
+
+main{
+    background-color: #32CB94;
+    background-image: url('../assets/general/pattern-bg-full.png');
+    height: 100vh; /*Take up entire screen height*/
+    position: relative;
+}
+
+.frame{
+    width: 22%;
+    background-color: white;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-45%);
+    box-shadow: 2px 4px 5px 2px #36363640;
+    padding-top: 3vw;
+    padding-bottom: 1.5vw;
+}
+
+form{
+    margin-left: 9%;
+    width: 82%;
+    margin-top: 5vw;
+}
+
+
+.input-field{
+    /*get only the bottom border*/
+    border-color: #444444;
+    outline: 0;
+    border-width: 0 0 2px;
+    border-radius: 0;
+    width: 100%;
+    font-size: 0.9vw;
+}
+
+.form-check{
+    margin-top: 2vw;
+    font-size: 0.9vw;
+}
+
+.login-btn{
+    margin-top: 1vw; 
+    width: 100%; 
+    text-align: center; 
+    background-color: #245D51; 
+    border-radius: 30px; 
+    color: white;
+    font-size: 0.9vw;
+    padding: 0.5vw;
+}
+

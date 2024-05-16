@@ -1,9 +1,4 @@
 
-/*remove pre-built css*/
-button{
-    all: unset;
-}
-
 .banner{
     background-color: #32CB94;
     background-image: url('../assets/home/banner-pattern.png');
