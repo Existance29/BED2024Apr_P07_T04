@@ -43,7 +43,7 @@ button{
     background: #245D51;
     border-radius: 30px;
     /*set text style */
-    font-size: 1.43vw;
+    font-size: 1.15vw;
     color: #ffffff;
     /*set size */
     padding-right: 2vw;
@@ -89,4 +89,30 @@ button{
     color: #6F6B80; 
     font-size: 0.85vw; 
     text-align: center;
+}
+
+.section-title{
+    /*use width 100% and text align center to center text on parent (most likely screen)*/
+    width: 100%; 
+    text-align: center; 
+    font-size: 1.45vw; 
+    margin-top: 4vw; 
+    display: inline-block; /*use in-line so magin top affects the title and not the parent element*/
+}
+
+.icon-circle {
+    width: 22%;
+    padding-top: 22%;
+    background-color: #ffffff;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative; /*Set relative position so icon can use absolute to center*/
+}
+
+.start-now{
+    text-decoration: none; /*remove underline*/
+    color: white;
+    border-radius: 30px;
+    border: 0.07vw solid white;
+    padding: 0.6vw 2.5vw;
 }

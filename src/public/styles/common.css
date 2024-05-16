@@ -32,3 +32,12 @@
     background-position: center;
     background-size: cover;
 }
+
+/*parent needs to be relative*/
+/*uses absolute and transform*/
+.center-img{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
