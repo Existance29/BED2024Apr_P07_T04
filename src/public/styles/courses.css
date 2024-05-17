@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+main{
+    background-color: #32CB94;
+    background-image: url('../assets/general/pattern-bg-long.png');
+    padding-bottom: 10vh;
+    position: relative;
+    padding-top: 4vw;
+}
+
+/*Font*/
+.exo-semibold{
+    font-family: "Exo", sans-serif; 
+    font-weight: 600
+}
+/* clears the ‘X’ from Internet Explorer */
+input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
+input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
+/* clears the ‘X’ from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
+
+.search-field{
+    /*get only the bottom border*/
+    border-color: #ffffff !important;
+    outline: 0 !important;
+    border-width: 0 0 2px !important;
+    border-radius: 0 !important;
+    width: 80%;
+    font-size: 0.9vw;
+    background: none;
+}
+
+.search-field::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #d9d8d8 !important;
+    opacity: 1; /* Firefox */
+}
+
+input{
+    color: #fff !important;
+    font-size: 1.2vw !important;
+}
+
+.ms-n5 {
+    margin-left: 0px;
+}
+
+#system-grid{
+    margin-left: 10%; 
+    width: 60%; 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    grid-column-gap: 7%; 
+    grid-row-gap: 3vw;
+}
+.system-logo{
+    background: #245D51; 
+    width: 100%; 
+    border-radius: 1.3vw; 
+    padding-top: 3vw; 
+    height: 18vw;
+
+}
+
+.system-info{
+    background: #FDFDFD; 
+    width: 93%;
+    border-radius: 1.3vw; 
+    margin: 0 auto; 
+    margin-top: -35%; 
+    padding-top: 10%; 
+    padding-right: 5%; 
+    padding-left: 5%; 
+    padding-bottom: 8%;
+}
+
+.system-name{
+    font-size: 1.2vw; 
+    color: #171725; 
+    text-align: center;
+}
+
+.system-desc{
+    font-size: 0.7vw; 
+    color: #000000; 
+    text-align: center;
+}
+
+.extra-options{
+    color: #575757; 
+    font-size: 0.7vw;
+}
+.learn-btn-container{
+    display: flex;
+    margin-top: -5%;
+    justify-content: center;
+}
+.learn-btn{
+    background-color: #245D51;
+    color: white;
+    font-size: 0.75vw;
+    border-radius: 1.3vw;
+    padding: 0.5vw 1.3vw;
+}
+
+.form-check-label{
+    font-size: 0.92vw;
+    font-family: "Jost", sans-serif;
+    font-weight: 300;
+    margin-left: 1.25rem;
+}
+
+.checkbox-full{
+    display: flex;
+    margin-bottom: 0.8vw;
+}
+
+.check-container {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+  
+  /* Hide the browser's default checkbox */
+  .check-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 0.9vw;
+    width: 0.9vw;
+    background-color: transparent;
+    border: 2px solid white;
+    transform: translateY(-50%);
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .check-container:hover input ~ .checkmark {
+    background-color: #fff;
+  }
+  
+  /* When the checkbox is checked, add a teal background */
+  .check-container input:checked ~ .checkmark {
+    background-color: #ffffff;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark::after {
+    content: '';
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .check-container input:checked ~ .checkmark::after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .check-container .checkmark::after {
+    left: 27%;
+    top: 10%;
+    width: 4px;
+    height: 8px;
+    border: solid #208A6D;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+.form-count{
+    margin-left: 5vw;
+    font-size: 0.9vw;
+}

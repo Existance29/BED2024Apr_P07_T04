@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <link href="../styles/courses.css" rel="stylesheet">
+    <link href="../styles/common.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  </head>
+  <body onload="loadGrid()"> 
+    <!--navbar-->
+    <div class="nav-placeholder"></div>
+
+    <!--background-->
+    <main class = "background-img">
+        <div class = "d-flex" style="margin-left: 12%; color: white; width: 65%; height: 2vw;">
+            <!-- Title-->
+            <h1 class = "exo-semibold" style='font-size: 1.8vw; margin-right: 45%;'>All Courses</h1>
+            
+            <!-- Search bar-->
+            <div class="d-flex">
+                <input class="search-field" type="search" placeholder="Search" id="example-search-input">
+                <span class="input-group-append">
+                    <button class="ms-n5" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+            <!-- View options (grid/list)-->
+            <div class = "d-flex", style="margin-left: -1vw;">
+                <img src = "assets/courses-page/grid-view-icon.png" onclick = "loadGrid()">
+                <img src = "assets/courses-page/list-view-icon.png" style="margin-left: 0.9vw;">
+            </div>
+        </div>
+
+        <div class = "d-flex" style="margin-top: 5vw; ">
+            <!-- Display systems-->
+            <div id = "system-grid">
+            </div>
+
+            <!--Filter options-->
+            <div style="width: 17%; color: white; margin-left: 5%;">
+                <h4 class = "exo-semibold" style="font-size: 0.95vw; margin-bottom: 1.2vw;">Course Category</h4>
+                <div class = "checkbox-full">
+                    <label class="check-container">
+                        <input type="checkbox" class = "categoryCheckbox" value="">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="form-check-label">Commercial</label>
+                    <label class="form-check-label form-count">15</label>
+                </div>
+                
+            </div>
+        </div>
+    
+
+        
+    </main>
+
+    <!--footer-->
+    <div class="footer-placeholder"></div>
+
+    <script src="./scripts/common.js"></script>
+    <script src="./scripts/courses.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

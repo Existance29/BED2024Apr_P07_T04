@@ -7,6 +7,16 @@ button{
     all: unset;
 }
 
+a{
+    text-decoration: none;
+}
+
+/*make sure navbar is ontop*/
+.nav-placeholder{
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
 /*setup classes for font types*/
 .poppins-regular {
     font-family: "Poppins", sans-serif;
