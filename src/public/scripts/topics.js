@@ -68,12 +68,12 @@ const systemData = [
     
 ]
 
-//load the courses in a grid format
-function loadGrid(){
+//load the topics in a grid format
+function loadTopics(){
     const grid = document.getElementById("system-grid") //clear grid
     grid.innerHTML = ""
     for (i in systemData){
-        //get the data for each system
+        //get the data for each topic
         system = systemData[i]
         //calculate the average rating and round up
         const rating = Math.round(system["total rate"]/system["ratings"])
@@ -110,8 +110,7 @@ function filterSection(title){
     return `<h4 class = "exo-semibold" style="font-size: 0.95vw; margin-bottom: 1vw; margin-top: 2.5vw;">${title}</h4>`
 }
 
-function load(){
-    loadGrid() //load systems
+function loadFilters(){
     const categoryDiv = document.getElementById("filters") //get div
 
     //TODO: get number of stars for the star filter
@@ -190,6 +189,11 @@ function load(){
     
     //load into html
     categoryDiv.innerHTML += out
+}
+
+function topicOnLoad(){
+    loadTopics() //load topics
+    loadFilters()
 }
 
 //filter systems
