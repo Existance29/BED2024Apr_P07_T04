@@ -23,7 +23,7 @@
     width: 93%;
     border-radius: 1.3vw; 
     margin: 0 auto; 
-    margin-top: -35%; 
+    margin-top: -35%; /*use negative margin to overlap*/
     padding-top: 10%; 
     padding-right: 5%; 
     padding-left: 5%; 
@@ -48,7 +48,7 @@
 }
 .learn-btn-container{
     display: flex;
-    margin-top: -5%;
+    margin-top: -5%; /*use negative margin to overlap*/
     justify-content: center;
 }
 .learn-btn{
@@ -131,15 +131,17 @@ table {
   
   /* Style the checkmark/indicator */
   .check-container .checkmark::after {
+    /*center it */
     left: 27%;
     top: 9%;
+    /*size*/
     width: 4px;
     height: 8px;
-    border: solid #208A6D;
-    border-width: 0 2px 2px 0;
+    border: solid #208A6D; /*colour*/
+    border-width: 0 2px 2px 0; /*thickness. only enable 2 borders to make a 90 degree*/
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
+    transform: rotate(45deg); /*rotate to make checkmark*/
   }
 
 .form-count{

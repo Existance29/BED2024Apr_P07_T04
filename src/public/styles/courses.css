@@ -1,0 +1,35 @@
+
+/*Font classes*/
+.jost-regular{
+    font-family: "Jost", sans-serif; 
+    font-weight:400;
+}
+
+.jost-medium{
+    font-family: "Jost", sans-serif; 
+    font-weight: 500;
+}
+
+#course-grid{
+    margin-left: 14%; 
+    width: 50%; 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    grid-column-gap: 4%; 
+    grid-row-gap: 3vw;
+}
+
+.course-container{
+    border-radius: 10px;
+}
+
+.course-thumbnail{
+    width: 100%;
+}
+
+.content-container{
+    background-color: #ffffff; 
+    padding: 4% 1vw;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
