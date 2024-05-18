@@ -97,7 +97,7 @@ function loadGrid(){
                     </div>
                 </div>
                 <div class = "learn-btn-container">
-                    <button type="submit" class="poppins-medium learn-btn">Learn Now</button>
+                    <button type="submit" class="poppins-medium learn-btn" onclick = "goCourse(${this.id})">Learn Now</button>
                 </div>
             </div>`
         
@@ -193,10 +193,10 @@ function load(){
 }
 
 //filter systems
-function searchSystem(){
+function search(){
     //get input
     //set to lowercase so casing is irrelevant
-    const input = document.getElementById("system-search").value.toLowerCase() 
+    const input = document.getElementById("search").value.toLowerCase() 
     //get the system elements and iterate through each one, check if they should be shown
     const items = document.getElementsByClassName("system@")
     for(var i = 0; i < items.length; i++){
@@ -208,4 +208,9 @@ function searchSystem(){
             ele.style.display = "none"
         }
     }
+}
+
+function goCourse(topic){
+    sessionStorage.setItem("coursePageTopic", topic)
+    window.location.href = "../courses.html"
 }

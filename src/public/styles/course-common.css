@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+main{
+    background-color: #32CB94;
+    background-image: url('../assets/general/pattern-bg-long.png');
+    padding-bottom: 10vh;
+    position: relative;
+    padding-top: 4vw;
+}
+
+/*Font*/
+.exo-semibold{
+    font-family: "Exo", sans-serif; 
+    font-weight: 600
+}
+/* clears the ‘X’ from Internet Explorer */
+input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
+input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
+/* clears the ‘X’ from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
+
+.search-field{
+    /*get only the bottom border*/
+    border-color: #ffffff !important;
+    outline: 0 !important;
+    border-width: 0 0 2px !important;
+    border-radius: 0 !important;
+    width: 80%;
+    font-size: 0.9vw;
+    background: none;
+}
+
+.search-field::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #d9d8d8 !important;
+    opacity: 1; /* Firefox */
+}
+
+input{
+    color: #fff !important;
+    font-size: 1.2vw !important;
+}
+
+.ms-n5 {
+    margin-left: 0px;
+}
+
