@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   </head>
-  <body onload="loadGrid()"> 
+  <body onload="load()"> 
     <!--navbar-->
     <div class="nav-placeholder"></div>
 
@@ -21,7 +21,7 @@
             
             <!-- Search bar-->
             <div class="d-flex">
-                <input class="search-field" type="search" placeholder="Search" id="example-search-input">
+                <input class="search-field" type="search" placeholder="Search" id="system-search" onkeyup="searchSystem()">
                 <span class="input-group-append">
                     <button class="ms-n5" type="button">
                         <i class="fa fa-search"></i>
@@ -42,15 +42,12 @@
 
             <!--Filter options-->
             <div style="width: 17%; color: white; margin-left: 5%;">
-                <h4 class = "exo-semibold" style="font-size: 0.95vw; margin-bottom: 1.2vw;">Course Category</h4>
-                <div class = "checkbox-full">
-                    <label class="check-container">
-                        <input type="checkbox" class = "categoryCheckbox" value="">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="form-check-label">Commercial</label>
-                    <label class="form-check-label form-count">15</label>
-                </div>
+                <h4 class = "exo-semibold" style="font-size: 0.95vw; margin-bottom: 1vw;">Course Category</h4>
+                <table>
+                    <tbody id = "filters">
+
+                    </tbody>
+                </table>
                 
             </div>
         </div>

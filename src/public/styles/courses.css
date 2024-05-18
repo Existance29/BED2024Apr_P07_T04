@@ -109,12 +109,15 @@ input{
     font-size: 0.92vw;
     font-family: "Jost", sans-serif;
     font-weight: 300;
-    margin-left: 1.25rem;
+}
+
+table { 
+    border-collapse:separate !important;
+    border-spacing:0 0.6vw;
 }
 
 .checkbox-full{
     display: flex;
-    margin-bottom: 0.8vw;
 }
 
 .check-container {
@@ -147,6 +150,7 @@ input{
     background-color: transparent;
     border: 2px solid white;
     transform: translateY(-50%);
+    border-radius: 2px;
   }
   
   /* On mouse-over, add a grey background color */
@@ -174,7 +178,7 @@ input{
   /* Style the checkmark/indicator */
   .check-container .checkmark::after {
     left: 27%;
-    top: 10%;
+    top: 9%;
     width: 4px;
     height: 8px;
     border: solid #208A6D;
