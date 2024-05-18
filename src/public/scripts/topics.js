@@ -80,7 +80,7 @@ function loadTopics(){
         const systemHTML = `            
             <div id = "${system["title"].toLowerCase()}" class = "system@ ${system["category"].join(" ")} rating:${rating}">
                 <div class = "system-logo">
-                    <img src = "./assets/courses/system-thumbnail/${system["thumbnail"]}" style="width: 33%; margin: auto; display: block;">
+                    <img src = "./assets/courses/topic-thumbnail/${system["thumbnail"]}" style="width: 33%; margin: auto; display: block;">
                 </div>
                 <div class = "system-info">
                     <h3 class = "poppins-semibold system-name">${system["title"]}</h3>
@@ -97,7 +97,7 @@ function loadTopics(){
                     </div>
                 </div>
                 <div class = "learn-btn-container">
-                    <button type="submit" class="poppins-medium learn-btn" onclick = "goCourse(${this.id})">Learn Now</button>
+                    <button type="submit" class="poppins-medium learn-btn" onclick = "goCourse('${system["title"].toLowerCase()}')">Learn Now</button>
                 </div>
             </div>`
         
@@ -196,6 +196,13 @@ function topicOnLoad(){
     loadFilters()
 }
 
+function courseOnLoad(){
+    loadFilters()
+    const topic = getUrlParameter("topic")
+    console.log(topic)
+    //TODO: Account for cases where no topic param is given
+}
+
 //filter systems
 function search(){
     //get input
@@ -215,6 +222,6 @@ function search(){
 }
 
 function goCourse(topic){
-    sessionStorage.setItem("coursePageTopic", topic)
-    window.location.href = "../courses.html"
+    console.log(topic)
+    window.location.href = `../courses.html?topic=${topic}`
 }

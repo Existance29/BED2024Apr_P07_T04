@@ -1,15 +1,3 @@
-
-/*Font classes*/
-.jost-regular{
-    font-family: "Jost", sans-serif; 
-    font-weight:400;
-}
-
-.jost-medium{
-    font-family: "Jost", sans-serif; 
-    font-weight: 500;
-}
-
 #course-grid{
     margin-left: 14%; 
     width: 50%; 
