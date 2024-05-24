@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <link href="./styles/courses.css" rel="stylesheet">
+    <link href="./styles/common.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  </head>
+  <body onload="courseOnLoad()"> 
+    <!--navbar-->
+    <div class="nav-placeholder"></div>
+
+    <!--background-->
+    <main class = "background-img long-bg">
+        <div class = "course-header-placeholder"></div>
+
+        <div class = "d-flex" style="margin-top: 5vw; ">
+            <!-- Display courses-->
+            <div id = "course-grid">
+              <div class = "course-container">
+                <img src="./assets/courses/thumbnail/default.png" class = "course-thumbnail">
+                <div class="content-container">
+                  <div class = "jost-regular" style="font-size: 0.85vw; color:#555555;">by <span style="color: #000000;">Determined-Poitras<span></div>
+                  <h4 class = "exo-semibold" style="font-size: 1vw; margin-top: 0.5vw; color: #444444;">Create an LMS Website with LearnPress</h4>
+                  <div class = "d-flex align-items-center jost-regular" style="margin-top: 0.7vw; font-size: 0.85vw; color: #555555; margin-bottom: 0.9vw;">
+                    <img src = "./assets/courses-page/time-icon.png" style="height: 0.8vw;">
+                    <div style="margin-right: 1vw; margin-left: 0.3vw;">2Weeks</div>
+                    <img src = "./assets/courses-page/student-icon.png" style="height: 0.8vw;">
+                    <div style="margin-left: 0.3vw;">156 Students</div>
+                  </div>
+                  <div style="background: #EAEAEA; width: 100%; height: 1px;"></div>
+                  <div class = "d-flex justify-content-between" style="margin-top: 0.7vw; font-size: 0.85vw;">
+                    <div>
+                      <span class = "jost-regular" style="color: #9D9D9D; text-decoration: line-through">$29.0</span>
+                      <span class = "jost-medium" style="color:#55BE24;">Free</span>
+                    </div>
+                    <div style="color: #000000;" class="jost-medium">View More</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--Filter options-->
+            <div style="width: 17%; color: white; margin-left: 5%;">
+              <h4 class = "exo-semibold" style="font-size: 0.95vw; margin-bottom: 1vw;">Course Category</h4>
+              <table>
+                  <tbody id = "filters">
+
+                  </tbody>
+              </table>
+              
+          </div>
+        </div>
+    
+
+        
+    </main>
+
+    <!--footer-->
+    <div class="footer-placeholder"></div>
+
+    <script src="./scripts/common.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

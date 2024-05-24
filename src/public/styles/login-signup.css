@@ -7,7 +7,7 @@ main{
 }
 
 .frame{
-    width: 22%;
+    width: 24%;
     background-color: white;
     border-radius: 8px;
     position: absolute;
@@ -19,7 +19,7 @@ main{
     padding-bottom: 1.5vw;
 }
 
-form{
+.login-form{
     margin-left: 9%;
     width: 82%;
     margin-top: 5vw;

@@ -68,7 +68,7 @@ const systemData = [
     
 ]
 
-//load the topics in a grid format
+//load the topics in the grid
 function loadTopics(){
     const grid = document.getElementById("system-grid") //clear grid
     grid.innerHTML = ""
@@ -196,13 +196,6 @@ function topicOnLoad(){
     loadFilters()
 }
 
-function courseOnLoad(){
-    loadFilters()
-    const topic = getUrlParameter("topic")
-    console.log(topic)
-    //TODO: Account for cases where no topic param is given
-}
-
 //filter systems
 function search(){
     //get input
@@ -221,7 +214,6 @@ function search(){
     }
 }
 
-function goCourse(topic){
-    console.log(topic)
-    window.location.href = `../courses.html?topic=${topic}`
+function goCourse(course){
+    window.location.href = `../courses-chapter.html?course=${course}`
 }
