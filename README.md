@@ -1,9 +1,10 @@
-Node modules:
-express
-nodemon
+#Project Setup
 
-To start:
-run 
-npm start
+###Installing node modules
+1. cd into the src directory
+2. run ``npm install``
+
+###Running program
+``npm start`` (for nodemon)
 or
-node <path to app.js>
+``node app.js``
