@@ -1,4 +1,4 @@
-# Project Setup
+## Project Setup
 
 ### Installing node modules
 1. cd into the src directory
