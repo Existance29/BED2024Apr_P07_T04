@@ -4,7 +4,7 @@
 1. cd into the src directory
 2. run ``npm install``
 
-### Running program
+### Starting server
 ``npm start`` (for nodemon)
 or
 ``node app.js``
