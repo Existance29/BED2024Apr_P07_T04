@@ -6,7 +6,7 @@
 
 ### Database configuration
 
-src/database/dbConfig.js
+src/database/dbConfig.js <br />
 ```js
 module.exports = {
     user: "sa", 
@@ -20,15 +20,15 @@ module.exports = {
     },
   }
 ```
-create a database named "bed-assg-1"
+create a database named "bed-assg-1" <br />
 You can change the user and password fields to your own login info
 
 ### Seeding the database
-run ``npm run seed``
-You can also rerun this command to reset the database to its seeded form
-The sql to seed the database can be found in src/database/seedScript.js
+run ``npm run seed`` <br />
+You can also rerun this command to reset the database to its seeded form <br />
+The sql to seed the database can be found in src/database/seedScript.js <br />
 
 ### Starting server
-``npm start`` (for nodemon)
-or
+``npm start`` (for nodemon) <br />
+or <br />
 ``node app.js``
