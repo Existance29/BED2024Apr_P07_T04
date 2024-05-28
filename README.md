@@ -20,8 +20,7 @@ module.exports = {
     },
   }
 ```
-create a database named "bed-assg-1" <br />
-You can change the user and password fields to your own login info
+You can change the details of the file or set up the sql server to match the settings here
 
 ### Seeding the database
 run ``npm run seed`` <br />
