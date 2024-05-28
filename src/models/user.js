@@ -7,8 +7,8 @@ class User {
     constructor(id, first_name, last_name, email, password, about_me, country) {
       this.id = id
       this.first_name = first_name
-      this.email = email
       this.last_name = last_name
+      this.email = email
       this.password = password
       this.about_me = about_me
       this.country = country

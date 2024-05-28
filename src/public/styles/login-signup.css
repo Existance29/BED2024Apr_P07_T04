@@ -57,5 +57,6 @@ main{
     font-size: 0.9vw;
     font-weight: 500;
     margin-top: 0.5vw;
+    display: none;
 }
 
