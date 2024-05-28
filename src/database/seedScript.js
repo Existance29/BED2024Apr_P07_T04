@@ -19,8 +19,12 @@ Exec Sp_executesql @sql
 -- start seeding the database
 CREATE TABLE Users (
   id INT PRIMARY KEY IDENTITY,
+  first_name VARCHAR(40) NOT NULL,
+  last_name VARCHAR(40) NOT NULL,
   email VARCHAR(50) NOT NULL UNIQUE,
-  password VARCHAR(100) NOT NULL UNIQUE
+  password VARCHAR(100) NOT NULL,
+  about_me VARCHAR(250) NOT NULL,
+  country VARCHAR(100) NOT NULL
 )
 `
 
