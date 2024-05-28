@@ -20,10 +20,9 @@ module.exports = {
     },
   }
 ```
-create a database named "bed-assg-1" <br />
-You can change the user and password fields to your own login info
+You can change the details of the file or set up the sql server to match the settings here
 
-### Seeding the database
+### Database setup
 run ``npm run seed`` <br />
 You can also rerun this command to reset the database to its seeded form <br />
 The sql to seed the database can be found in src/database/seedScript.js <br />
