@@ -4,19 +4,19 @@ const dbConfig = require("../database/dbConfig")
 
 class User {
     //setup user object
-    constructor(id, firstName, lastName, email, password, aboutMe, country) {
+    constructor(id, first_name, last_name, email, password, about_me, country) {
       this.id = id
-      this.firstName = firstName
+      this.first_name = first_name
       this.email = email
-      this.lastName = lastName
+      this.last_name = last_name
       this.password = password
-      this.aboutMe = aboutMe
+      this.about_me = about_me
       this.country = country
     }
 
     //pass the sql recordset into the user constructor
     static toUserObj(row){
-        return new User(row.id, row.firstName, row.lastName, row.email, row.password, row.aboutMe, row.country)
+        return new User(row.id, row.first_name, row.last_name, row.email, row.password, row.about_me, row.country)
     }
 
     //execute a query and return the result
@@ -65,15 +65,15 @@ class User {
     static async createUser(user) {
         //accept a object and add it to the database
         const params = {
-            "firstName": user.firstName,
-            "lastName": user.lastName,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
             "email": user.email,
             "password": user.password,
-            "aboutMe": user.aboutMe,
+            "about_me": user.about_me,
             "country": user.country
         }
         //catch unique key constrain 
-        const result = await this.query("INSERT INTO Users (firstName, lastName, email, password, aboutMe, country) VALUES (@firstName, @lastName, @email, @password, @aboutMe, @country); SELECT SCOPE_IDENTITY() AS id;", params)
+        const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country) VALUES (@first_name, @last_name, @email, @password, @about_me, @country); SELECT SCOPE_IDENTITY() AS id;", params)
         
         //get the newly created user and return it
         return this.getUserById(result.recordset[0].id)
