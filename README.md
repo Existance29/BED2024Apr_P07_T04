@@ -6,7 +6,7 @@
 
 ### Database configuration
 
-src/database/dbConfig.js <br />
+Create src/database/dbConfig.js with the following content: <br />
 ```js
 module.exports = {
     user: "sa", 
@@ -20,7 +20,7 @@ module.exports = {
     },
   }
 ```
-You can change the details of the file or set up the sql server to match the settings here
+You can change the content of the file to match your settings or set up the sql server to match its content
 
 ### Database setup
 run ``npm run seed`` <br />
