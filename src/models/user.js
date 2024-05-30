@@ -62,6 +62,16 @@ class User {
         
     }
 
+    //get a user by their login info (email + password)
+    static async getUserByLogin(email, password){
+        //assign sql params to their respective values
+        const params = {"email": email, "password": password}
+         //get first user from database that matches id
+        const result = (await this.query("SELECT * FROM Users WHERE email = @email AND password = @password", params)).recordset[0]
+        //return null if no user found
+        return result ? this.toUserObj(result) : null
+    }
+
     static async createUser(user) {
         //accept a object and add it to the database
         const params = {

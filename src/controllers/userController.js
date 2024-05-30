@@ -8,7 +8,7 @@ const getAllUsers = async (req, res) => {
     console.error(error)
     res.status(500).send("Error retrieving users")
   }
-};
+}
 
 const getUserById = async (req, res) => {
   const id = parseInt(req.params.id);
@@ -22,7 +22,22 @@ const getUserById = async (req, res) => {
     console.error(error)
     res.status(500).send("Error retrieving users")
   }
-};
+}
+
+const getUserByLogin = async (req, res) => {
+  const email = req.params.email
+  const password = req.params.password
+  try {
+    const user = await User.getUserByLogin(email, password)
+    if (!user) {
+      return res.status(404).send("Incorrect login details")
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Error logging in")
+  }
+}
 
 const createUser = async (req, res) => {
   const newUser = req.body;
@@ -38,5 +53,7 @@ const createUser = async (req, res) => {
 module.exports = {
     getAllUsers,
     getUserById,
-    createUser
+    getUserByLogin,
+    createUser,
+
 };
