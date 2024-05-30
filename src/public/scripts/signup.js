@@ -23,7 +23,6 @@ function hideErrors(){
 }
 
 
-
 async function signUp(){
     hideErrors()
     const user = {
@@ -51,7 +50,7 @@ async function signUp(){
 
     //valid input
     //save the user id to session storage
-    sessionStorage.userID = body.id
+    sessionStorage.userid = body.id
     //redirect user to courses
     window.location.href = "../courses.html"
     

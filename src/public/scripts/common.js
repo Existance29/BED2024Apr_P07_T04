@@ -55,22 +55,16 @@ async function get(url){
         
       }
     }
-    const response = await fetch(url, settings)
-    //check if the response was successful
-    if (!response.ok){
-      location.href = "error.html"
-      console.log(response)
-    }
-    const json = await response.json()
-    return json
+    return await fetch(url, settings)
   
 }
 
 //check if user is logged in 
 function isLoggedIn(){
     //check both local and session storage
-    var localUser = localStorage.userID
-    var sessionUser = sessionStorage.userID
-    return localUser == null && sessionUser === undefined && sessionUser == null && sessionUser === undefined
+    var localUser = localStorage.userid
+    var sessionUser = sessionStorage.userid
+    //if localuser or sessionuser exist, user is logged in
+    return !(localUser == null && sessionUser === undefined && sessionUser == null && sessionUser === undefined)
 }
 
