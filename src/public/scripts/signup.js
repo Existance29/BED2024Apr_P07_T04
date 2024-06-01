@@ -31,7 +31,7 @@ async function signUp(){
         "email": emailInput.value,
         "password": passwordInput.value,
         "about_me": "",
-        "country": (await get("http://ip-api.com/json")).country //auto-detect the user's country
+        "country": (await (await get("http://ip-api.com/json")).json()).country //auto-detect the user's country
     }
     //update database
     const response = await post("/users", user)
@@ -41,6 +41,7 @@ async function signUp(){
         //iterate through all errors, display the error message
         for (var i = 0; i < body.errors.length; i++){
             const x  = body.errors[i]
+            console.log(x[0])
             const errorEle = document.getElementById(`${x[0]}-error`) //get the error messasge element associated with the error
             errorEle.innerText = x[1].replaceAll("_"," ").replaceAll('"','') //do a bit of formatting to make the message more readable
             errorEle.style.display = "block"

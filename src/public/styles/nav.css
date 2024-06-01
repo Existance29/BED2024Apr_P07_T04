@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap');
 
 /*set default font for navbar */
-.navbar{
+.navbar,.dropdown-menu{
     font-family: "Libre Franklin", sans-serif;
     font-optical-sizing: auto;
     font-weight:500;
@@ -24,4 +24,9 @@
 /*set horizontal spacing between nav items*/
 li{
     margin: 0 1vw;
+}
+
+/*override bootstrap css*/
+.dropdown-menu{
+    --bs-dropdown-link-active-bg: none;
 }

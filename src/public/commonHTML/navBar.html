@@ -37,11 +37,23 @@
             <li class="nav-item d-flex align-items-center">
                 <img src="../assets/navbar/search-icon.png" alt="Logo" height = 14 class="d-inline-block">
             </li>
-
-            <li class="nav-item">
+            <!--Hide login and profile buttons by default, show with js-->
+            <li class="nav-item" id = "login" style="display: none;">
                 <a class="btn nav-login-btn" href="../login.html" role="button">Login</a>
             </li>
+
+            <li class="nav-item dropdown" id = "profile" style="display: none;">
+                <img src="../assets/navbar/profile-icon.png" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" height= "40">
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Profile</a></li>
+                  <li><a class="dropdown-item" href="#">Settings</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#" onclick="logout()">Log out</a></li>
+                </ul>
+              </li>
+
         </ul>
         </div>
     </div>
 </nav>
+<script src="../scripts/navbar.js"></script>
