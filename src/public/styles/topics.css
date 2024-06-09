@@ -10,7 +10,7 @@ input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration { display: none; }
 
-.search-field{
+.search-field {
     /*get only the bottom border*/
     border-color: #ffffff !important;
     outline: 0 !important;
@@ -26,7 +26,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     opacity: 1; /* Firefox */
 }
 
-input{
+input {
     color: #fff !important;
     font-size: 1.2vw !important;
 }
@@ -35,18 +35,18 @@ input{
     margin-left: 0px;
 }
 
-.form-check-label{
+.form-check-label {
     font-size: 0.92vw;
     font-family: "Jost", sans-serif;
     font-weight: 300;
 }
 
 table { 
-    border-collapse:separate !important;
-    border-spacing:0 0.6vw;
+    border-collapse: separate !important;
+    border-spacing: 0 0.6vw;
 }
 
-.checkbox-full{
+.checkbox-full {
     display: flex;
 }
 
@@ -60,18 +60,18 @@ table {
     -ms-user-select: none;
     user-select: none;
 }
-  
-  /* Hide the browser's default checkbox */
-  .check-container input {
+
+/* Hide the browser's default checkbox */
+.check-container input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
     height: 0;
     width: 0;
-  }
-  
-  /* Create a custom checkbox */
-  .checkmark {
+}
+
+/* Create a custom checkbox */
+.checkmark {
     position: absolute;
     left: 0;
     top: 50%;
@@ -81,32 +81,32 @@ table {
     border: 2px solid white;
     transform: translateY(-50%);
     border-radius: 2px;
-  }
-  
-  /* On mouse-over, add a grey background color */
-  .check-container:hover input ~ .checkmark {
+}
+
+/* On mouse-over, add a grey background color */
+.check-container:hover input ~ .checkmark {
     background-color: #fff;
-  }
-  
-  /* When the checkbox is checked, add a teal background */
-  .check-container input:checked ~ .checkmark {
+}
+
+/* When the checkbox is checked, add a teal background */
+.check-container input:checked ~ .checkmark {
     background-color: #ffffff;
-  }
-  
-  /* Create the checkmark/indicator (hidden when not checked) */
-  .checkmark::after {
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark::after {
     content: '';
     position: absolute;
     display: none;
-  }
-  
-  /* Show the checkmark when checked */
-  .check-container input:checked ~ .checkmark::after {
+}
+
+/* Show the checkmark when checked */
+.check-container input:checked ~ .checkmark::after {
     display: block;
-  }
-  
-  /* Style the checkmark/indicator */
-  .check-container .checkmark::after {
+}
+
+/* Style the checkmark/indicator */
+.check-container .checkmark::after {
     /*center it */
     left: 30%;
     top: 9%;
@@ -118,67 +118,90 @@ table {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg); /*rotate to make checkmark*/
-  }
+}
 
-.form-count{
+.form-count {
     margin-left: 5vw;
     font-size: 0.9vw;
 }
 
-#system-grid{
-    margin-left: 10%; 
-    width: 60%; 
+#system-grid {
+    margin-left: 18%; 
+    width: 45%; 
     display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
-    grid-column-gap: 7%; 
+    grid-template-columns: repeat(2, 1fr); 
+    grid-column-gap: 4%; 
     grid-row-gap: 3vw;
 }
-.system-logo{
+
+.system {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    background-color: white;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    height: 450px; /* Ensure all cards have the same fixed height */
+}
+
+.system-logo {
     background: #245D51; 
     width: 100%; 
     border-radius: 1.3vw; 
     padding-top: 3vw; 
     height: 18vw;
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.system-info{
+.system-info {
     background: #FDFDFD; 
-    width: 93%;
-    border-radius: 1.3vw; 
-    margin: 0 auto; 
-    margin-top: -35%; /*use negative margin to overlap*/
-    padding-top: 10%; 
-    padding-right: 5%; 
-    padding-left: 5%; 
-    padding-bottom: 8%;
+    width: 100%;
+    border-radius: 1vw; 
+    margin-top: -8%; /* Adjusted to move the white rectangle down more */
+    padding: 10%;
+    box-sizing: border-box;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center; /* Center align content */
+    text-align: center; /* Center text */
+    height: 170px; /* Ensure all info sections have the same height */
 }
 
-.system-name{
+.system-name {
     font-size: 1.2vw; 
     color: #171725; 
-    text-align: center;
 }
 
-.system-desc{
+.system-desc {
     font-size: 0.7vw; 
     color: #000000; 
-    text-align: center;
 }
 
-.extra-options{
+.extra-options {
     color: #575757; 
     font-size: 0.7vw;
 }
-.learn-btn-container{
+
+.learn-btn-container {
     display: flex;
-    margin-top: -5%; /*use negative margin to overlap*/
     justify-content: center;
+    width: 100%;
 }
-.learn-btn{
+
+.learn-btn {
     background-color: #245D51;
     color: white;
     font-size: 0.75vw;
     border-radius: 1.3vw;
     padding: 0.5vw 1.3vw;
+    margin-top: -17px; /* Add margin to separate from the content above */
+    z-index: 1;
+    position: relative;
 }
