@@ -1,7 +1,7 @@
 // Fetch courses from the server
 async function fetchCourses() {
     try {
-        const response = await fetch("/courses"); // Adjust the endpoint if necessary
+        const response = await fetch("/courses/without-video"); 
         const courses = await response.json();
         return courses;
     } catch (error) {
@@ -20,8 +20,7 @@ function arrayBufferToBase64(buffer) {
     }
     return window.btoa(binary);
 }
-
-// Load the topics in the grid
+// Load the courses in the grid
 async function loadCourses() {
     const courses = await fetchCourses();
     const grid = document.getElementById("system-grid"); // Clear grid
@@ -38,24 +37,16 @@ async function loadCourses() {
                 <div class="system-info">
                     <h3 class="poppins-semibold system-name">${course.title}</h3>
                     <p class="poppins-regular system-desc">${course.description}</p>
-                    <div class="d-flex justify-content-center">
-                        <div class="d-flex poppins-semibold align-items-center extra-options">
-                            <img src="../assets/courses-page/demo-icon.png" style="width: 15%; margin-right: 0.3vw;">
-                            Live Demo
-                        </div>
-                        <div class="d-flex poppins-semibold align-items-center extra-options">
-                            <img src="../assets/courses-page/pin-icon.png" style="width: 15%; margin-right: 0.3vw;">
-                            Enroll Now
-                        </div>
-                    </div>
+                    
                 </div>
                 <div class="learn-btn-container">
-                    <button type="submit" class="poppins-medium learn-btn" onclick="goCourse('${course.title.toLowerCase()}')">Learn Now</button>
+                    <button type="submit" class="poppins-medium learn-btn" onclick="goCourse('${course.courseID}')">Learn Now</button>
                 </div>
             </div>`;
         grid.innerHTML += systemHTML; // Add to grid
     });
 }
+
 
 // Return the html for the title of a new filter section
 function filterSection(title) {
@@ -120,13 +111,13 @@ async function loadFilters() {
                     <label class="form-check-label form-count">6</label>
                 </td>
         </tr>`;
- //add the html for number of stars
+        // Add the HTML for number of stars
         const htmlStar = `<img src="../assets/courses-page/fill-star-icon.png" style="height: 0.6vw;">`.repeat(i) +
             `<img src="../assets/courses-page/empty-star-icon.png" style="height: 0.6vw;">`.repeat(5 - i);
-         //add to out
+        // Add to output
         out += html1 + htmlStar + html2;
     }
-     //load into html
+    // Load into HTML
     categoryDiv.innerHTML += out;
 }
 
@@ -137,14 +128,13 @@ function topicOnLoad() {
 
 // Filter systems
 function search() {
-    //get input
-    //set to lowercase so casing is irrelevant
+    // Get input and convert to lowercase
     const input = document.getElementById("search").value.toLowerCase();
-    //get the system elements and iterate through each one, check if they should be shown
+    // Get the system elements and iterate through each one, checking if they should be shown
     const items = document.getElementsByClassName("system@");
     for (let i = 0; i < items.length; i++) {
         const ele = items[i];
-        //check if input is a substring of the id
+        // Check if input is a substring of the id
         if (ele.id.indexOf(input) > -1) {
             ele.style.display = "block";
         } else {
@@ -153,8 +143,8 @@ function search() {
     }
 }
 
-function goCourse(course) {
-    window.location.href = `course-chapters.html?course=${course}`;
+function goCourse(courseID) {
+    window.location.href = `course-chapters.html?courseID=${courseID}`;
 }
 
 document.addEventListener("DOMContentLoaded", topicOnLoad);

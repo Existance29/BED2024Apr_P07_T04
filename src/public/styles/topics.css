@@ -126,11 +126,11 @@ table {
 }
 
 #system-grid {
-    margin-left: 18%; 
-    width: 45%; 
+    margin-left: 15%; 
+    width: 50%; 
     display: grid; 
     grid-template-columns: repeat(2, 1fr); 
-    grid-column-gap: 4%; 
+    grid-column-gap: 8%; 
     grid-row-gap: 3vw;
 }
 
@@ -171,7 +171,7 @@ table {
     justify-content: space-between;
     align-items: center; /* Center align content */
     text-align: center; /* Center text */
-    height: 170px; /* Ensure all info sections have the same height */
+    height: 130px; /* Ensure all info sections have the same height */
 }
 
 .system-name {
