@@ -47,10 +47,14 @@ main{
     display: none;
 }
 
+.form-input{
+    min-height: 5.3vw;
+}
+
+
 .field{
     display: flex;
     align-items: center;
-    margin-bottom: 3vw;
 }
 
 
@@ -61,14 +65,14 @@ label{
     font-weight: 600;
     font-style: normal;
     white-space:nowrap; /*Prevent wrapping*/
+    width: 10vw; /*Set a fixed width so all input fields are aligned*/
 }
 
 input,.input{
     border: 1px solid #CDCED5;
     border-radius: 0.3255vw;
-    width: 80.3%;
+    flex-grow: 1;
     height: 2.3vw;
-    margin-left: auto !important;
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -92,4 +96,5 @@ input,.input{
     font-weight: 500;
     margin-top: 0.5vw;
     /*display: none;*/
+    margin-left: 10vw;
 }
