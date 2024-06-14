@@ -85,3 +85,11 @@ input,.input{
     color: #434343;
     padding: 0.4vw 2.3vw !important;
 }
+
+.field-error{
+    color: red;
+    font-size: 0.9vw;
+    font-weight: 500;
+    margin-top: 0.5vw;
+    /*display: none;*/
+}

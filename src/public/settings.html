@@ -20,7 +20,7 @@
       <div class = "settings-page">
         <!--Side bar-->
         <ul class = "poppins-bold sidebar">
-          <li class = "side-select active" id = "account">Account</li>
+          <li class = "side-select active" id = "account"><data title="Account Settings" desc = "Change your profile and account details">Account</data></li>
           <li class = "side-select" id = "password">Password</li>
         </ul>
         <!--Divider-->
@@ -28,14 +28,16 @@
         <!--Settings form-->
         <form id = "account-tab" class = "tab-content">
           <div class="d-flex">
-            <div class = "field">
-              <label for="firstName" style="margin-right: 4vw;">First Name:</label>
-              <input id="firstName">
+            <div>
+              <div class = "field">
+                <label for="first-name" style="margin-right: 4vw;">First Name:</label>
+                  <input id="first-name">
+              </div>
             </div>
 
             <div class = "field" style="margin-left: auto;">
-              <label for="lastName" style="margin-right: 4vw;">Last Name:</label>
-              <input id="lastName">
+              <label for="last-name" style="margin-right: 4vw;">Last Name:</label>
+              <input id="last-name">
             </div>
           </div>
 
@@ -309,15 +311,15 @@
         <form id = "password-tab" class = "tab-content">
           <div class = "field">
             <label for="current-password">Current Password:</label>
-            <input id="current-password" style="width: 72%;">
+            <input id="current-password" type = "password" style="width: 72%;">
           </div>
           <div class = "field">
             <label for="new-password">New Password:</label>
-            <input id="new-password" style="width: 72%;">
+            <input id="new-password" type = "password" style="width: 72%;">
           </div>
           <div class = "field">
             <label for="repeat-new-password">Repeat New Password:</label>
-            <input id="repeat-new-password" style="width: 72%;">
+            <input id="repeat-new-password" type = "password" style="width: 72%;">
           </div>
             
           <div class = "d-flex" style="margin-top: 6vw;">
