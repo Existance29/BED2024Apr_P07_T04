@@ -1,0 +1,6 @@
+main{
+    background-color: #32CB94;
+    background-image: url('../assets/general/pattern-bg-full.png');
+    min-height: 100vh; /*Take up entire screen height*/
+    position: relative;
+}
