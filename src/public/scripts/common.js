@@ -68,6 +68,18 @@ function isLoggedIn(){
     return !(localUser == null && sessionUser === undefined && sessionUser == null && sessionUser === undefined)
 }
 
+//returns the user id stored in local/session storage
+function getUserID(){
+  if (sessionStorage.userid != null){
+    return sessionStorage.userid
+
+  } else if (localStorage.userid != null){
+    return localStorage.userid
+  } 
+
+  return null
+}
+
 //prevent reloading page when form submitted
 document.addEventListener("DOMContentLoaded", function () {
   //get all forms

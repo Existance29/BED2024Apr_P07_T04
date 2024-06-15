@@ -2,8 +2,24 @@ const tabs = Array.prototype.slice.call(document.getElementsByClassName("side-se
 const tabContents = Array.prototype.slice.call(document.getElementsByClassName("tab-content"))
 const settingTitle = document.getElementById("settings-title")
 const settingDesc = document.getElementById("settings-desc")
+
+//api 
+const userid = getUserID()
+const initialData = get(`/users/complete/${userid}`)
+
+//input fields
 const profileImg = document.getElementById("profile-img")
 const imgInput = document.getElementById("upload-img")
+const firstName = document.getElementById("first_name")
+const lastName = document.getElementById("last_name")
+const email = document.getElementById("email")
+const country = document.getElementById("country")
+const aboutMe = document.getElementById("about_me")
+const currentPassword = document.getElementById("current_password")
+const newPassword = document.getElementById("new_password")
+const repeatNewPassword = document.getElementById("repeat_new_password")
+
+
 
 // Now, you can safely use .forEach()
 tabs.forEach( (ele) => {
@@ -33,12 +49,43 @@ function switchTab(tabEle){
     settingTitle.innerText = tabEle.dataset.title
 }
 
-async function imageInput(){
-    const blobFile = imgInput.files[0]
-    profileImg.src = URL.createObjectURL(blobFile)
-    var formDataSend = new FormData();
-    formDataSend.append("file", blobFile, "fileName.jpg");
-    await fetch("/users/pic/1", {method: "POST", body: formDataSend})
+function imageInput(){
+    profileImg.src = URL.createObjectURL(imgInput.files[0])
 }
 
+function saveAccount(){
+    //save profile img
+    var formDataSend = new FormData();
+    formDataSend.append("pic",imgInput.files[0], "fileName.jpg");
+    fetch(`/users/update/pic/${userid}`, {method: "POST", body: formDataSend})
+}
+
+async function reset(){
+    //take initial data
+    const response = await initialData
+    if (response.status == 500) return
+    //cant find user
+    if (response.status == 404){
+        //log user out and redirect to login page
+        localStorage.removeItem("userid")
+        sessionStorage.removeItem("userid")
+        window.location.href = "login.html"
+        return
+    }
+    const data = await response.json()
+
+    //set input values
+    profileImg.src = `data:image/png;base64,${data.img}`
+    firstName.value = data.first_name
+    lastName.value = data.last_name
+    email.value = data.email
+    country.value = data.country
+    aboutMe.value = data.about_me
+    currentPassword.value = ""
+    newPassword.value = ""
+    repeatNewPassword.value = ""
+}
+
+//call functions on load
+reset()
 switchTab(document.getElementById("account"))

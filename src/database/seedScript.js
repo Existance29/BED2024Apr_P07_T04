@@ -40,10 +40,10 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Profile_Pictures (
-    id INT PRIMARY KEY IDENTITY,
+    pic_id INT PRIMARY KEY IDENTITY,
     user_id INT NOT NULL UNIQUE,
     FOREIGN KEY (user_id) REFERENCES Users(id),
-    img VARBINARY(MAX) NOT NULL
+    img VARCHAR(MAX) NOT NULL
 );
 
 CREATE TABLE Courses (

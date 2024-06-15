@@ -5,7 +5,7 @@ const fs = require("fs");
 
 class User {
     //setup user object
-    constructor(id, first_name, last_name, email, password, about_me, country) {
+    constructor(id, first_name, last_name, email, password, about_me, country, pic = null) {
       this.id = id
       this.first_name = first_name
       this.last_name = last_name
@@ -13,12 +13,14 @@ class User {
       this.password = password
       this.about_me = about_me
       this.country = country
+      this.pic = pic
     }
 
     //pass the sql recordset into the user constructor
     static toUserObj(row){
         return new User(row.id, row.first_name, row.last_name, row.email, row.password, row.about_me, row.country)
     }
+    
 
     //execute a query and return the result
     static async query(queryString, params){
@@ -63,6 +65,13 @@ class User {
         
     }
 
+    static async getCompleteUserByID(id) {
+        //join all tables related to the user and return them
+        const query = "SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id WHERE id = @id"
+        const result = (await this.query(query,{"id":id})).recordset[0]
+        return result
+    }
+
     //get a user by their login info (email + password)
     static async getUserByLogin(email, password){
         //assign sql params to their respective values
@@ -91,7 +100,7 @@ class User {
         const newUser = await this.getUserById(result.recordset[0].id)
 
         //create the profile picture with a default one
-        const imageBuffer = fs.readFileSync("../src/public/assets/profile/default-profile-picture.jpg")
+        const imageBuffer = fs.readFileSync("../src/public/assets/profile/default-profile-picture.jpg", {encoding: 'base64'})
         const picParams = {
             "user_id": newUser.id,
             "img": imageBuffer,
@@ -103,20 +112,16 @@ class User {
     }
 
     //functions for profile pictures
-    static async createProfilePic(userid,blob){
+    static async updateProfilePic(userid,blob){
         //get the path of the image and convert it into binary
-        const imageBuffer = fs.readFileSync(blob["file"].path)
-        console.log(imageBuffer)
+        const imageBuffer = fs.readFileSync(blob["pic"].path, {encoding: 'base64'})
+        
         //create a new sql row for the profile
         const params = {
             "user_id": userid,
             "img": imageBuffer,
         }
-        const result = await this.query("INSERT INTO Profile_Pictures (user_id,img) VALUES (@user_id, @img); SELECT SCOPE_IDENTITY() AS id;", params)
-    }
-
-    static async updateProfilePic(id){
-
+        await this.query("UPDATE Profile_Pictures SET img = @img WHERE user_id = @user_id", params)
     }
 }
   

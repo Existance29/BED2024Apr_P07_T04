@@ -24,6 +24,20 @@ const getUserById = async (req, res) => {
   }
 }
 
+const getCompleteUserByID = async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const user = await User.getCompleteUserByID(id)
+    if (!user) {
+      return res.status(404).send("User not found")
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Error retrieving users")
+  }
+}
+
 const getUserByLogin = async (req, res) => {
   const email = req.params.email
   const password = req.params.password
@@ -50,10 +64,29 @@ const createUser = async (req, res) => {
   }
 }
 
+const updateProfilePic = async (req, res) => {
+  const data = req.files
+  const id = parseInt(req.params.id)
+  //check that user exists
+  try{
+    const user = await User.getUserById(id)
+    if (!user) {
+      return res.status(404).send("User not found")
+    }
+    await User.updateProfilePic(id,data)
+    res.status(201)
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("Error updating profile picture")
+  }
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
     getUserByLogin,
     createUser,
+    updateProfilePic,
+    getCompleteUserByID,
 
 };
