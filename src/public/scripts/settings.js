@@ -53,27 +53,46 @@ function imageInput(){
     profileImg.src = URL.createObjectURL(imgInput.files[0])
 }
 
-function saveAccount(){
+async function saveAccount(){
+    
     //save profile img
-    var formDataSend = new FormData();
-    formDataSend.append("pic",imgInput.files[0], "fileName.jpg");
-    fetch(`/users/update/pic/${userid}`, {method: "POST", body: formDataSend})
+    //check that an image has been input
+    if (imgInput.files[0]){
+        //send it via a form data
+        var formDataSend = new FormData();
+        formDataSend.append("pic",imgInput.files[0], "fileName.jpg");
+        fetch(`/users/update/pic/${userid}`, {method: "PUT", body: formDataSend})
+    }
+
+    //save main settings
+    const updateData = {
+        "id": data.id,
+        "first_name": firstName.value,
+        "last_name": lastName.value,
+        "email": email.value,
+        "about_me": aboutMe.value,
+        "country": country.value,
+    }
+
+    const response = await put("/users/update", updateData)
 }
 
-async function reset(){
-    //take initial data
-    const response = await initialData
-    if (response.status == 500) return
-    //cant find user
-    if (response.status == 404){
-        //log user out and redirect to login page
-        localStorage.removeItem("userid")
-        sessionStorage.removeItem("userid")
-        window.location.href = "login.html"
-        return
+async function resetSettings(load = false){
+    if (load){
+        //take initial data
+        const response = await initialData
+        if (response.status == 500) return
+        //cant find user
+        if (response.status == 404){
+            //log user out and redirect to login page
+            localStorage.removeItem("userid")
+            sessionStorage.removeItem("userid")
+            window.location.href = "login.html"
+            return
+        }
+        //data is global variable
+        data = await response.json()
     }
-    const data = await response.json()
-
     //set input values
     profileImg.src = `data:image/png;base64,${data.img}`
     firstName.value = data.first_name
@@ -87,5 +106,5 @@ async function reset(){
 }
 
 //call functions on load
-reset()
+resetSettings(true)
 switchTab(document.getElementById("account"))

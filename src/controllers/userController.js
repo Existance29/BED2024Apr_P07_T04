@@ -81,6 +81,17 @@ const updateProfilePic = async (req, res) => {
   }
 }
 
+const updateUser = async (req, res) => {
+  const data = req.body;
+  try {
+    const updatedUser = await User.updateUser(data)
+    res.status(201).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error updating user")
+  }
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
@@ -88,5 +99,5 @@ module.exports = {
     createUser,
     updateProfilePic,
     getCompleteUserByID,
-
+    updateUser
 };

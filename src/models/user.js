@@ -110,7 +110,6 @@ class User {
         return newUser
     }
 
-    //functions for profile pictures
     static async updateProfilePic(userid,blob){
         //get the path of the image and convert it into binary
         const imageBuffer = fs.readFileSync(blob["pic"].path, {encoding: 'base64'})
@@ -121,6 +120,23 @@ class User {
             "img": imageBuffer,
         }
         await this.query("UPDATE Profile_Pictures SET img = @img WHERE user_id = @user_id", params)
+    }
+
+    static async updateUser(user){
+        //accept a object and add it to the database
+        const params = {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "about_me": user.about_me,
+            "country": user.country
+        }
+        console.log(user)
+        //catch unique key constrain 
+        await this.query("UPDATE Users SET first_name = @first_name, last_name = @last_name, email = @email, about_me = @about_me, country = @country WHERE id = @id", params)
+        //return the updated user
+        return this.getUserById(user.id)
     }
 }
   

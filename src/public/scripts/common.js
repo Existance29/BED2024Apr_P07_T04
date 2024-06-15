@@ -59,6 +59,22 @@ async function get(url){
   
 }
 
+async function put(url, jsondata){
+  let settings = {
+    keepalive: true,
+    crossDomain: true,
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+      "cache-control": "no-cache"
+    },
+    body: JSON.stringify(jsondata)
+  }
+
+  return await fetch(url, settings)
+  
+}
+
 //check if user is logged in 
 function isLoggedIn(){
     //check both local and session storage
