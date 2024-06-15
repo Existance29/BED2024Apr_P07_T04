@@ -33,8 +33,12 @@ function switchTab(tabEle){
     settingTitle.innerText = tabEle.dataset.title
 }
 
-function imageInput(){
-    profileImg.src = URL.createObjectURL(imgInput.files[0])
+async function imageInput(){
+    const blobFile = imgInput.files[0]
+    profileImg.src = URL.createObjectURL(blobFile)
+    var formDataSend = new FormData();
+    formDataSend.append("file", blobFile, "fileName.jpg");
+    await fetch("/users/pic/1", {method: "POST", body: formDataSend})
 }
 
 switchTab(document.getElementById("account"))

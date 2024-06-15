@@ -1,6 +1,7 @@
 //import sql stuff
 const sql = require("mssql")
 const dbConfig = require("../database/dbConfig")
+const fs = require("fs");
 
 class User {
     //setup user object
@@ -84,16 +85,32 @@ class User {
         }
         //catch unique key constrain 
         const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country) VALUES (@first_name, @last_name, @email, @password, @about_me, @country); SELECT SCOPE_IDENTITY() AS id;", params)
+
         
-        //get the newly created user and return it
-        return this.getUserById(result.recordset[0].id)
+        //get the newly-created user
+        const newUser = await this.getUserById(result.recordset[0].id)
+
+        //create the profile picture with a default one
+        const imageBuffer = fs.readFileSync("../src/public/assets/profile/default-profile-picture.jpg")
+        const picParams = {
+            "user_id": newUser.id,
+            "img": imageBuffer,
+        }
+        this.query("INSERT INTO Profile_Pictures (user_id,img) VALUES (@user_id, @img); SELECT SCOPE_IDENTITY() AS id;", picParams)
+
+        //return the newly created user
+        return newUser
     }
 
     //functions for profile pictures
-    static async createProfilePic(userid){
+    static async createProfilePic(userid,blob){
+        //get the path of the image and convert it into binary
+        const imageBuffer = fs.readFileSync(blob["file"].path)
+        console.log(imageBuffer)
+        //create a new sql row for the profile
         const params = {
             "user_id": userid,
-            "img": ,
+            "img": imageBuffer,
         }
         const result = await this.query("INSERT INTO Profile_Pictures (user_id,img) VALUES (@user_id, @img); SELECT SCOPE_IDENTITY() AS id;", params)
     }
