@@ -88,6 +88,19 @@ class User {
         //get the newly created user and return it
         return this.getUserById(result.recordset[0].id)
     }
+
+    //functions for profile pictures
+    static async createProfilePic(userid){
+        const params = {
+            "user_id": userid,
+            "img": ,
+        }
+        const result = await this.query("INSERT INTO Profile_Pictures (user_id,img) VALUES (@user_id, @img); SELECT SCOPE_IDENTITY() AS id;", params)
+    }
+
+    static async updateProfilePic(id){
+
+    }
 }
   
   module.exports = User

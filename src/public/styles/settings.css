@@ -1,7 +1,7 @@
 main{
     background-color: #32CB94;
     background-image: url('../assets/general/pattern-bg-full.png');
-    min-height: 130vh; /*Keep screen height consistent to avoid as much background shifting as possible*/
+    min-height: 150vh; /*Keep screen height consistent to avoid as much background shifting as possible*/
     position: relative;
     padding: 4vw 11%;
     color: white;
@@ -58,7 +58,7 @@ main{
 }
 
 
-label{
+label:not(.upload-img-btn){
     font-size: 0.95vw;
     color: #2B2C28;
     font-family: "Poppins", sans-serif;
@@ -68,7 +68,7 @@ label{
     width: 10vw; /*Set a fixed width so all input fields are aligned*/
 }
 
-input,.input{
+input:not(.upload-img),.input{
     border: 1px solid #CDCED5;
     border-radius: 0.3255vw;
     flex-grow: 1;
@@ -97,4 +97,16 @@ input,.input{
     margin-top: 0.5vw;
     /*display: none;*/
     margin-left: 10vw;
+}
+
+#profile-img{
+    width: 12%;
+    object-fit: cover; 
+    aspect-ratio: 1/1;
+}
+
+.upload-img-btn{
+    border: 1px solid #B3B3B3;
+    padding: 0.4vw 1vw !important;
+    margin-top: 1vw;
 }

@@ -2,6 +2,8 @@ const tabs = Array.prototype.slice.call(document.getElementsByClassName("side-se
 const tabContents = Array.prototype.slice.call(document.getElementsByClassName("tab-content"))
 const settingTitle = document.getElementById("settings-title")
 const settingDesc = document.getElementById("settings-desc")
+const profileImg = document.getElementById("profile-img")
+const imgInput = document.getElementById("upload-img")
 
 // Now, you can safely use .forEach()
 tabs.forEach( (ele) => {
@@ -29,6 +31,10 @@ function switchTab(tabEle){
     //update the title and desc of the setting tab with the data attributes
     settingDesc.innerText = tabEle.dataset.desc
     settingTitle.innerText = tabEle.dataset.title
+}
+
+function imageInput(){
+    profileImg.src = URL.createObjectURL(imgInput.files[0])
 }
 
 switchTab(document.getElementById("account"))
