@@ -20,6 +20,23 @@ const newPassword = document.getElementById("new_password")
 const repeatNewPassword = document.getElementById("repeat_new_password")
 
 
+imgInput.addEventListener("input", inputChanged)
+firstName.addEventListener("input", inputChanged)
+lastName.addEventListener("input", inputChanged)
+email.addEventListener("input", inputChanged)
+aboutMe.addEventListener("input", inputChanged)
+currentPassword.addEventListener("input", inputChanged)
+newPassword.addEventListener("input", inputChanged)
+repeatNewPassword.addEventListener("input", inputChanged)
+
+//hide the error message when the input field is changed
+function inputChanged(e){
+    //get the associated error message based on the id of the input field
+    const error = document.getElementById(`${e.target.id.replaceAll("-","_")}-error`)
+    error.style.display = "none"
+}
+
+
 
 // Now, you can safely use .forEach()
 tabs.forEach( (ele) => {
@@ -53,6 +70,19 @@ function imageInput(){
     profileImg.src = URL.createObjectURL(imgInput.files[0])
 }
 
+function success(){
+    //shows the success alrt for 2 secs
+    //start playing the lottie animation + enter text
+    document.getElementById("setting-success-content").innerHTML = 
+    `<dotlottie-player src="https://lottie.host/4377115b-47bb-4c44-9302-598d7f225602/qpO9TCh4pH.json" background="transparent" speed="0.9" style="width: 60px; height: 60px;" autoplay></dotlottie-player>
+    Settings saved`
+    //use a slide down animation
+    $("#setting-success").slideDown(400)
+    setTimeout(function() {
+        document.getElementById("setting-success").style.display = "none";
+    }, 2000)
+}
+
 async function saveAccount(){
     
     //save profile img
@@ -75,6 +105,20 @@ async function saveAccount(){
     }
 
     const response = await put("/users/update", updateData)
+    const body = await response.json()
+    if (response.status == 400 && "message" in body){
+        //iterate through all errors, display the error message
+        for (var i = 0; i < body.errors.length; i++){
+            const x  = body.errors[i]
+            console.log(x[0])
+            const errorEle = document.getElementById(`${x[0]}-error`) //get the error messasge element associated with the error
+            errorEle.innerText = x[1].replaceAll("_"," ").replaceAll('"','') //do a bit of formatting to make the message more readable
+            errorEle.style.display = "block"
+        }
+        return
+    }
+    //display success message
+    success()
 }
 
 async function resetSettings(load = false){
