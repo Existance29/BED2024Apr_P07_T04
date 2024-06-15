@@ -5,7 +5,7 @@ const fs = require("fs");
 
 class User {
     //setup user object
-    constructor(id, first_name, last_name, email, password, about_me, country, pic = null) {
+    constructor(id, first_name, last_name, email, password, about_me, country) {
       this.id = id
       this.first_name = first_name
       this.last_name = last_name
@@ -13,7 +13,6 @@ class User {
       this.password = password
       this.about_me = about_me
       this.country = country
-      this.pic = pic
     }
 
     //pass the sql recordset into the user constructor
