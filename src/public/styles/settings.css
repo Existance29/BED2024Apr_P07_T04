@@ -1,0 +1,112 @@
+main{
+    background-color: #32CB94;
+    background-image: url('../assets/general/pattern-bg-full.png');
+    min-height: 150vh; /*Keep screen height consistent to avoid as much background shifting as possible*/
+    position: relative;
+    padding: 4vw 11%;
+    color: white;
+}
+
+#settings-desc{
+    width: 50%;
+    margin-top: 1vw;
+    margin-bottom: 4vw;
+}
+
+.settings-page{
+    display: flex;
+    background: #FFFFFF;
+    border-radius: 10px;
+    color: #2B2C28;
+}
+
+.sidebar{
+    /*Override default*/
+    list-style: none;
+    margin: 2vw 4vw 2vw 3% !important;
+    padding: 0 !important;
+}
+.side-select{
+    font-size: 1vw;
+    padding: 0.4vw 0.9vw;
+    border-radius: 5px;
+    cursor:pointer;
+}
+.side-select + .side-select {
+    margin-top: 2.5vw;
+}
+
+.side-select.active{
+    color: #245D51;
+    background: #C5FFDC;
+}
+
+.tab-content{
+    margin: 3vw 10vw 3vw 4vw;
+    width: 100%;
+    display: none;
+}
+
+.form-input{
+    min-height: 5.3vw;
+}
+
+
+.field{
+    display: flex;
+    align-items: center;
+}
+
+
+label:not(.upload-img-btn){
+    font-size: 0.95vw;
+    color: #2B2C28;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    white-space:nowrap; /*Prevent wrapping*/
+    width: 10vw; /*Set a fixed width so all input fields are aligned*/
+}
+
+input:not(.upload-img),.input{
+    border: 1px solid #CDCED5;
+    border-radius: 0.3255vw;
+    flex-grow: 1;
+    height: 2.3vw;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 0.9vw;
+}
+
+
+.settings-btn {
+    border-radius: 0.5208vw !important;
+    font-family: "Poppins", sans-serif !important;
+    font-weight:500;
+    font-style: normal;
+    font-size: 0.95vw !important;
+    color: #434343;
+    padding: 0.4vw 2.3vw !important;
+}
+
+.field-error{
+    color: red;
+    font-size: 0.9vw;
+    font-weight: 500;
+    margin-top: 0.5vw;
+    display: none;
+    margin-left: 10vw;
+}
+
+#profile-img{
+    width: 12%;
+    object-fit: cover; 
+    aspect-ratio: 1/1;
+}
+
+.upload-img-btn{
+    border: 1px solid #B3B3B3;
+    padding: 0.4vw 1vw !important;
+    margin-top: 1vw;
+}

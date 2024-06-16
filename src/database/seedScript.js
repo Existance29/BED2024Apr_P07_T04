@@ -27,7 +27,14 @@ CREATE TABLE Users (
   email VARCHAR(50) NOT NULL UNIQUE,
   password VARCHAR(100) NOT NULL,
   about_me VARCHAR(250) NOT NULL,
-  country VARCHAR(100) NOT NULL
+  country VARCHAR(100) NOT NULL,
+);
+
+CREATE TABLE Profile_Pictures (
+    pic_id INT PRIMARY KEY IDENTITY,
+    user_id INT NOT NULL UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES Users(id),
+    img VARCHAR(MAX) NOT NULL
 );
 
 CREATE TABLE Courses (

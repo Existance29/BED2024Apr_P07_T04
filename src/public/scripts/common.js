@@ -59,6 +59,22 @@ async function get(url){
   
 }
 
+async function put(url, jsondata){
+  let settings = {
+    keepalive: true,
+    crossDomain: true,
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+      "cache-control": "no-cache"
+    },
+    body: JSON.stringify(jsondata)
+  }
+
+  return await fetch(url, settings)
+  
+}
+
 //check if user is logged in 
 function isLoggedIn(){
     //check both local and session storage
@@ -67,4 +83,31 @@ function isLoggedIn(){
     //if localuser or sessionuser exist, user is logged in
     return !(localUser == null && sessionUser === undefined && sessionUser == null && sessionUser === undefined)
 }
+
+//returns the user id stored in local/session storage
+function getUserID(){
+  if (sessionStorage.userid != null){
+    return sessionStorage.userid
+
+  } else if (localStorage.userid != null){
+    return localStorage.userid
+  } 
+
+  return null
+}
+
+//prevent reloading page when form submitted
+document.addEventListener("DOMContentLoaded", function () {
+  //get all forms
+  const forms = document.getElementsByTagName("form")
+  //add listener to trigger when submitted
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      //stop reloading behaviour
+      event.preventDefault()
+    }, false)
+  })
+  
+
+})
 
