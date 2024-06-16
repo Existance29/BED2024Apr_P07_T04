@@ -19,8 +19,6 @@ const currentPassword = document.getElementById("current_password")
 const newPassword = document.getElementById("new_password")
 const repeatNewPassword = document.getElementById("repeat_new_password")
 
-
-imgInput.addEventListener("input", inputChanged)
 firstName.addEventListener("input", inputChanged)
 lastName.addEventListener("input", inputChanged)
 email.addEventListener("input", inputChanged)
@@ -119,6 +117,8 @@ async function saveAccount(){
     }
     //display success message
     success()
+    //also update the navbar profile img
+    if (imgInput.files[0]) document.getElementById("nav-profile-img").src = URL.createObjectURL(imgInput.files[0])
 }
 
 async function resetSettings(load = false){
