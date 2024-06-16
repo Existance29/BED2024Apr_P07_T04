@@ -1,6 +1,7 @@
 //import sql stuff
 const sql = require("mssql")
 const dbConfig = require("../database/dbConfig")
+const fs = require("fs");
 
 class User {
     //setup user object
@@ -18,6 +19,7 @@ class User {
     static toUserObj(row){
         return new User(row.id, row.first_name, row.last_name, row.email, row.password, row.about_me, row.country)
     }
+    
 
     //execute a query and return the result
     static async query(queryString, params){
@@ -62,6 +64,13 @@ class User {
         
     }
 
+    static async getCompleteUserByID(id) {
+        //join all tables related to the user and return them
+        const query = "SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id WHERE id = @id"
+        const result = (await this.query(query,{"id":id})).recordset[0]
+        return result
+    }
+
     //get a user by their login info (email + password)
     static async getUserByLogin(email, password){
         //assign sql params to their respective values
@@ -84,9 +93,54 @@ class User {
         }
         //catch unique key constrain 
         const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country) VALUES (@first_name, @last_name, @email, @password, @about_me, @country); SELECT SCOPE_IDENTITY() AS id;", params)
+
         
-        //get the newly created user and return it
-        return this.getUserById(result.recordset[0].id)
+        //get the newly-created user
+        const newUser = await this.getUserById(result.recordset[0].id)
+
+        //create the profile picture with a default one
+        const imageBuffer = fs.readFileSync("../src/public/assets/profile/default-profile-picture.jpg", {encoding: 'base64'})
+        const picParams = {
+            "user_id": newUser.id,
+            "img": imageBuffer,
+        }
+        this.query("INSERT INTO Profile_Pictures (user_id,img) VALUES (@user_id, @img); SELECT SCOPE_IDENTITY() AS id;", picParams)
+
+        //return the newly created user
+        return newUser
+    }
+
+    static async updateProfilePic(userid,blob){
+        //get the path of the image and convert it into binary
+        const imageBuffer = fs.readFileSync(blob["pic"].path, {encoding: 'base64'})
+        
+        //create a new sql row for the profile
+        const params = {
+            "user_id": userid,
+            "img": imageBuffer,
+        }
+        await this.query("UPDATE Profile_Pictures SET img = @img WHERE user_id = @user_id", params)
+    }
+
+    static async updateUser(user){
+        //accept a object and add it to the database
+        const params = {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "about_me": user.about_me,
+            "country": user.country
+        }
+        await this.query("UPDATE Users SET first_name = @first_name, last_name = @last_name, email = @email, about_me = @about_me, country = @country WHERE id = @id", params)
+        //return the updated user
+        return this.getUserById(user.id)
+    }
+
+    static async updatePassword(id, newPassword){
+        await this.query("UPDATE Users SET password = @password WHERE id = @id", {"id":id,"password":newPassword})
+        //return the updated user
+        return this.getUserById(id)
     }
 }
   

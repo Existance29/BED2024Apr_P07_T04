@@ -8,7 +8,15 @@ const dbConfig = require("./dbConfig");
 const seedSQL = 
 `
 -- remove all foreign keys
-EXEC sp_msforeachtable "ALTER TABLE ? NOCHECK CONSTRAINT all"
+declare @sqlf nvarchar(max) = (
+    select 
+        'alter table ' + quotename(schema_name(schema_id)) + '.' +
+        quotename(object_name(parent_object_id)) +
+        ' drop constraint '+quotename(name) + ';'
+    from sys.foreign_keys
+    for xml path('')
+);
+exec sp_executesql @sqlf;
 
 -- drop all tables
 DECLARE @sql NVARCHAR(max)=''
@@ -20,6 +28,7 @@ WHERE  TABLE_TYPE = 'BASE TABLE'
 Exec Sp_executesql @sql
 
 -- start seeding the database
+
 CREATE TABLE Users (
   id INT PRIMARY KEY IDENTITY,
   first_name VARCHAR(40) NOT NULL,
@@ -27,7 +36,14 @@ CREATE TABLE Users (
   email VARCHAR(50) NOT NULL UNIQUE,
   password VARCHAR(100) NOT NULL,
   about_me VARCHAR(250) NOT NULL,
-  country VARCHAR(100) NOT NULL
+  country VARCHAR(100) NOT NULL,
+);
+
+CREATE TABLE Profile_Pictures (
+    pic_id INT PRIMARY KEY IDENTITY,
+    user_id INT NOT NULL UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES Users(id),
+    img VARCHAR(MAX) NOT NULL
 );
 
 CREATE TABLE Courses (

@@ -24,26 +24,12 @@ async function login(){
     //login successful
     
     const id = (await response.json()).id
-    //if remember me enabled, store it in local storage, else store in session stoage
-    rememberInput.checked ? localStorage.userid = id : sessionStorage.userid = id
+    //if remember me enabled, store it in local storage
+    sessionStorage.userid = id
+    if (rememberInput.checked) localStorage.userid = id 
 
     //redirect user to courses
     window.location.href = "../courses.html"
     
     
 }
-
-//prevent reloading page when form submitted
-document.addEventListener("DOMContentLoaded", function () {
-    //get all forms
-    const forms = document.getElementsByTagName("form")
-    //add listener to trigger when submitted
-    Array.from(forms).forEach(form => {
-      form.addEventListener('submit', event => {
-        //stop reloading behaviour
-        event.preventDefault()
-      }, false)
-    })
-    
-  
-})
