@@ -132,11 +132,15 @@ class User {
             "about_me": user.about_me,
             "country": user.country
         }
-        console.log(user)
-        //catch unique key constrain 
         await this.query("UPDATE Users SET first_name = @first_name, last_name = @last_name, email = @email, about_me = @about_me, country = @country WHERE id = @id", params)
         //return the updated user
         return this.getUserById(user.id)
+    }
+
+    static async updatePassword(id, newPassword){
+        await this.query("UPDATE Users SET password = @password WHERE id = @id", {"id":id,"password":newPassword})
+        //return the updated user
+        return this.getUserById(id)
     }
 }
   

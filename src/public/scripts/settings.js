@@ -68,12 +68,12 @@ function imageInput(){
     profileImg.src = URL.createObjectURL(imgInput.files[0])
 }
 
-function success(){
+function success(msg){
     //shows the success alrt for 2 secs
     //start playing the lottie animation + enter text
     document.getElementById("setting-success-content").innerHTML = 
     `<dotlottie-player src="https://lottie.host/4377115b-47bb-4c44-9302-598d7f225602/qpO9TCh4pH.json" background="transparent" speed="0.9" style="width: 60px; height: 60px;" autoplay></dotlottie-player>
-    Settings saved`
+    ${msg}`
     //use a slide down animation
     $("#setting-success").slideDown(400)
     setTimeout(function() {
@@ -116,9 +116,42 @@ async function saveAccount(){
         return
     }
     //display success message
-    success()
+    success("Account settings saved")
     //also update the navbar profile img
     if (imgInput.files[0]) document.getElementById("nav-profile-img").src = URL.createObjectURL(imgInput.files[0])
+}
+
+function clearPasswordFields(){
+    currentPassword.value = ""
+    newPassword.value = ""
+    repeatNewPassword.value = ""
+}
+
+async function savePassword(){
+
+    //save password settings
+    const updateData = {
+        "current_password": currentPassword.value,
+        "new_password": newPassword.value,
+        "repeat_new_password": repeatNewPassword.value
+    }
+
+    const response = await put(`/users/update/password/${userid}`, updateData)
+    const body = await response.json()
+    if (response.status == 400 && "message" in body){
+        //iterate through all errors, display the error message
+        for (var i = 0; i < body.errors.length; i++){
+            const x  = body.errors[i]
+            console.log(x[0])
+            const errorEle = document.getElementById(`${x[0]}-error`) //get the error messasge element associated with the error
+            errorEle.innerText = x[1].replaceAll("_"," ").replaceAll('"','') //do a bit of formatting to make the message more readable
+            errorEle.style.display = "block"
+        }
+        return
+    }
+    //display success message
+    success("New password saved")
+    clearPasswordFields()
 }
 
 async function resetSettings(load = false){
@@ -144,9 +177,7 @@ async function resetSettings(load = false){
     email.value = data.email
     country.value = data.country
     aboutMe.value = data.about_me
-    currentPassword.value = ""
-    newPassword.value = ""
-    repeatNewPassword.value = ""
+    clearPasswordFields()
 }
 
 //call functions on load

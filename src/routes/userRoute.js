@@ -11,6 +11,7 @@ const userRoute = (app) =>{
     app.get("/users/login/:email/:password", usersController.getUserByLogin)
     app.put("/users/update/pic/:id",usersController.updateProfilePic)
     app.put("/users/update", validateUser.validateUpdate,usersController.updateUser)
+    app.put("/users/update/password/:id", validateUser.validateNewPassword, usersController.updatePassword)
 }
 
 module.exports = userRoute

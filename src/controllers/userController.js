@@ -92,6 +92,16 @@ const updateUser = async (req, res) => {
   }
 }
 
+const updatePassword = async (req, res) => {
+  try {
+    const updatedUser = await User.updatePassword(req.params.id,req.body.new_password)
+    res.status(201).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error updating user password")
+  }
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
@@ -99,5 +109,6 @@ module.exports = {
     createUser,
     updateProfilePic,
     getCompleteUserByID,
-    updateUser
+    updateUser,
+    updatePassword
 };
