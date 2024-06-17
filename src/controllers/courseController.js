@@ -10,6 +10,16 @@ const getAllCourses = async (req, res) => {
     }
 }
 
+const getAllCoursesWithoutVideo = async (req, res) => {
+    try {
+        const courses = await Course.getAllCoursesWithoutVideo();
+        res.json(courses);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving courses");
+    }
+}
+
 const getCourseById = async (req, res) => {
     const id = parseInt(req.params.id);
     try {
@@ -77,6 +87,7 @@ const searchCourses = async (req, res) => {
 
 module.exports = {
     getAllCourses,
+    getAllCoursesWithoutVideo,
     getCourseById,
     createCourse,
     updateCourse,
