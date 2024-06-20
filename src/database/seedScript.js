@@ -12,12 +12,30 @@ IF OBJECT_ID('FK_CourseLectures_CourseID', 'F') IS NOT NULL
 IF OBJECT_ID('FK_CourseLectures_LectureID', 'F') IS NOT NULL
   ALTER TABLE CourseLectures DROP CONSTRAINT FK_CourseLectures_LectureID;
 
+declare @sqlf nvarchar(max) = (
+    select 
+        'alter table ' + quotename(schema_name(schema_id)) + '.' +
+        quotename(object_name(parent_object_id)) +
+        ' drop constraint '+quotename(name) + ';'
+    from sys.foreign_keys
+    for xml path('')
+);
+exec sp_executesql @sqlf;
+
 -- Drop all tables
 IF OBJECT_ID('UserCourses', 'U') IS NOT NULL DROP TABLE UserCourses;
 IF OBJECT_ID('CourseLectures', 'U') IS NOT NULL DROP TABLE CourseLectures;
 IF OBJECT_ID('Lectures', 'U') IS NOT NULL DROP TABLE Lectures;
 IF OBJECT_ID('Courses', 'U') IS NOT NULL DROP TABLE Courses;
 IF OBJECT_ID('Users', 'U') IS NOT NULL DROP TABLE Users;
+
+DECLARE @sql NVARCHAR(max)=''
+
+SELECT @sql += ' Drop table ' + QUOTENAME(TABLE_SCHEMA) + '.'+ QUOTENAME(TABLE_NAME) + '; '
+FROM   INFORMATION_SCHEMA.TABLES
+WHERE  TABLE_TYPE = 'BASE TABLE'
+
+Exec Sp_executesql @sql
 
 -- Create tables
 CREATE TABLE Users (
