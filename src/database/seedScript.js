@@ -28,6 +28,9 @@ IF OBJECT_ID('CourseLectures', 'U') IS NOT NULL DROP TABLE CourseLectures;
 IF OBJECT_ID('Lectures', 'U') IS NOT NULL DROP TABLE Lectures;
 IF OBJECT_ID('Courses', 'U') IS NOT NULL DROP TABLE Courses;
 IF OBJECT_ID('Users', 'U') IS NOT NULL DROP TABLE Users;
+IF OBJECT_ID('Answers', 'U') IS NOT NULL DROP TABLE Answers;
+IF OBJECT_ID('Questions', 'U') IS NOT NULL DROP TABLE Questions;
+IF OBJECT_ID('Quizzes', 'U') IS NOT NULL DROP TABLE Quizzes;
 
 DECLARE @sql NVARCHAR(max)=''
 
@@ -79,6 +82,33 @@ CREATE TABLE CourseLectures (
   id INT PRIMARY KEY IDENTITY(1,1),
   CourseID INT FOREIGN KEY REFERENCES Courses(CourseID),
   LectureID INT FOREIGN KEY REFERENCES Lectures(LectureID)
+);
+
+CREATE TABLE Quizzes (
+  id INT PRIMARY KEY IDENTITY,
+  title VARCHAR(100) NOT NULL,
+  description VARCHAR(500) NOT NULL,
+  totalQuestions INT NOT NULL,
+  totalMarks INT NOT NULL,
+  duration INT NOT NULL
+);
+
+CREATE TABLE Questions (
+  id INT PRIMARY KEY IDENTITY,
+  quizId INT NOT NULL,
+  text VARCHAR(500) NOT NULL,
+  options VARCHAR(MAX) NOT NULL,
+  correctAnswer INT NOT NULL,
+  FOREIGN KEY (quizId) REFERENCES Quizzes(id)
+);
+
+CREATE TABLE Answers (
+  id INT PRIMARY KEY IDENTITY,
+  quizId INT NOT NULL,
+  questionId INT NOT NULL,
+  answer INT NOT NULL,
+  FOREIGN KEY (quizId) REFERENCES Quizzes(id),
+  FOREIGN KEY (questionId) REFERENCES Questions(id)
 );
 `;
 
@@ -188,6 +218,33 @@ const lectureData = [
   }
 ];
 
+const quizData = [
+  {
+      "title": "Sample Quiz 1",
+      "description": "This is a sample quiz.",
+      "totalQuestions": 3,
+      "totalMarks": 30,
+      "duration": 60,
+      "questions": [
+          {
+              "text": "What is 2 + 2?",
+              "options": JSON.stringify(["1", "2", "3", "4"]),
+              "correctAnswer": 3
+          },
+          {
+              "text": "What is the capital of France?",
+              "options": JSON.stringify(["Berlin", "Madrid", "Paris", "Rome"]),
+              "correctAnswer": 2
+          },
+          {
+              "text": "What is the color of the sky?",
+              "options": JSON.stringify(["Green", "Blue", "Red", "Yellow"]),
+              "correctAnswer": 1
+          }
+      ]
+  }
+];
+
 async function insertCoursesAndLectures(connection) {
   for (const course of systemData) {
     // Read the image file
@@ -248,6 +305,36 @@ async function insertCoursesAndLectures(connection) {
   }
 }
 
+async function insertQuizzes(connection) {
+  for (const quiz of quizData) {
+      const result = await connection.request()
+          .input('title', sql.VarChar, quiz.title)
+          .input('description', sql.VarChar, quiz.description)
+          .input('totalQuestions', sql.Int, quiz.totalQuestions)
+          .input('totalMarks', sql.Int, quiz.totalMarks)
+          .input('duration', sql.Int, quiz.duration)
+          .query(`
+              INSERT INTO Quizzes (title, description, totalQuestions, totalMarks, duration)
+              VALUES (@title, @description, @totalQuestions, @totalMarks, @duration);
+              SELECT SCOPE_IDENTITY() AS id;
+          `);
+
+      const quizId = result.recordset[0].id;
+
+      for (const question of quiz.questions) {
+          await connection.request()
+              .input('quizId', sql.Int, quizId)
+              .input('text', sql.VarChar, question.text)
+              .input('options', sql.VarChar, question.options)
+              .input('correctAnswer', sql.Int, question.correctAnswer)
+              .query(`
+                  INSERT INTO Questions (quizId, text, options, correctAnswer)
+                  VALUES (@quizId, @text, @options, @correctAnswer);
+              `);
+      }
+  }
+}
+
 // Load the SQL and run the seed process
 async function run() {
   try {
@@ -259,6 +346,9 @@ async function run() {
 
     // Insert course and lecture data
     await insertCoursesAndLectures(connection);
+
+    // Insert quiz data
+    await insertQuizzes(connection);
 
     connection.close();
     console.log("Seeding completed");
