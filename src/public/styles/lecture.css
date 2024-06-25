@@ -1,0 +1,115 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-y: auto; /* Enable scrolling for the entire body */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.left-side {
+    flex: 0.8; /* Adjusted width */
+    padding: 2vw 1.5vw; /* Reduced padding */
+    background-color: white;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: calc(100vh - 56px); /* Ensure it does not overflow past the viewport */
+    border-right: 1px solid rgb(80, 76, 76); /* Add black line between left and right side */
+}
+
+.right-side {
+    flex: 2.5; /* Adjusted width */
+    padding: 2vw;
+    background-color: white;
+}
+
+.right-side img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 2vw;
+}
+
+.right-side .course-details-container {
+    background-color: white;
+    padding: 2vw;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2vw;
+}
+
+.right-side .course-details-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 1vw;
+}
+
+.right-side .course-details-text {
+    font-size: 1em;
+    margin-bottom: 2vw;
+}
+
+.right-side .review {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 1vw;
+    margin-top: 1vw;
+}
+
+.subchapter {
+    border: 1px solid #e0e0e0;
+    padding: 1vw;
+    border-radius: 8px;
+    margin-bottom: 1vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subchapter.active-sub {
+    border-color: #32cb94;
+    background-color: #e0ffe4; /* Highlight background */
+}
+
+.lecture-item.active {
+    border: 2px solid #32cb94; /* Highlight the active lecture */
+    background-color: #f0fff4; /* Highlight background for active lecture */
+}
+
+.time-container {
+    background: #f7f7f8;
+    color: #59595a;
+    font-weight: 400;
+    font-size: 0.85vw;
+    border-radius: 7px;
+    padding: 0.45vw 1vw;
+}
+
+.header {
+    background-color: #32cb94;
+    padding: 1vw 3vw;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 56px; /* Adjust to match the header height */
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2vw;
+}
+
+#lectures-list {
+    display: grid;
+    grid-template-columns: 1fr; /* Single column */
+    grid-row-gap: 1vw; /* Reduced gap between lectures */
+}

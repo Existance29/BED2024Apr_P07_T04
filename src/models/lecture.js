@@ -1,5 +1,5 @@
-const dbConfig = require("../database/dbConfig");
 const sql = require("mssql");
+const dbConfig = require("../database/dbConfig");
 
 class Lecture {
     constructor(lectureID, name, description, category, duration, video) {
@@ -28,7 +28,6 @@ class Lecture {
 
         const result = await request.query(sqlQuery);
 
-        //close connection
         connection.close();
         return this.getLectureById(result.recordset[0].LectureID);
     } 
@@ -65,7 +64,7 @@ class Lecture {
         )[0];
     }
 
-    static async updateLecture(lectureID) {
+    static async updateLecture(lectureID, newLectureData) {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `
             UPDATE Lectures SET
@@ -85,11 +84,11 @@ class Lecture {
         request.input("duration", newLectureData.duration || null);
         request.input("video", newLectureData.video || null);
 
-		await request.query(sqlQuery);
+        await request.query(sqlQuery);
 
-		connection.close();
-		return this.getLectureById(lectureID);
-	}
+        connection.close();
+        return this.getLectureById(lectureID);
+    }
 
     static async deleteLecture(lectureID) {
         const connection = await sql.connect(dbConfig);
@@ -103,13 +102,13 @@ class Lecture {
         return result.rowsAffected > 0;
     }
 
-    static async searchLecture(searchTerm) {
+    static async searchLectures(searchTerm) {
         const connection = await sql.connect(dbConfig);
-        try{
+        try {
             const sqlQuery = `
                 SELECT * FROM Lectures
-                WHERE Name LIKE %${searchTerm}%
-                OR Description LIKE %${searchTerm}%
+                WHERE Name LIKE '%${searchTerm}%'
+                OR Description LIKE '%${searchTerm}%'
             `;
 
             const request = connection.request();
@@ -119,28 +118,35 @@ class Lecture {
             );
         } catch (error) {
             throw new Error("Error searching courses");
-        } finally{
+        } finally {
             await connection.close();
         }
     }
 
-    static async getCourseWithLecture() {
+    static async getCourseWithLecture(courseID) {
         const connection = await sql.connect(dbConfig);
         try {
             const sqlQuery = `
-                SELECT c.CourseID, c.Title AS CourseTitle, c.Description AS CourseDescription, c.Video AS CourseVideo,
-                       l.LectureID, l.Name AS LectureName, l.Description AS LectureDescription,
-                       l.Category AS LectureCategory, l.Duration AS LectureDuration, l.Video AS LectureVideo
+                SELECT 
+                    c.CourseID, c.Title AS CourseTitle, c.Description AS CourseDescription, c.Video AS CourseVideo, 
+                    c.Details AS CourseDetails, c.Caption AS CourseCaption,
+                    l.LectureID, l.Name AS LectureName, l.Description AS LectureDescription,
+                    l.Category AS LectureCategory, l.Duration AS LectureDuration, l.Video AS LectureVideo,
+                    sl.SubLectureID, sl.Name AS SubLectureName, sl.Description AS SubLectureDescription,
+                    sl.Duration AS SubLectureDuration, sl.Video AS SubLectureVideo
                 FROM Courses c
                 INNER JOIN CourseLectures cl ON c.CourseID = cl.CourseID
                 INNER JOIN Lectures l ON cl.LectureID = l.LectureID
-                ORDER BY c.Title;
+                LEFT JOIN SubLectures sl ON l.LectureID = sl.LectureID
+                WHERE c.CourseID = @courseID
+                ORDER BY c.Title, l.Name, sl.Name;
             `;
     
             const request = connection.request();
+            request.input("courseID", sql.Int, courseID);
             const result = await request.query(sqlQuery);
     
-            // Group courses and their lectures
+            // Group courses, lectures, and sub-lectures
             const coursesWithLectures = {};
             for (const row of result.recordset) {
                 const courseID = row.CourseID;
@@ -150,17 +156,39 @@ class Lecture {
                         title: row.CourseTitle,
                         description: row.CourseDescription,
                         video: row.CourseVideo,
-                        lectures: [],
+                        details: row.CourseDetails,
+                        caption: row.CourseCaption,
+                        lectures: {},
                     };
                 }
-                coursesWithLectures[courseID].lectures.push({
-                    lectureID: row.LectureID,
-                    name: row.LectureName,
-                    description: row.LectureDescription,
-                    category: row.LectureCategory,
-                    duration: row.LectureDuration,
-                    video: row.LectureVideo,
-                });
+
+                const lectureID = row.LectureID;
+                if (!coursesWithLectures[courseID].lectures[lectureID]) {
+                    coursesWithLectures[courseID].lectures[lectureID] = {
+                        lectureID: lectureID,
+                        name: row.LectureName,
+                        description: row.LectureDescription,
+                        category: row.LectureCategory,
+                        duration: row.LectureDuration,
+                        video: row.LectureVideo,
+                        subLectures: []
+                    };
+                }
+
+                if (row.SubLectureID) {
+                    coursesWithLectures[courseID].lectures[lectureID].subLectures.push({
+                        subLectureID: row.SubLectureID,
+                        name: row.SubLectureName,
+                        description: row.SubLectureDescription,
+                        duration: row.SubLectureDuration,
+                        video: row.SubLectureVideo
+                    });
+                }
+            }
+    
+            // Convert lectures object to array
+            for (const courseID in coursesWithLectures) {
+                coursesWithLectures[courseID].lectures = Object.values(coursesWithLectures[courseID].lectures);
             }
     
             return Object.values(coursesWithLectures);
@@ -170,7 +198,23 @@ class Lecture {
             await connection.close();
         }
     }
+    static async getSubLectureById(lectureID, subLectureID) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `SELECT * FROM SubLectures WHERE LectureID = @lectureID AND SubLectureID = @subLectureID`;
     
+        const request = connection.request();
+        request.input("lectureID", sql.Int, lectureID);
+        request.input("subLectureID", sql.Int, subLectureID);
+    
+        const result = await request.query(sqlQuery);
+    
+        connection.close();
+    
+        if (result.recordset.length === 0) {
+            return null;
+        }
+        return result.recordset[0];
+    }
 }
 
 module.exports = Lecture;
