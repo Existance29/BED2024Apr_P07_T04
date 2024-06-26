@@ -2,11 +2,13 @@ const sql = require("mssql");
 const dbConfig = require("../database/dbConfig");
 
 class Course {
-    constructor(courseID, title, thumbnail, description, category, totalRate, ratings, video) {
+    constructor(courseID, title, thumbnail, description, details, caption, category, totalRate, ratings, video) {
         this.courseID = courseID;
         this.title = title;
         this.thumbnail = thumbnail;
         this.description = description;
+        this.details = details;
+        this.caption = caption;
         this.category = category;
         this.totalRate = totalRate;
         this.ratings = ratings;
@@ -16,14 +18,16 @@ class Course {
     static async createCourse(newCourseData) {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `
-            INSERT INTO Courses (Title, Thumbnail, Description, Category, TotalRate, Ratings, Video)
-            VALUES (@title, @thumbnail, @description, @category, @totalRate, @ratings, @video);
+            INSERT INTO Courses (Title, Thumbnail, Description, Details, Caption, Category, TotalRate, Ratings, Video)
+            VALUES (@title, @thumbnail, @description, @details, @caption, @category, @totalRate, @ratings, @video);
             SELECT SCOPE_IDENTITY() AS CourseID;
         `;
         const request = connection.request();
         request.input("title", newCourseData.title);
         request.input("thumbnail", newCourseData.thumbnail);
         request.input("description", newCourseData.description);
+        request.input("details", newCourseData.details);
+        request.input("caption", newCourseData.caption);
         request.input("category", newCourseData.category);
         request.input("totalRate", newCourseData.totalRate);
         request.input("ratings", newCourseData.ratings);
@@ -44,18 +48,19 @@ class Course {
         connection.close();
 
         return result.recordset.map(
-            (row) => new Course(row.CourseID, row.Title, row.Thumbnail, row.Description, row.Category, row.TotalRate, row.Ratings, row.Video)
+            (row) => new Course(row.CourseID, row.Title, row.Thumbnail, row.Description, row.Details, row.Caption, row.Category, row.TotalRate, row.Ratings, row.Video)
         );
     }
+
     static async getAllCoursesWithoutVideo() {
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `SELECT CourseID, Title, Thumbnail, Description, Category, TotalRate, Ratings FROM Courses`;
+        const sqlQuery = `SELECT CourseID, Title, Thumbnail, Description, Details, Caption, Category, TotalRate, Ratings FROM Courses`;
         const request = connection.request();
         const result = await request.query(sqlQuery);
         connection.close();
 
         return result.recordset.map(
-            (row) => new Course(row.CourseID, row.Title, row.Thumbnail, row.Description, row.Category, row.TotalRate, row.Ratings)
+            (row) => new Course(row.CourseID, row.Title, row.Thumbnail, row.Description, row.Details, row.Caption, row.Category, row.TotalRate, row.Ratings)
         );
     }
 
@@ -71,7 +76,7 @@ class Course {
             return null;
         }
         return result.recordset.map(
-            (row) => new Course(row.CourseID, row.Title, row.Thumbnail, row.Description, row.Category, row.TotalRate, row.Ratings, row.Video)
+            (row) => new Course(row.CourseID, row.Title, row.Thumbnail, row.Description, row.Details, row.Caption, row.Category, row.TotalRate, row.Ratings, row.Video)
         )[0];
     }
 
@@ -82,6 +87,8 @@ class Course {
                 Title = @title,
                 Thumbnail = @thumbnail,
                 Description = @description,
+                Details = @details,
+                Caption = @caption,
                 Category = @category,
                 TotalRate = @totalRate,
                 Ratings = @ratings
@@ -92,6 +99,8 @@ class Course {
         request.input("title", newCourseData.title || null);
         request.input("thumbnail", newCourseData.thumbnail || null);
         request.input("description", newCourseData.description || null);
+        request.input("details", newCourseData.details || null);
+        request.input("caption", newCourseData.caption || null);
         request.input("category", newCourseData.category || null);
         request.input("totalRate", newCourseData.totalRate || null);
         request.input("ratings", newCourseData.ratings || null);
@@ -123,12 +132,14 @@ class Course {
                 SELECT * FROM Courses
                 WHERE Title LIKE '%${searchTerm}%'
                 OR Description LIKE '%${searchTerm}%'
+                OR Details LIKE '%${searchTerm}%'
+                OR Caption LIKE '%${searchTerm}%'
                 OR Category LIKE '%${searchTerm}%'
             `;
             const request = connection.request();
             const result = await request.query(sqlQuery);
             return result.recordset.map(
-                (row) => new Course(row.CourseID, row.Title, row.Thumbnail, row.Description, row.Category, row.TotalRate, row.Ratings, row.Video)
+                (row) => new Course(row.CourseID, row.Title, row.Thumbnail, row.Description, row.Details, row.Caption, row.Category, row.TotalRate, row.Ratings, row.Video)
             );
         } catch (error) {
             throw new Error("Error searching courses");
