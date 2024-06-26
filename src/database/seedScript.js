@@ -31,6 +31,7 @@ IF OBJECT_ID('CourseLectures', 'U') IS NOT NULL DROP TABLE CourseLectures;
 IF OBJECT_ID('SubLectures', 'U') IS NOT NULL DROP TABLE SubLectures;
 IF OBJECT_ID('Lectures', 'U') IS NOT NULL DROP TABLE Lectures;
 IF OBJECT_ID('Courses', 'U') IS NOT NULL DROP TABLE Courses;
+IF OBJECT_ID('Profile_Pictures', 'U') IS NOT NULL DROP TABLE Profile_Pictures;
 IF OBJECT_ID('Users', 'U') IS NOT NULL DROP TABLE Users;
 IF OBJECT_ID('Answers', 'U') IS NOT NULL DROP TABLE Answers;
 IF OBJECT_ID('Questions', 'U') IS NOT NULL DROP TABLE Questions;

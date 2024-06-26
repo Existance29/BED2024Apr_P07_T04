@@ -8,6 +8,10 @@ last_nameInput.addEventListener("input", inputChanged)
 emailInput.addEventListener("input", inputChanged)
 passwordInput.addEventListener("input", inputChanged)
 
+
+//redirect to home is logged in
+if (isLoggedIn()) location.href = "./courses.html"
+
 //hide the error message when the input field is changed
 function inputChanged(e){
     //get the associated error message based on the id of the input field

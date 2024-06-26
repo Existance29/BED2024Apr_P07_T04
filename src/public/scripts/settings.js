@@ -89,7 +89,7 @@ async function saveAccount(){
         //send it via a form data
         var formDataSend = new FormData();
         formDataSend.append("pic",imgInput.files[0], "fileName.jpg");
-        fetch(`/users/update/pic/${userid}`, {method: "PUT", body: formDataSend})
+        fetch(`/users/pic/${userid}`, {method: "PUT", body: formDataSend})
     }
 
     //save main settings
@@ -102,7 +102,7 @@ async function saveAccount(){
         "country": country.value,
     }
 
-    const response = await put("/users/update", updateData)
+    const response = await put("/users", updateData)
     const body = await response.json()
     if (response.status == 400 && "message" in body){
         //iterate through all errors, display the error message
@@ -136,7 +136,7 @@ async function savePassword(){
         "repeat_new_password": repeatNewPassword.value
     }
 
-    const response = await put(`/users/update/password/${userid}`, updateData)
+    const response = await put(`/users/password/${userid}`, updateData)
     const body = await response.json()
     if (response.status == 400 && "message" in body){
         //iterate through all errors, display the error message
