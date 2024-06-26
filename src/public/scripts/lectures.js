@@ -30,6 +30,17 @@ async function fetchLectureDetails(lectureID, subLectureID = null) {
     }
 }
 
+// Normalize the video property name
+function normalizeVideoProperty(lecture) {
+    if (lecture.video && lecture.video.data) {
+        return lecture.video.data;
+    }
+    if (lecture.Video && lecture.Video.data) {
+        return lecture.Video.data;
+    }
+    return null;
+}
+
 // Load course and lecture details
 async function loadCourseAndLectureDetails() {
     const params = new URLSearchParams(window.location.search);
@@ -111,13 +122,14 @@ async function loadCourseAndLectureDetails() {
 // Function to load lecture video
 async function loadLectureVideo(lectureID, courseID) {
     const lecture = await fetchLectureDetails(lectureID);
+    const videoData = normalizeVideoProperty(lecture);
 
-    if (!lecture || !lecture.video || !lecture.video.data) {
+    if (!lecture || !videoData) {
         console.error('Failed to load lecture video');
         return;
     }
 
-    const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(lecture.video.data)}`;
+    const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(videoData)}`;
     const lectureVideoElement = document.getElementById('lecture-video');
     lectureVideoElement.src = videoSrc;
     lectureVideoElement.load();
@@ -141,12 +153,14 @@ async function loadLectureVideo(lectureID, courseID) {
 // Function to load sub-lecture video
 async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
     const subLecture = await fetchLectureDetails(lectureID, subLectureID);
-    if (!subLecture || !subLecture.Video || !subLecture.Video.data) {
+    const videoData = normalizeVideoProperty(subLecture);
+
+    if (!subLecture || !videoData) {
         console.error('Failed to load sub-lecture video');
         return;
     }
 
-    const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(subLecture.Video.data)}`;
+    const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(videoData)}`;
     const lectureVideoElement = document.getElementById('lecture-video');
     lectureVideoElement.src = videoSrc;
     lectureVideoElement.load();
@@ -184,20 +198,16 @@ document.addEventListener('DOMContentLoaded', loadCourseAndLectureDetails);
 // Event delegation for lecture items
 document.getElementById('lectures-list').addEventListener('click', (event) => {
     const lectureItem = event.target.closest('.lecture-item');
-    if (lectureItem) {
-        const lectureID = lectureItem.getAttribute('data-lecture-id');
-        const courseID = new URLSearchParams(window.location.search).get('courseID');
-        loadLectureVideo(lectureID, courseID);
-    }
-});
-
-// Event delegation for sub-lecture items
-document.getElementById('lectures-list').addEventListener('click', (event) => {
     const subLectureItem = event.target.closest('.subchapter');
+    
     if (subLectureItem) {
         const subLectureID = subLectureItem.getAttribute('data-sub-lecture-id');
         const lectureID = subLectureItem.getAttribute('data-lecture-id');
         const courseID = new URLSearchParams(window.location.search).get('courseID');
         loadSubLectureVideo(subLectureID, lectureID, courseID);
+    } else if (lectureItem) {
+        const lectureID = lectureItem.getAttribute('data-lecture-id');
+        const courseID = new URLSearchParams(window.location.search).get('courseID');
+        loadLectureVideo(lectureID, courseID);
     }
 });
