@@ -33,6 +33,7 @@ h2{
   flex-direction: column;
   row-gap: 1vw;
 }
+
 .subchapter{
   border: 1px solid #F1F1F3;
   padding: 1vw 1vw;
@@ -40,6 +41,7 @@ h2{
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 }
 
 .time-container{
