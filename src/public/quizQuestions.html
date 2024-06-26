@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question h2 {
+            margin: 0;
+        }
+        .question p {
+            margin: 5px 0;
+        }
+        .question label {
+            display: block;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Take Quiz</h1>
+    <div id="quizContainer"></div>
+    <button onclick="submitQuiz()">Submit Quiz</button>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const quizId = urlParams.get('quizId');
+        let questions = [];
+
+        async function fetchQuizQuestions() {
+            try {
+                const response = await fetch(`http://localhost:3000/quizzes/${quizId}/questions`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                questions = await response.json();
+                displayQuestions();
+            } catch (error) {
+                console.error('Error fetching quiz questions:', error);
+            }
+        }
+
+        function displayQuestions() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <h2>Question ${index + 1}</h2>
+                    <p>${question.text}</p>
+                    ${question.options.map((option, i) => `
+                        <label>
+                            <input type="radio" name="question-${question.id}" value="${i}"> ${option}
+                        </label><br>
+                    `).join('')}
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        async function submitQuiz() {
+            const answers = questions.map(question => {
+                const selectedOption = document.querySelector(`input[name="question-${question.id}"]:checked`);
+                return {
+                    questionId: question.id,
+                    answer: selectedOption ? parseInt(selectedOption.value) : null
+                };
+            });
+
+            try {
+                const response = await fetch(`http://localhost:3000/quizzes/${quizId}/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quizId, answers })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                alert(`Quiz submitted successfully`);
+                window.location.href = `quizResults.html?quizId=${quizId}&resultId=${result.resultId}`;
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+            }
+        }
+
+        fetchQuizQuestions();
+    </script>
+</body>
+</html>
