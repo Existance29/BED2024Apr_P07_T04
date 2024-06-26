@@ -5,7 +5,7 @@ async function fetchCourseDetailsWithLectures(courseID) {
         if (!response.ok) throw new Error('Failed to fetch course details with lectures');
         const courseWithLectures = await response.json();
         console.log('Course with Lectures:', courseWithLectures);  // Log for debugging
-        return courseWithLectures;
+        return courseWithLectures[0]; // Access the first course in the array
     } catch (error) {
         console.error('Error fetching course details with lectures:', error);
         return null;
@@ -33,7 +33,7 @@ async function loadCourseDetails() {
 
     console.log('Loaded course with lectures:', courseWithLectures);
 
-    const course = courseWithLectures[0];  // Use the first object in the array
+    const course = courseWithLectures;  // Use the first object in the array
     const lectures = course.lectures;
 
     // Update course title, description, and video
@@ -50,31 +50,46 @@ async function loadCourseDetails() {
         return;
     }
 
-    // Display lectures
+    // Display lectures and their sub-lectures
     const chapterGrid = document.getElementById('chapter-grid');
     chapterGrid.innerHTML = '';  // Clear existing content
 
     lectures.forEach((lecture, index) => {
         console.log('Lecture:', lecture);  // Log each lecture for debugging
-        const lectureHTML = `
-            <div style="background: #FFFFFF; padding: 1vw 7% 2vw; border-radius: 12px; margin-bottom: 2vw;">
-                <h2>${String(index + 1).padStart(2, '0')}</h2>
-                <div class="subchapter-container">
-                    <div style="font-weight: 600; font-size: 1vw; margin-bottom: 1.5vw;">${lecture.name}</div>
+
+        let subLectureHTML = '';
+        if (lecture.subLectures && lecture.subLectures.length > 0) {
+            subLectureHTML = lecture.subLectures.map((subLecture, subIndex) => `
+                <div class="subchapter-container" style=" margin-top: 1vw;">
                     <div class="subchapter">
                         <div style="width: 70%;">
-                            <div style="font-size: 0.9vw; color: #333333; font-weight: 500;">${lecture.description}</div>
-                            <div style="font-size: 0.85vw; color: #59595A; font-weight: 400; margin-top: 0.2vw;">${lecture.category}</div>
+                            <div style="font-size: 0.9vw; color: #333333; font-weight: 500;">${subLecture.description}</div>
+                            <div style="font-size: 0.85vw; color: #59595A; font-weight: 400; margin-top: 0.2vw;">${subLecture.category}</div>
                         </div>
                         <div class="d-flex align-items-center time-container">
                             <img src="./assets/lectures/time-icon-2.png" style="height: 0.85vw; margin-right: 0.3vw;">
-                            ${lecture.duration} Minutes
+                            ${subLecture.duration} Minutes
                         </div>
                     </div>
                 </div>
+            `).join('');
+        }
+
+        const lectureHTML = `
+            <div style="background: #FFFFFF; padding: 1vw 7% 2vw; border-radius: 12px; margin-bottom: 2vw;" onclick="openLecture('${course.courseID}', '${lecture.lectureID}')">
+                <h2>${String(index + 1).padStart(2, '0')}</h2>
+                <div style="font-weight: 600; font-size: 1vw; margin-bottom: 1.5vw;">${lecture.description}</div>
+
+                
+                ${subLectureHTML}
             </div>`;
         chapterGrid.innerHTML += lectureHTML;
     });
+}
+
+// Redirect to lecture page
+function openLecture(courseID, lectureID) {
+    window.location.href = `lecture.html?courseID=${courseID}&lectureID=${lectureID}`;
 }
 
 // Convert binary data to base64 string

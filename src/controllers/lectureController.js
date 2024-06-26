@@ -1,10 +1,10 @@
 const Lecture = require("../models/lecture");
 
 const getAllLectures = async (req, res) => {
-    try{
+    try {
         const lectures = await Lecture.getAllLectures();
         res.json(lectures);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).send("Error retrieving lectures");
     }
@@ -76,15 +76,31 @@ const searchLectures = async (req, res) => {
 };
 
 const getCourseWithLecture = async (req, res) => {
-    try{
-        const courseId = req.params.courseID;
-        const courseWithLecture = await Lecture.getCourseWithLecture();
+    const courseId = req.params.courseID;
+    try {
+        const courseWithLecture = await Lecture.getCourseWithLecture(courseId);
         res.json(courseWithLecture);
-    } catch(error){
+    } catch (error) {
         console.error(error);
         res.status(500).send("Error retrieving course with lecture");
     }
 }
+
+const getSubLectureById = async (req, res) => {
+    const lectureID = parseInt(req.params.lectureID);
+    const subLectureID = parseInt(req.params.subLectureID);
+    try {
+        const subLecture = await Lecture.getSubLectureById(lectureID, subLectureID);
+        if (!subLecture) {
+            return res.status(404).send("Sub-Lecture not found");
+        }
+        res.json(subLecture);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving sub-lecture");
+    }
+};
+
 
 module.exports = {
     getAllLectures,
@@ -94,4 +110,5 @@ module.exports = {
     deleteLecture,
     searchLectures,
     getCourseWithLecture,
+    getSubLectureById, 
 };
