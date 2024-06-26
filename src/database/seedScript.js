@@ -31,6 +31,8 @@ IF OBJECT_ID('Users', 'U') IS NOT NULL DROP TABLE Users;
 IF OBJECT_ID('Answers', 'U') IS NOT NULL DROP TABLE Answers;
 IF OBJECT_ID('Questions', 'U') IS NOT NULL DROP TABLE Questions;
 IF OBJECT_ID('Quizzes', 'U') IS NOT NULL DROP TABLE Quizzes;
+IF OBJECT_ID('Results', 'U') IS NOT NULL DROP TABLE Results;
+IF OBJECT_ID('IncorrectQuestions', 'U') IS NOT NULL DROP TABLE IncorrectQuestions;
 
 DECLARE @sql NVARCHAR(max)=''
 
@@ -97,7 +99,7 @@ CREATE TABLE Questions (
   id INT PRIMARY KEY IDENTITY,
   quizId INT NOT NULL,
   text VARCHAR(500) NOT NULL,
-  options VARCHAR(MAX) NOT NULL,
+  options NVARCHAR(MAX) NOT NULL,
   correctAnswer INT NOT NULL,
   FOREIGN KEY (quizId) REFERENCES Quizzes(id)
 );
@@ -110,6 +112,28 @@ CREATE TABLE Answers (
   FOREIGN KEY (quizId) REFERENCES Quizzes(id),
   FOREIGN KEY (questionId) REFERENCES Questions(id)
 );
+
+CREATE TABLE Results (
+  id INT PRIMARY KEY IDENTITY,
+  quizId INT NOT NULL,
+  score INT NOT NULL,
+  totalQuestions INT NOT NULL,
+  correctAnswers INT NOT NULL,
+  timeTaken INT NOT NULL,
+  totalMarks INT NOT NULL,
+  grade VARCHAR(2) NOT NULL,
+  FOREIGN KEY (quizId) REFERENCES Quizzes(id)
+);
+
+CREATE TABLE IncorrectQuestions (
+  id INT PRIMARY KEY IDENTITY,
+  resultId INT NOT NULL,
+  text NVARCHAR(MAX),
+  userAnswer INT,
+  correctAnswer INT,
+  FOREIGN KEY (resultId) REFERENCES Results(id)
+);
+
 `;
 
 const systemData = [
@@ -325,7 +349,7 @@ async function insertQuizzes(connection) {
           await connection.request()
               .input('quizId', sql.Int, quizId)
               .input('text', sql.VarChar, question.text)
-              .input('options', sql.VarChar, question.options)
+              .input('options', sql.NVarChar, question.options)
               .input('correctAnswer', sql.Int, question.correctAnswer)
               .query(`
                   INSERT INTO Questions (quizId, text, options, correctAnswer)
@@ -333,7 +357,7 @@ async function insertQuizzes(connection) {
               `);
       }
   }
-}
+} 
 
 // Load the SQL and run the seed process
 async function run() {
@@ -346,14 +370,16 @@ async function run() {
 
     // Insert course and lecture data
     await insertCoursesAndLectures(connection);
+    console.log("Courses and lectures inserted");
 
     // Insert quiz data
     await insertQuizzes(connection);
+    console.log("Quizzes inserted");
 
     connection.close();
     console.log("Seeding completed");
   } catch (err) {
-    console.log(err);
+    console.log("Seeding error:", err);
   }
 }
 
