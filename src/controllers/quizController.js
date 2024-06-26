@@ -25,18 +25,15 @@ const getQuizById = async (req, res) => {
 }
 
 const getQuizQuestions = async (req, res) => {
-    const quizId = parseInt(req.params.quizId);
+    const quizId = req.params.quizId;
     try {
         const questions = await Quiz.getQuizQuestions(quizId);
-        if (!questions) {
-            return res.status(404).send("No questions found for this quiz");
-        }
         res.json(questions);
     } catch (error) {
-        console.error(error);
-        res.status(500).send("Error retrieving questions");
+        console.error('Error fetching quiz questions:', error);
+        res.status(500).send("Error fetching quiz questions");
     }
-}
+};
 
 const submitQuizAnswers = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
@@ -50,9 +47,22 @@ const submitQuizAnswers = async (req, res) => {
     }
 }
 
+const getQuizResult = async (req, res) => {
+    const quizId = parseInt(req.params.quizId);
+    const resultId = parseInt(req.params.resultId);
+    try {
+        const result = await Quiz.getQuizResult(quizId, resultId);
+        res.json(result);
+    } catch (error) {
+        console.error(`Error fetching quiz result for quizId ${quizId} and resultId ${resultId}:`, error);
+        res.status(500).send("Error fetching quiz result");
+    }
+}
+
 module.exports = {
     getAllQuizzes,
     getQuizById,
     getQuizQuestions,
-    submitQuizAnswers
+    submitQuizAnswers,
+    getQuizResult
 };
