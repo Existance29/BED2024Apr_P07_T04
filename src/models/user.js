@@ -110,6 +110,13 @@ class User {
         return newUser
     }
 
+    static async getProfilePic(id){
+        //return the base64 for the user's profile picture
+        const query = "SELECT * FROM Profile_Pictures WHERE user_id = @id"
+        const result = (await this.query(query,{"id":id})).recordset[0]
+        return result
+    }
+
     static async updateProfilePic(userid,blob){
         //get the path of the image and convert it into binary
         const imageBuffer = fs.readFileSync(blob["pic"].path, {encoding: 'base64'})

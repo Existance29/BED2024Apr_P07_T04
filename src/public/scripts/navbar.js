@@ -4,8 +4,15 @@ if (isLoggedIn()){
     const userid = getUserID()
 
     //use asynchronous fetch, we want the header and content to load asap
-    fetch(`/users/complete/${userid}`)
-    .then((response) => response.json())
+    fetch(`/users/pic/${userid}`)
+    .then((response) => {
+        //cant find user in database, log out
+        if (response.status == 404){
+            logout(false)
+            return null
+        }
+        return response.json()
+    })
     .then((body) => {
         document.getElementById("nav-profile-img").src = `data:image/png;base64,${body.img}`
     })
@@ -14,10 +21,10 @@ if (isLoggedIn()){
 }
 
 
-function logout(){
+function logout(redirect=true){
     //remove userID from storage and redirect user
     localStorage.removeItem("userid")
     sessionStorage.removeItem("userid")
-    window.location.href = "../index.html"
+    if (redirect) window.location.href = "../index.html"
 
 }

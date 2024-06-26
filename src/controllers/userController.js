@@ -38,6 +38,20 @@ const getCompleteUserByID = async (req, res) => {
   }
 }
 
+const getProfilePictureByID = async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const pic = await User.getProfilePic(id)
+    if (!pic) {
+      return res.status(404).send("User not found")
+    }
+    res.json(pic);
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Error retrieving profile picture of user")
+  }
+}
+
 const getUserByLogin = async (req, res) => {
   const email = req.params.email
   const password = req.params.password
@@ -110,5 +124,6 @@ module.exports = {
     updateProfilePic,
     getCompleteUserByID,
     updateUser,
-    updatePassword
+    updatePassword,
+    getProfilePictureByID
 };
