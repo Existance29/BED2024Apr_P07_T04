@@ -141,13 +141,12 @@ async function loadLectureVideo(lectureID, courseID) {
 // Function to load sub-lecture video
 async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
     const subLecture = await fetchLectureDetails(lectureID, subLectureID);
-
-    if (!subLecture || !subLecture.video || !subLecture.video.data) {
+    if (!subLecture || !subLecture.Video || !subLecture.Video.data) {
         console.error('Failed to load sub-lecture video');
         return;
     }
 
-    const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(subLecture.video.data)}`;
+    const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(subLecture.Video.data)}`;
     const lectureVideoElement = document.getElementById('lecture-video');
     lectureVideoElement.src = videoSrc;
     lectureVideoElement.load();
