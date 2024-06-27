@@ -1,4 +1,5 @@
 const User = require("../models/user")
+const bcrypt = require('bcryptjs');
 
 const getAllUsers = async (req, res) => {
   try {
@@ -56,10 +57,19 @@ const getUserByLogin = async (req, res) => {
   const email = req.params.email
   const password = req.params.password
   try {
-    const user = await User.getUserByLogin(email, password)
+    //check if email exists
+    const user = await User.getUserByEmail(email)
     if (!user) {
       return res.status(404).send("Incorrect login details")
     }
+
+    //verify password
+    const passwordHash = user.password
+    if (!bcrypt.compareSync(password,passwordHash)){
+      return res.status(404).send("Incorrect login details")
+    }
+
+    
     res.json(user);
   } catch (error) {
     console.error(error)
@@ -70,6 +80,9 @@ const getUserByLogin = async (req, res) => {
 const createUser = async (req, res) => {
   const newUser = req.body;
   try {
+    //hash the password and replace the password object
+    const salt = bcrypt.genSaltSync(10)
+    newUser.password = bcrypt.hashSync(newUser.password,salt)
     const createdUser = await User.createUser(newUser)
     res.status(201).json(createdUser);
   } catch (error) {

@@ -71,12 +71,12 @@ class User {
         return result ? result : null
     }
 
-    //get a user by their login info (email + password)
-    static async getUserByLogin(email, password){
+    //get a user by their email
+    static async getUserByEmail(email){
         //assign sql params to their respective values
-        const params = {"email": email, "password": password}
+        const params = {"email": email}
          //get first user from database that matches id
-        const result = (await this.query("SELECT * FROM Users WHERE email = @email AND password = @password", params)).recordset[0]
+        const result = (await this.query("SELECT * FROM Users WHERE email = @email", params)).recordset[0]
         //return null if no user found
         return result ? this.toUserObj(result) : null
     }
