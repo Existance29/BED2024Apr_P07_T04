@@ -71,7 +71,7 @@
                     <div class="incorrect-question">
                         <p><strong>${question.text}</strong></p>
                         <ul class="options">
-                            ${question.options ? question.options.map((option, index) => `
+                            ${question.options ? JSON.parse(question.options).map((option, index) => `
                                 <li class="${index === question.correctAnswer ? 'correct' : index === question.userAnswer ? 'incorrect' : ''}">
                                     ${String.fromCharCode(65 + index)}: ${option}
                                 </li>

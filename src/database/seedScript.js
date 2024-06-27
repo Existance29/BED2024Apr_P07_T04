@@ -28,6 +28,8 @@ IF OBJECT_ID('FK_Results_QuizID', 'F') IS NOT NULL
   ALTER TABLE Results DROP CONSTRAINT FK_Results_QuizID;
 IF OBJECT_ID('FK_IncorrectQuestions_ResultID', 'F') IS NOT NULL
   ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_ResultID;
+IF OBJECT_ID('FK_IncorrectQuestions_QuestionID', 'F') IS NOT NULL
+  ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_QuestionID;
 
 -- Drop all tables if they exist
 IF OBJECT_ID('UserCourses', 'U') IS NOT NULL DROP TABLE UserCourses;
@@ -148,7 +150,9 @@ CREATE TABLE IncorrectQuestions (
   text NVARCHAR(MAX),
   userAnswer INT,
   correctAnswer INT,
-  FOREIGN KEY (resultId) REFERENCES Results(id)
+  questionId INT NOT NULL,
+  FOREIGN KEY (resultId) REFERENCES Results(id),
+  FOREIGN KEY (questionId) REFERENCES Questions(id)
 );
 
 `;
