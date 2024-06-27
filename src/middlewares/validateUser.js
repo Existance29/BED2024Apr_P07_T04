@@ -7,7 +7,7 @@ const uniqueEmail = async (email, helper) =>{
   //search user from database that matches email
   const result = await User.getUserByEmail(email)
   //if result exists, then email is taken
-  if (result.length){
+  if (result){
     return helper.message('this email is already taken') 
   }
 
@@ -32,6 +32,7 @@ const validateSchema = async (req,res,schema) =>{
   try{
     await schema.validateAsync(req.body, { abortEarly: false })
   }catch(err){
+    console.log(err)
     //get the field and the error message
     const errors = err.details.map((error) => [error.path[0], error.message])
     res.status(400).json({ message: "Validation error", errors })
