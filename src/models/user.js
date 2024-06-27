@@ -157,11 +157,6 @@ class User {
         return result ? result : null
 
     }
-
-    static async getQuizTotalByID(id){
-        //return the total quiz
-        const hi = this.getQuizByID(id)
-    }
 }
   
   module.exports = User
