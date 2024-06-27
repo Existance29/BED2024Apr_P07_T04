@@ -1,10 +1,11 @@
 const Joi = require("joi")
 const User = require("../models/user")
+const bcrypt = require('bcryptjs');
 
 // Custom validation to make sure email is not taken
 const uniqueEmail = async (email, helper) =>{
   //search user from database that matches email
-  const result = (await User.query("SELECT * FROM Users WHERE email = @email", {"email": email})).recordset
+  const result = await User.getUserByEmail(email)
   //if result exists, then email is taken
   if (result.length){
     return helper.message('this email is already taken') 
@@ -31,6 +32,7 @@ const validateSchema = async (req,res,schema) =>{
   try{
     await schema.validateAsync(req.body, { abortEarly: false })
   }catch(err){
+    console.log(err)
     //get the field and the error message
     const errors = err.details.map((error) => [error.path[0], error.message])
     res.status(400).json({ message: "Validation error", errors })
@@ -67,10 +69,13 @@ const validateUpdate = async (req,res,next) => {
 }
 
 const isPasswordCorrect = async (id,password,helper) => {
-  const result = (await User.query("SELECT * FROM Users WHERE password = @password AND id = @id", {"password": password, "id":id})).recordset
+  const user = await User.getUserById(id)
   //if result exists, then password is valid
-  if (!result.length){
-    return helper.message('current password is incorrect') 
+  if (user == null){
+    return helper.message('could not find user') //this in theory should never trigger, but a fail safe is nice
+  }
+  if (!bcrypt.compareSync(password,user.password)){
+    return helper.message("password is incorrect")
   }
   return password
 }

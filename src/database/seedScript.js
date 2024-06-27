@@ -58,15 +58,14 @@ CREATE TABLE Profile_Pictures (
     img VARCHAR(MAX) NOT NULL
 );
 
-CRATE TABLE User_Quiz {
+CREATE TABLE User_Quiz {
   user_id INT NOT NULL UNIQUE,
   quiz_id INT NOT NULL UNIQUE,
   score INT,
   score_percent INT,
   FOREIGN KEY (user_id) REFERENCES Users(id),
   FOREIGN KEY (quiz_id) REFERENCES Quizzes(id)
-  
-}
+};
 
 CREATE TABLE Courses (
   CourseID INT PRIMARY KEY IDENTITY(1,1),
