@@ -70,8 +70,7 @@ const getUserByLogin = async (req, res) => {
     }
 
     //verify password
-    const passwordHash = user.password
-    if (!bcrypt.compareSync(password,passwordHash)){
+    if (!bcrypt.compareSync(password,user.password)){
       return res.status(404).send("Incorrect login details")
     }
     
