@@ -107,13 +107,14 @@ class Quiz {
         // Insert incorrect questions into the IncorrectQuestions table
         for (const incorrectQuestion of incorrectQuestions) {
             await this.query(
-                `INSERT INTO IncorrectQuestions (resultId, text, userAnswer, correctAnswer)
-                 VALUES (@resultId, @text, @userAnswer, @correctAnswer);`,
+                `INSERT INTO IncorrectQuestions (resultId, text, userAnswer, correctAnswer, questionId)
+                 VALUES (@resultId, @text, @userAnswer, @correctAnswer, @questionId);`,
                 {
                     resultId: resultId,
                     text: incorrectQuestion.text,
                     userAnswer: incorrectQuestion.userAnswer,
-                    correctAnswer: incorrectQuestion.correctAnswer
+                    correctAnswer: incorrectQuestion.correctAnswer,
+                    questionId: incorrectQuestion.id
                 }
             );
         }
@@ -133,29 +134,32 @@ class Quiz {
             "SELECT * FROM Results WHERE id = @resultId AND quizId = @quizId",
             { resultId: resultId, quizId: quizId }
         );
-    
+
         if (result.recordset.length === 0) {
             throw new Error("Result not found");
         }
-    
+
         const quizResult = result.recordset[0];
-    
+
         // Get the total marks for the quiz
         const quiz = await this.getQuizById(quizId);
-    
+
         // Get incorrect questions
         const incorrectQuestionsResult = await this.query(
-            "SELECT * FROM IncorrectQuestions WHERE resultId = @resultId",
+            `SELECT iq.*, q.options 
+            FROM IncorrectQuestions iq
+            JOIN Questions q ON iq.questionId = q.id
+            WHERE iq.resultId = @resultId`,
             { resultId: resultId }
         );
-    
+
         const incorrectQuestions = incorrectQuestionsResult.recordset;
-    
+
         return {
             ...quizResult,
             incorrectQuestions,
             totalMarks: quiz.totalMarks,
-            grade: calculateGrade(quizResult.score, quiz.totalMarks)  // Ensure totalMarks is passed correctly
+            grade: calculateGrade(quizResult.score, quiz.totalMarks)  
         };
     }
     
