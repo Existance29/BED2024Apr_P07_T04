@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+h1 {
+    font-size: 2em;
+}
+.result {
+    margin-bottom: 20px;
+}
+.result p {
+    margin: 5px 0;
+}
+.incorrect-question {
+    margin-top: 20px;
+}
+.incorrect-question p {
+    margin: 5px 0;
+}
+.options li.correct {
+    color: green;
+}
+.options li.incorrect {
+    color: red;
+}
+
+.results {
+    background-color: #fff;
+    margin-bottom: 20px;
+    margin-left: 15%;
+    padding: 20px;
+    margin-top: 3%;
+    border-radius: 10px;
+    align-items: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;    
+    max-width: 70%;
+}
+
+main{
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-style: normal;
+  }
+
+h2{
+    font-size: 1.9vw !important;
+    font-weight:600 !important;
+}
