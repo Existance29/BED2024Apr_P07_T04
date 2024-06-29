@@ -22,10 +22,14 @@ function displayResults(result) {
         return;
     }
 
+    const minutes = Math.floor(result.timeTaken / 60);
+    const seconds = result.timeTaken % 60;
+    const timeFormatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
     const resultsContainer = document.getElementById('resultsContainer');
     resultsContainer.innerHTML = `
         <h2>Total Score: ${result.score}/${result.totalMarks}</h2>
-        <p>Time Taken: ${result.timeTaken} minutes</p>
+        <p>Time Taken: ${timeFormatted}</p>
         <p>Grade: ${result.grade}</p>
         <h3>${result.incorrectQuestions ? result.incorrectQuestions.length : 0} Question(s) Wrong</h3>
         ${result.incorrectQuestions ? result.incorrectQuestions.map(question => `

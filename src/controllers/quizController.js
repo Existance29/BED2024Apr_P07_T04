@@ -37,9 +37,9 @@ const getQuizQuestions = async (req, res) => {
 
 const submitQuizAnswers = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
-    const answers = req.body.answers;
+    const { answers, duration } = req.body;  // Expecting duration in the request body
     try {
-        const result = await Quiz.submitQuizAnswers(quizId, answers);
+        const result = await Quiz.submitQuizAnswers(quizId, answers, duration);
         res.json(result);
     } catch (error) {
         console.error(error);

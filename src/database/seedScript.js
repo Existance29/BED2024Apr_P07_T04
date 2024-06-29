@@ -753,7 +753,7 @@ async function insertQuizzes(connection) {
       "description": "Test your knowledge on the basics of Angular JS.",
       "totalQuestions": 5,
       "totalMarks": 50,
-      "duration": 30,
+      "duration": 1,
       "questions": [
         {
           "text": "What is Angular JS?",

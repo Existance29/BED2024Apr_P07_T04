@@ -1,7 +1,38 @@
-
 const urlParams = new URLSearchParams(window.location.search);
 const quizId = urlParams.get('quizId');
 let questions = [];
+let startTime;
+let timerInterval;
+let maxDuration; // Maximum duration in seconds
+let alertShown = false; // Flag to track if the 15 seconds alert has been shown
+
+function startQuiz() {
+    startTime = new Date();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+    const currentTime = new Date();
+    const timeElapsed = Math.floor((currentTime - startTime) / 1000); // Time in seconds
+    const timeRemaining = maxDuration - timeElapsed;
+
+    if (timeRemaining <= 15 && !alertShown) {
+        alert('You have 15 seconds remaining!');
+        alertShown = true;
+    }
+
+    if (timeElapsed >= maxDuration) {
+        clearInterval(timerInterval);
+        submitQuiz();
+        return;
+    }
+
+    const minutes = Math.floor(timeElapsed / 60);
+    const seconds = timeElapsed % 60;
+
+    document.getElementById('timer').textContent = 
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
 
 async function fetchQuizQuestions() {
     try {
@@ -24,6 +55,7 @@ async function fetchQuizTitle() {
         }
         const quiz = await response.json();
         displayQuizTitle(quiz);
+        maxDuration = quiz.duration * 60; // Convert duration from minutes to seconds
     } catch (error) {
         console.error('Error fetching quiz title:', error);
     }
@@ -56,8 +88,11 @@ function displayQuizTitle(quiz) {
     `;
 }
 
-
 async function submitQuiz() {
+    clearInterval(timerInterval);
+    const endTime = new Date();
+    const duration = Math.floor((endTime - startTime) / 1000); // Duration in seconds
+
     const answers = questions.map(question => {
         const selectedOption = document.querySelector(`input[name="question-${question.id}"]:checked`);
         return {
@@ -72,7 +107,7 @@ async function submitQuiz() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ quizId, answers })
+            body: JSON.stringify({ quizId, answers, duration })
         });
 
         if (!response.ok) {
@@ -89,3 +124,4 @@ async function submitQuiz() {
 
 fetchQuizQuestions();
 fetchQuizTitle();
+window.onload = startQuiz;
