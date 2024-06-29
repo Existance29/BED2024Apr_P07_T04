@@ -53,3 +53,7 @@ h2{
     max-width: 500px;
     padding: 20px 0;
 }
+
+.results-btn {
+    margin-top: 0;
+}

@@ -7,6 +7,7 @@ const quizRoute = (app) => {
     app.post("/quizzes/:quizId/submit", quizController.submitQuizAnswers);
     app.get("/quizzes/:quizId/results/:resultId", quizController.getQuizResult);
     app.get('/quizzes/attempt/:quizId/:userId', quizController.canAttemptQuiz);
+    app.get('/user/:userId/results', quizController.getUserQuizResults); 
 }
 
 module.exports = quizRoute;

@@ -14,11 +14,17 @@
     <div class="nav-placeholder"></div>
 
     <main class="background-img long-bg">
-        <div class="d-flex" style="margin-left: 17%; color: white; width: 65%; height: 2vw;"> 
-            <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 45%;'>Quizzes</h1>
+        <div class="row" style="margin-left: 17%; color: white; width: 65%; height: 2vw;">
+            <div class="col-md-10 d-flex">
+                <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 5%;'>Quizzes</h1>
+            </div>
+            <div class="col-md-2 text-end">
+                <button onclick="redirectToQuizResults()" class="btn section-text" type="button" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Grades</button>
+            </div> 
         </div>
         <div id="quizList" class="container"></div>
     </main>
+    
 
     <div class="footer-placeholder"></div>
 

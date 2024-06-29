@@ -1,0 +1,26 @@
+.quiz-result {
+    background-color: #fff;
+    margin-bottom: 20px;
+    margin-left: 15% !important;
+    padding: 15px;
+    margin-top: 3% !important;
+    border-radius: 10px;
+    align-items: left !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;    
+    max-width: 70%;
+}
+
+main{
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-style: normal;
+  }
+
+h2{
+    font-size: 1.9vw !important;
+    font-weight:600 !important;
+}
+
+.quiz-btn {
+    margin-top: 40%;
+}

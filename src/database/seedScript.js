@@ -34,6 +34,8 @@ IF OBJECT_ID('FK_UserQuizAttempts_UserID', 'F') IS NOT NULL
   ALTER TABLE UserQuizAttempts DROP CONSTRAINT FK_UserQuizAttempts_UserID;
 IF OBJECT_ID('FK_UserQuizAttempts_QuizID', 'F') IS NOT NULL
   ALTER TABLE UserQuizAttempts DROP CONSTRAINT FK_UserQuizAttempts_QuizID;
+IF OBJECT_ID('FK_Results_UserID', 'F') IS NOT NULL
+  ALTER TABLE Results DROP CONSTRAINT FK_Results_UserID;
 
 -- Drop all tables if they exist
 IF OBJECT_ID('UserCourses', 'U') IS NOT NULL DROP TABLE UserCourses;
@@ -140,13 +142,15 @@ CREATE TABLE Answers (
 CREATE TABLE Results (
   id INT PRIMARY KEY IDENTITY,
   quizId INT NOT NULL,
+  userId INT NOT NULL,
   score INT NOT NULL,
   totalQuestions INT NOT NULL,
   correctAnswers INT NOT NULL,
   timeTaken INT NOT NULL,
   totalMarks INT NOT NULL,
   grade VARCHAR(2) NOT NULL,
-  FOREIGN KEY (quizId) REFERENCES Quizzes(id)
+  FOREIGN KEY (quizId) REFERENCES Quizzes(id),
+  FOREIGN KEY (userId) REFERENCES Users(id)
 );
 
 CREATE TABLE IncorrectQuestions (
@@ -161,12 +165,14 @@ CREATE TABLE IncorrectQuestions (
 );
 
 CREATE TABLE UserQuizAttempts (
-  id INT PRIMARY KEY IDENTITY,
-  userId INT NOT NULL,
-  quizId INT NOT NULL,
-  attempts INT NOT NULL DEFAULT 0,
-  FOREIGN KEY (quizId) REFERENCES Quizzes(id)
+    id INT PRIMARY KEY IDENTITY,
+    userId INT NOT NULL,
+    quizId INT NOT NULL,
+    attempts INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (userId) REFERENCES Users(id),
+    FOREIGN KEY (quizId) REFERENCES Quizzes(id)
 );
+
 `;
 
 
