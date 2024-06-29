@@ -1,4 +1,11 @@
 const User = require("../models/user")
+const bcrypt = require('bcryptjs');
+
+//use bcrypt to hash a password and return it
+const hashPassword = (password) => {
+  const salt = bcrypt.genSaltSync(10)
+  return bcrypt.hashSync(password,salt)
+}
 
 const getAllUsers = async (req, res) => {
   try {
@@ -56,10 +63,17 @@ const getUserByLogin = async (req, res) => {
   const email = req.params.email
   const password = req.params.password
   try {
-    const user = await User.getUserByLogin(email, password)
+    //check if email exists
+    const user = await User.getUserByEmail(email)
     if (!user) {
       return res.status(404).send("Incorrect login details")
     }
+
+    //verify password
+    if (!bcrypt.compareSync(password,user.password)){
+      return res.status(404).send("Incorrect login details")
+    }
+    
     res.json(user);
   } catch (error) {
     console.error(error)
@@ -70,7 +84,10 @@ const getUserByLogin = async (req, res) => {
 const createUser = async (req, res) => {
   const newUser = req.body;
   try {
+    //hash the password and replace the password field with the new hashed password
+    newUser.password = hashPassword(newUser.password)
     const createdUser = await User.createUser(newUser)
+    //create user successful, display it as json
     res.status(201).json(createdUser);
   } catch (error) {
     console.error(error);
@@ -108,7 +125,8 @@ const updateUser = async (req, res) => {
 
 const updatePassword = async (req, res) => {
   try {
-    const updatedUser = await User.updatePassword(req.params.id,req.body.new_password)
+    
+    const updatedUser = await User.updatePassword(req.params.id,hashPassword(req.body.new_password))
     res.status(201).json(updatedUser);
   } catch (error) {
     console.error(error);
@@ -125,5 +143,6 @@ module.exports = {
     getCompleteUserByID,
     updateUser,
     updatePassword,
-    getProfilePictureByID
+    getProfilePictureByID,
+    hashPassword
 };

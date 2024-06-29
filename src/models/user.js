@@ -68,15 +68,15 @@ class User {
         //join all tables related to the user and return them
         const query = "SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id WHERE id = @id"
         const result = (await this.query(query,{"id":id})).recordset[0]
-        return result
+        return result ? result : null
     }
 
-    //get a user by their login info (email + password)
-    static async getUserByLogin(email, password){
+    //get a user by their email
+    static async getUserByEmail(email){
         //assign sql params to their respective values
-        const params = {"email": email, "password": password}
+        const params = {"email": email}
          //get first user from database that matches id
-        const result = (await this.query("SELECT * FROM Users WHERE email = @email AND password = @password", params)).recordset[0]
+        const result = (await this.query("SELECT * FROM Users WHERE email = @email", params)).recordset[0]
         //return null if no user found
         return result ? this.toUserObj(result) : null
     }
@@ -114,7 +114,7 @@ class User {
         //return the base64 for the user's profile picture
         const query = "SELECT * FROM Profile_Pictures WHERE user_id = @id"
         const result = (await this.query(query,{"id":id})).recordset[0]
-        return result
+        return result ? result : null
     }
 
     static async updateProfilePic(userid,blob){
@@ -148,6 +148,14 @@ class User {
         await this.query("UPDATE Users SET password = @password WHERE id = @id", {"id":id,"password":newPassword})
         //return the updated user
         return this.getUserById(id)
+    }
+
+    static async getQuizByID(id){
+        //return the base64 for the user's quiz history
+        const query = "SELECT * FROM Profile_Pictures WHERE user_id = @id"
+        const result = (await this.query(query,{"id":id})).recordset[0]
+        return result ? result : null
+
     }
 }
   

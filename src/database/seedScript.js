@@ -24,6 +24,12 @@ IF OBJECT_ID('FK_Answers_QuestionID', 'F') IS NOT NULL
   ALTER TABLE Answers DROP CONSTRAINT FK_Answers_QuestionID;
 IF OBJECT_ID('FK_Questions_QuizID', 'F') IS NOT NULL
   ALTER TABLE Questions DROP CONSTRAINT FK_Questions_QuizID;
+IF OBJECT_ID('FK_Results_QuizID', 'F') IS NOT NULL
+  ALTER TABLE Results DROP CONSTRAINT FK_Results_QuizID;
+IF OBJECT_ID('FK_IncorrectQuestions_ResultID', 'F') IS NOT NULL
+  ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_ResultID;
+IF OBJECT_ID('FK_IncorrectQuestions_QuestionID', 'F') IS NOT NULL
+  ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_QuestionID;
 
 -- Drop all tables if they exist
 IF OBJECT_ID('UserCourses', 'U') IS NOT NULL DROP TABLE UserCourses;
@@ -35,10 +41,11 @@ IF OBJECT_ID('Profile_Pictures', 'U') IS NOT NULL DROP TABLE Profile_Pictures;
 IF OBJECT_ID('Users', 'U') IS NOT NULL DROP TABLE Users;
 IF OBJECT_ID('Answers', 'U') IS NOT NULL DROP TABLE Answers;
 IF OBJECT_ID('Questions', 'U') IS NOT NULL DROP TABLE Questions;
-IF OBJECT_ID('Quizzes', 'U') IS NOT NULL DROP TABLE Quizzes;
 IF OBJECT_ID('Results', 'U') IS NOT NULL DROP TABLE Results;
 IF OBJECT_ID('IncorrectQuestions', 'U') IS NOT NULL DROP TABLE IncorrectQuestions;
+IF OBJECT_ID('Quizzes', 'U') IS NOT NULL DROP TABLE Quizzes;
 IF OBJECT_ID('Profile_Pictures', 'U') IS NOT NULL DROP TABLE Profile_Pictures;
+
 
 -- Create tables
 CREATE TABLE Users (
@@ -143,7 +150,9 @@ CREATE TABLE IncorrectQuestions (
   text NVARCHAR(MAX),
   userAnswer INT,
   correctAnswer INT,
-  FOREIGN KEY (resultId) REFERENCES Results(id)
+  questionId INT NOT NULL,
+  FOREIGN KEY (resultId) REFERENCES Results(id),
+  FOREIGN KEY (questionId) REFERENCES Questions(id)
 );
 
 `;
@@ -705,26 +714,138 @@ async function insertCoursesAndLectures(connection) {
 async function insertQuizzes(connection) {
   const quizData = [
     {
-      "title": "Sample Quiz 1",
-      "description": "This is a sample quiz.",
-      "totalQuestions": 3,
-      "totalMarks": 30,
-      "duration": 60,
+      "title": "Angular JS Basics",
+      "description": "Test your knowledge on the basics of Angular JS.",
+      "totalQuestions": 5,
+      "totalMarks": 50,
+      "duration": 30,
       "questions": [
         {
-          "text": "What is 2 + 2?",
-          "options": JSON.stringify(["1", "2", "3", "4"]),
-          "correctAnswer": 3
+          "text": "What is Angular JS?",
+          "options": JSON.stringify(["A framework", "A library", "A language", "An IDE"]),
+          "correctAnswer": 0
         },
         {
-          "text": "What is the capital of France?",
-          "options": JSON.stringify(["Berlin", "Madrid", "Paris", "Rome"]),
+          "text": "Which of the following is a feature of AngularJS?",
+          "options": JSON.stringify(["Two-way data binding", "Server-side rendering", "Statically typed", "None of the above"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "What directive initializes an AngularJS application?",
+          "options": JSON.stringify(["ng-app", "ng-init", "ng-model", "ng-controller"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "How do you define a module in AngularJS?",
+          "options": JSON.stringify(["angular.module('myModule',[])", "angular.module[]", "angular.myModule('myModule',[])", "module.angular('myModule',[])"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which of the following is used to filter the data in AngularJS?",
+          "options": JSON.stringify(["ng-filter", "filter", "ng-model", "ng-bind"]),
+          "correctAnswer": 1
+        }
+      ]
+    },
+    {
+      "title": "Vue JS Fundamentals",
+      "description": "Test your knowledge on the basics of Vue JS.",
+      "totalQuestions": 5,
+      "totalMarks": 50,
+      "duration": 30,
+      "questions": [
+        {
+          "text": "What is Vue JS primarily used for?",
+          "options": JSON.stringify(["Backend development", "Database management", "User interfaces", "Server-side scripting"]),
           "correctAnswer": 2
         },
         {
-          "text": "What is the color of the sky?",
-          "options": JSON.stringify(["Green", "Blue", "Red", "Yellow"]),
+          "text": "Which directive is used to bind data in Vue?",
+          "options": JSON.stringify(["v-bind", "v-data", "v-model", "v-on"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "How do you create a new Vue instance?",
+          "options": JSON.stringify(["new Vue()", "Vue.create()", "Vue.new()", "create Vue()"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which Vue directive is used for conditional rendering?",
+          "options": JSON.stringify(["v-if", "v-for", "v-show", "v-bind"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "What is the purpose of Vue CLI?",
+          "options": JSON.stringify(["To manage state", "To create Vue applications quickly", "To handle HTTP requests", "To render server-side content"]),
           "correctAnswer": 1
+        }
+      ]
+    },
+    {
+      "title": "AWS Essentials",
+      "description": "Test your knowledge on the basics of AWS.",
+      "totalQuestions": 5,
+      "totalMarks": 50,
+      "duration": 30,
+      "questions": [
+        {
+          "text": "What does EC2 stand for?",
+          "options": JSON.stringify(["Elastic Compute Cloud", "Elastic Communication Cloud", "Enhanced Compute Cloud", "Enterprise Compute Cloud"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which AWS service is used for object storage?",
+          "options": JSON.stringify(["RDS", "S3", "EC2", "Lambda"]),
+          "correctAnswer": 1
+        },
+        {
+          "text": "What is AWS Lambda used for?",
+          "options": JSON.stringify(["To run serverless applications", "To store data", "To host websites", "To manage DNS"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "What does S3 stand for?",
+          "options": JSON.stringify(["Simple Storage Service", "Scalable Storage Service", "Secure Storage Service", "Standard Storage Service"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which AWS service is used to manage relational databases?",
+          "options": JSON.stringify(["EC2", "RDS", "S3", "DynamoDB"]),
+          "correctAnswer": 1
+        }
+      ]
+    },
+    {
+      "title": "Python Programming",
+      "description": "Test your knowledge on Python programming.",
+      "totalQuestions": 5,
+      "totalMarks": 50,
+      "duration": 30,
+      "questions": [
+        {
+          "text": "What is the correct file extension for Python files?",
+          "options": JSON.stringify([".python", ".pyth", ".py", ".pyt"]),
+          "correctAnswer": 2
+        },
+        {
+          "text": "Which keyword is used to create a function in Python?",
+          "options": JSON.stringify(["function", "def", "fun", "define"]),
+          "correctAnswer": 1
+        },
+        {
+          "text": "How do you create a list in Python?",
+          "options": JSON.stringify(["list = {}", "list = []", "list = ()", "list = ||"]),
+          "correctAnswer": 1
+        },
+        {
+          "text": "Which method is used to add an element to the end of a list in Python?",
+          "options": JSON.stringify(["add()", "append()", "insert()", "push()"]),
+          "correctAnswer": 1
+        },
+        {
+          "text": "How do you start a for loop in Python?",
+          "options": JSON.stringify(["for x in y:", "for(x in y)", "for x in y", "for x:y"]),
+          "correctAnswer": 0
         }
       ]
     }
