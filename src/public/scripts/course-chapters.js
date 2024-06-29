@@ -1,7 +1,7 @@
 // Fetch course details including lectures
 async function fetchCourseDetailsWithLectures(courseID) {
     try {
-        const response = await fetch(`/courses/${courseID}/lectures`);
+        const response = await fetch(`/courses/${courseID}/lectures/without-video`);
         if (!response.ok) throw new Error('Failed to fetch course details with lectures');
         const courseWithLectures = await response.json();
         console.log('Course with Lectures:', courseWithLectures);  // Log for debugging
@@ -61,7 +61,7 @@ async function loadCourseDetails() {
         if (lecture.subLectures && lecture.subLectures.length > 0) {
             subLectureHTML = lecture.subLectures.map((subLecture, subIndex) => `
                 <div class="subchapter-container" style=" margin-top: 1vw;">
-                    <div class="subchapter">
+                    <div class="subchapter" onclick="openLecture('${course.courseID}', '${lecture.lectureID}', '${subLecture.subLectureID}')">
                         <div style="width: 70%;">
                             <div style="font-size: 0.9vw; color: #333333; font-weight: 500;">${subLecture.description}</div>
                             <div style="font-size: 0.85vw; color: #59595A; font-weight: 400; margin-top: 0.2vw;">${subLecture.category}</div>
@@ -76,11 +76,9 @@ async function loadCourseDetails() {
         }
 
         const lectureHTML = `
-            <div style="background: #FFFFFF; padding: 1vw 7% 2vw; border-radius: 12px; margin-bottom: 2vw;" onclick="openLecture('${course.courseID}', '${lecture.lectureID}')">
+            <div style="background: #FFFFFF; padding: 1vw 7% 2vw; border-radius: 12px; margin-bottom: 2vw;">
                 <h2>${String(index + 1).padStart(2, '0')}</h2>
                 <div style="font-weight: 600; font-size: 1vw; margin-bottom: 1.5vw;">${lecture.description}</div>
-
-                
                 ${subLectureHTML}
             </div>`;
         chapterGrid.innerHTML += lectureHTML;
@@ -88,8 +86,8 @@ async function loadCourseDetails() {
 }
 
 // Redirect to lecture page
-function openLecture(courseID, lectureID) {
-    window.location.href = `lecture.html?courseID=${courseID}&lectureID=${lectureID}`;
+function openLecture(courseID, lectureID, subLectureID) {
+    window.location.href = `lecture.html?courseID=${courseID}&lectureID=${lectureID}&subLectureID=${subLectureID}`;
 }
 
 // Convert binary data to base64 string

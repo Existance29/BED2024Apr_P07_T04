@@ -86,6 +86,17 @@ const getCourseWithLecture = async (req, res) => {
     }
 }
 
+const getCourseWithLectureWithoutVideo = async (req, res) => {
+    const courseId = req.params.courseID;
+    try {
+        const courseWithLecture = await Lecture.getCourseWithLectureWithoutVideo(courseId);
+        res.json(courseWithLecture);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving course with lecture");
+    }
+}
+
 const getSubLectureById = async (req, res) => {
     const lectureID = parseInt(req.params.lectureID);
     const subLectureID = parseInt(req.params.subLectureID);
@@ -111,4 +122,5 @@ module.exports = {
     searchLectures,
     getCourseWithLecture,
     getSubLectureById, 
+    getCourseWithLectureWithoutVideo,
 };
