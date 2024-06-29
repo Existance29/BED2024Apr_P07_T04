@@ -17,7 +17,7 @@
     <main class="background-img long-bg">
         <div class="d-flex" style="margin-left: 17%; color: white; width: 65%; height: 2vw;">
             <!-- Title-->
-            <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 45%;'>Courses</h1>
+            <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 30%;'>Courses</h1>
             
             <!-- Search bar-->
             <div class="d-flex">
@@ -28,10 +28,16 @@
                     </button>
                 </span>
             </div>
+
             <!-- View options (grid/list)-->
-            <div class="d-flex", style="margin-left: -1vw;">
-                <img src="assets/courses-page/grid-view-icon.png" onclick="loadGrid()">
-                <img src="assets/courses-page/list-view-icon.png" style="margin-left: 0.9vw;">
+            <div class="d-flex" style="margin-left: -1vw;">
+                <img src="assets/lectures/grid-view-icon.png" onclick="loadCourses()"> <!--Load Course in Grid format-->
+                <img src="assets/lectures/list-view-icon.png" style="margin-left: 0.9vw;">
+            </div>
+            
+            <!-- Upload button -->
+            <div class="d-flex" style="margin-left: 1vw;">
+                <button class="btn btn-primary" onclick="window.location.href='course-upload.html'">Upload</button>
             </div>
         </div>
 

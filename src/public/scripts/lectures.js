@@ -129,15 +129,7 @@ async function loadLectureVideo(lectureID, courseID) {
     const lecture = await fetchLectureDetails(lectureID);
     const videoData = normalizeVideoProperty(lecture);
 
-    if (!lecture || !videoData) {
-        console.error('Failed to load lecture video');
-        return;
-    }
-
-    const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(videoData)}`;
-    const lectureVideoElement = document.getElementById('lecture-video');
-    lectureVideoElement.src = videoSrc;
-    lectureVideoElement.load();
+    
 
     // Highlight the selected lecture
     const lectureItems = document.querySelectorAll('.lecture-item');

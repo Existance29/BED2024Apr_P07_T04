@@ -85,7 +85,7 @@ const createUser = async (req, res) => {
   const newUser = req.body;
   try {
     //hash the password and replace the password field with the new hashed password
-    
+    newUser.password = hashPassword(newUser.password)
     const createdUser = await User.createUser(newUser)
     //create user successful, display it as json
     res.status(201).json(createdUser);

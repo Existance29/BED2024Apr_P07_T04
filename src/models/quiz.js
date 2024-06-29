@@ -57,7 +57,7 @@ class Quiz {
         return result.length ? result.map((x) => this.toQuestionObj(x)) : null;
     }
 
-    static async submitQuizAnswers(quizId, answers) {
+    static async submitQuizAnswers(quizId, answers, duration) {
         let score = 0;
         let totalQuestions = answers.length;
         let correctAnswers = 0;
@@ -96,7 +96,7 @@ class Quiz {
                 score: score,
                 totalQuestions: totalQuestions,
                 correctAnswers: correctAnswers,
-                timeTaken: 30,  // Assume time taken is 30 minutes for simplicity
+                timeTaken: duration,  // Use the duration from the client
                 totalMarks: totalMarks,
                 grade: grade
             }
