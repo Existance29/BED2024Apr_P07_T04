@@ -7,7 +7,7 @@ const uniqueEmail = async (email, helper) =>{
   //search user from database that matches email
   const result = await User.getUserByEmail(email)
   //if result exists, then email is taken
-  if (result.length){
+  if (result){
     return helper.message('this email is already taken') 
   }
 

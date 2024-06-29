@@ -20,7 +20,7 @@ function arrayBufferToBase64(buffer) {
     }
     return window.btoa(binary);
 }
-// Load the courses in the grid
+// Load the courses in the grid format
 async function loadCourses() {
     const courses = await fetchCourses();
     const grid = document.getElementById("system-grid"); // Clear grid
@@ -112,8 +112,8 @@ async function loadFilters() {
                 </td>
         </tr>`;
         // Add the HTML for number of stars
-        const htmlStar = `<img src="../assets/courses-page/fill-star-icon.png" style="height: 0.6vw;">`.repeat(i) +
-            `<img src="../assets/courses-page/empty-star-icon.png" style="height: 0.6vw;">`.repeat(5 - i);
+        const htmlStar = `<img src="../assets/lectures/fill-star-icon.png" style="height: 0.6vw;">`.repeat(i) +
+            `<img src="../assets/lectures/empty-star-icon.png" style="height: 0.6vw;">`.repeat(5 - i);
         // Add to output
         out += html1 + htmlStar + html2;
     }

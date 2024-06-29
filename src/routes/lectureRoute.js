@@ -12,6 +12,8 @@ const lectureRoute = (app) => {
 
     app.get("/courses/:courseID/lectures", lectureController.getCourseWithLecture);
 
+    app.get("/courses/:courseID/lectures/without-video", lectureController.getCourseWithLectureWithoutVideo);
+
 };
 
 module.exports = lectureRoute;
