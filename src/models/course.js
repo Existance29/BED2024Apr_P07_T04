@@ -2,7 +2,7 @@ const sql = require("mssql");
 const dbConfig = require("../database/dbConfig");
 
 class Course {
-    constructor(courseID, title, thumbnail, description, details, caption, category, totalRate, ratings, video) {
+    constructor(courseID, title, thumbnail, description, details, caption, category, totalRate = 0, ratings = 0, video) {
         this.courseID = courseID;
         this.title = title;
         this.thumbnail = thumbnail;
@@ -16,28 +16,30 @@ class Course {
     }
 
     static async createCourse(newCourseData) {
-        const connection = await sql.connect(dbConfig);
-        const sqlQuery = `
-            INSERT INTO Courses (Title, Thumbnail, Description, Details, Caption, Category, TotalRate, Ratings, Video)
-            VALUES (@title, @thumbnail, @description, @details, @caption, @category, @totalRate, @ratings, @video);
-            SELECT SCOPE_IDENTITY() AS CourseID;
-        `;
-        const request = connection.request();
-        request.input("title", newCourseData.title);
-        request.input("thumbnail", newCourseData.thumbnail);
-        request.input("description", newCourseData.description);
-        request.input("details", newCourseData.details);
-        request.input("caption", newCourseData.caption);
-        request.input("category", newCourseData.category);
-        request.input("totalRate", newCourseData.totalRate);
-        request.input("ratings", newCourseData.ratings);
-        request.input("video", newCourseData.video);
+        try {
+            const connection = await sql.connect(dbConfig);
+            const sqlQuery = `
+                INSERT INTO Courses (Title, Thumbnail, Description, Details, Caption, Category, Video)
+                VALUES (@title, @thumbnail, @description, @details, @caption, @category, @video);
+                SELECT SCOPE_IDENTITY() AS CourseID;
+            `;
+            const request = connection.request();
+            request.input("title", sql.NVarChar, newCourseData.title);
+            request.input("thumbnail", sql.VarBinary, newCourseData.thumbnail);
+            request.input("description", sql.NVarChar, newCourseData.description);
+            request.input("details", sql.NVarChar, newCourseData.details);
+            request.input("caption", sql.NVarChar, newCourseData.caption);
+            request.input("category", sql.NVarChar, newCourseData.category);
+            request.input("video", sql.VarBinary, newCourseData.video);
 
-        const result = await request.query(sqlQuery);
+            const result = await request.query(sqlQuery);
+            connection.close();
 
-        connection.close();
-
-        return this.getCourseById(result.recordset[0].CourseID);
+            return this.getCourseById(result.recordset[0].CourseID);
+        } catch (error) {
+            console.error("Database error:", error);
+            throw new Error("Error inserting course data");
+        }
     }
 
     static async getAllCourses() {
@@ -68,16 +70,25 @@ class Course {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `SELECT * FROM Courses WHERE CourseID = @courseID`;
         const request = connection.request();
-        request.input("courseID", courseID);
+        request.input("courseID", sql.Int, courseID);  // Changed this line to explicitly set the type
         const result = await request.query(sqlQuery);
 
         connection.close();
         if (result.recordset.length === 0) {
             return null;
         }
-        return result.recordset.map(
-            (row) => new Course(row.CourseID, row.Title, row.Thumbnail, row.Description, row.Details, row.Caption, row.Category, row.TotalRate, row.Ratings, row.Video)
-        )[0];
+        return new Course(
+            result.recordset[0].CourseID,
+            result.recordset[0].Title,
+            result.recordset[0].Thumbnail,
+            result.recordset[0].Description,
+            result.recordset[0].Details,
+            result.recordset[0].Caption,
+            result.recordset[0].Category,
+            result.recordset[0].TotalRate,
+            result.recordset[0].Ratings,
+            result.recordset[0].Video
+        );
     }
 
     static async updateCourse(courseID, newCourseData) {
@@ -91,20 +102,21 @@ class Course {
                 Caption = @caption,
                 Category = @category,
                 TotalRate = @totalRate,
-                Ratings = @ratings
+                Ratings = @ratings,
+                Video = @video
             WHERE CourseID = @courseID;
         `;
         const request = connection.request();
-        request.input("courseID", courseID);
-        request.input("title", newCourseData.title || null);
-        request.input("thumbnail", newCourseData.thumbnail || null);
-        request.input("description", newCourseData.description || null);
-        request.input("details", newCourseData.details || null);
-        request.input("caption", newCourseData.caption || null);
-        request.input("category", newCourseData.category || null);
-        request.input("totalRate", newCourseData.totalRate || null);
-        request.input("ratings", newCourseData.ratings || null);
-        request.input("video", newCourseData.video || null);
+        request.input("courseID", sql.Int, courseID);  // Changed this line to explicitly set the type
+        request.input("title", sql.NVarChar, newCourseData.title || null);
+        request.input("thumbnail", sql.VarBinary, newCourseData.thumbnail || null);
+        request.input("description", sql.NVarChar, newCourseData.description || null);
+        request.input("details", sql.NVarChar, newCourseData.details || null);
+        request.input("caption", sql.NVarChar, newCourseData.caption || null);
+        request.input("category", sql.NVarChar, newCourseData.category || null);
+        request.input("totalRate", sql.Int, newCourseData.totalRate || null);
+        request.input("ratings", sql.Int, newCourseData.ratings || null);
+        request.input("video", sql.VarBinary, newCourseData.video || null);
 
         await request.query(sqlQuery);
 
@@ -117,7 +129,7 @@ class Course {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `DELETE FROM Courses WHERE CourseID = @courseID`;
         const request = connection.request();
-        request.input("courseID", courseID);
+        request.input("courseID", sql.Int, courseID);  // Changed this line to explicitly set the type
         const result = await request.query(sqlQuery);
 
         connection.close();
