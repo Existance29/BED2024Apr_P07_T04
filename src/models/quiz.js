@@ -163,7 +163,35 @@ class Quiz {
         };
     }
     
+    static async canAttemptQuiz(quizId, userId) {
+        const attemptResult = await this.query(
+            `SELECT attempts FROM UserQuizAttempts WHERE userId = @userId AND quizId = @quizId`,
+            { userId, quizId }
+        );
+    
+        const quizResult = await this.query(
+            `SELECT maxAttempts FROM Quizzes WHERE id = @quizId`,
+            { quizId }
+        );
+    
+        if (quizResult.recordset.length === 0) {
+            throw new Error("Quiz not found");
+        }
+    
+        const maxAttempts = quizResult.recordset[0].maxAttempts;
+        let attempts = 0;
+    
+        if (attemptResult.recordset.length > 0) {
+            attempts = attemptResult.recordset[0].attempts;
+        }
+    
+        const canAttempt = attempts < maxAttempts;
+        return { canAttempt, attempts, maxAttempts };
+    }
+    
 }
+
+
 
 function calculateGrade(score, totalMarks) {
     const percentage = (score / totalMarks) * 100;

@@ -59,10 +59,24 @@ const getQuizResult = async (req, res) => {
     }
 }
 
+const canAttemptQuiz = async (req, res) => {
+    const quizId = parseInt(req.params.quizId);
+    const userId = parseInt(req.params.userId);
+
+    try {
+        const { canAttempt, attempts, maxAttempts } = await Quiz.canAttemptQuiz(quizId, userId);
+        res.json({ canAttempt, attempts, maxAttempts });
+    } catch (error) {
+        console.error('Error checking quiz attempt eligibility:', error);
+        res.status(500).send("Error checking quiz attempt eligibility");
+    }
+};
+
 module.exports = {
     getAllQuizzes,
     getQuizById,
     getQuizQuestions,
     submitQuizAnswers,
-    getQuizResult
+    getQuizResult,
+    canAttemptQuiz // Add this line to export the new function
 };
