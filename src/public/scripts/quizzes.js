@@ -1,3 +1,8 @@
+//Check if user is logged in before loading content
+//if user is not logged in, redirect them to login screen
+//Dont wait for content to load, redirect asap
+if (!isLoggedIn()) location.href = "./login.html"
+
 async function fetchQuizzes() {
     try {
         const response = await fetch('http://localhost:3000/quizzes');
