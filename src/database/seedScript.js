@@ -5,6 +5,16 @@ const dbConfig = require("./dbConfig");
 
 // SQL data for seeding the database
 const seedSQL = `
+declare @sql nvarchar(max) = (
+    select 
+        'alter table ' + quotename(schema_name(schema_id)) + '.' +
+        quotename(object_name(parent_object_id)) +
+        ' drop constraint '+quotename(name) + ';'
+    from sys.foreign_keys
+    for xml path('')
+);
+exec sp_executesql @sql;
+
 -- Drop foreign key constraints
 IF OBJECT_ID('FK_CourseLectures_CourseID', 'F') IS NOT NULL
   ALTER TABLE CourseLectures DROP CONSTRAINT FK_CourseLectures_CourseID;
@@ -28,6 +38,8 @@ IF OBJECT_ID('FK_Results_QuizID', 'F') IS NOT NULL
   ALTER TABLE Results DROP CONSTRAINT FK_Results_QuizID;
 IF OBJECT_ID('FK_IncorrectQuestions_ResultID', 'F') IS NOT NULL
   ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_ResultID;
+IF OBJECT_ID('FK_IncorrectQuestions_QuestionID', 'F') IS NOT NULL
+  ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_QuestionID;
 IF OBJECT_ID('FK_IncorrectQuestions_QuestionID', 'F') IS NOT NULL
   ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_QuestionID;
 
@@ -55,7 +67,8 @@ CREATE TABLE Users (
   email VARCHAR(50) NOT NULL UNIQUE,
   password VARCHAR(100) NOT NULL,
   about_me VARCHAR(250) NOT NULL,
-  country VARCHAR(100) NOT NULL
+  country VARCHAR(100) NOT NULL,
+  join_date DATE NOT NULL,
 );
 
 CREATE TABLE Profile_Pictures (

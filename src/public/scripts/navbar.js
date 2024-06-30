@@ -20,6 +20,10 @@ if (isLoggedIn()){
     document.getElementById("login").style.display = "block"
 }
 
+function goToProfile(){
+    const userID = getUserID()
+    location.href = `../profile.html?user=${userID}`
+}
 
 function logout(redirect=true){
     //remove userID from storage and redirect user

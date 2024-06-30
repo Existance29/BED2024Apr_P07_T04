@@ -5,7 +5,7 @@ const fs = require("fs");
 
 class User {
     //setup user object
-    constructor(id, first_name, last_name, email, password, about_me, country) {
+    constructor(id, first_name, last_name, email, password, about_me, country, join_date) {
       this.id = id
       this.first_name = first_name
       this.last_name = last_name
@@ -13,11 +13,12 @@ class User {
       this.password = password
       this.about_me = about_me
       this.country = country
+      this.join_date = join_date
     }
 
     //pass the sql recordset into the user constructor
     static toUserObj(row){
-        return new User(row.id, row.first_name, row.last_name, row.email, row.password, row.about_me, row.country)
+        return new User(row.id, row.first_name, row.last_name, row.email, row.password, row.about_me, row.country, row.join_date)
     }
     
 
@@ -83,16 +84,17 @@ class User {
 
     static async createUser(user) {
         //accept a object and add it to the database
+        //join_date is excluded (it will be added with SQL)
         const params = {
             "first_name": user.first_name,
             "last_name": user.last_name,
             "email": user.email,
             "password": user.password,
             "about_me": user.about_me,
-            "country": user.country
+            "country": user.country,
         }
-        //catch unique key constrain 
-        const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country) VALUES (@first_name, @last_name, @email, @password, @about_me, @country); SELECT SCOPE_IDENTITY() AS id;", params)
+        //add user data
+        const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country, join_date) VALUES (@first_name, @last_name, @email, @password, @about_me, @country, GETDATE()); SELECT SCOPE_IDENTITY() AS id;", params)
 
         
         //get the newly-created user

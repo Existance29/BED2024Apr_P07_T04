@@ -14,16 +14,60 @@
 
     <!--background-->
     <main class = "background-img">
-      <div class = "container" style="padding: 1.5vw 5vw;">
-        <div class = "poppins-regular" style="font-size: 0.9vw;">Hey! This is a about me section where I share more about me so that you know more about me. Hopefully you now know about me and more about me (:</div>
+      <div class = "profile-section">
+        <!--Profile picture + name + country + join date-->
+        <div class = "d-flex align-middle" style="margin-bottom: 2.5vw">
+          <img src="../assets/profile/default-profile-picture.jpg" style="border-radius: 50%; object-fit: cover; height: 5.5vw; width: 5.5vw;" id="profile-img">
+          <div class  = "d-flex flex-column justify-content-center" style="margin-left: 2vw;">
+            <h2 id = "full-name" class="poppins-semibold" style="font-size: 1.2vw;">Full name</h2>
+            <!--Role + country + join date-->
+            <div class="d-flex align-items-center" style="gap: 1vw;">
+              <h3 id = "role" class="poppins-medium">Member</h3>
+              <div class = "circle-seperator"></div>
+              <h3 id = "country" class="poppins-medium">Singapore</h3>
+            </div>
+          </div>
+        </div>
+        <p class = "poppins-regular" style="font-size: 0.95vw;" id = "about-me">Hey! This is a about me section where I share more about me so that you know more about me. Hopefully you now know about me and more about me (:</p>
       </div>
+
+      
+      <!--Other content-->
+      <div class = "d-flex" style="margin-top: 2vw; justify-content: space-between;">
+        <!--Progress section-->
+        <div class="profile-section" style="width: 58%;">
+          <div class="d-flex">
+            <img src = "./assets/profile/progress-icon.png" style="width: 3vw; margin-right: 2vw; object-fit: cover; height: 3.7vw;">
+            <!--Progress stats-->
+            <div>
+              <h2 class="poppins-semibold" style="font-size: 1.2vw; margin-bottom: 1.5vw;">Progress</h2>
+              <div class = "poppins-medium progress-stat-label">Completed Courses:<span class = "progress-stat-value" id = "progress-courses">0</span></div>
+              <div class = "poppins-medium progress-stat-label">Questions Completed:<span class = "progress-stat-value" id = "progress-questions">0</span></div>
+              <div class = "poppins-medium progress-stat-label">Comments:<span class = "progress-stat-value" id = "progress-comments">0</span></div>
+            </div>
+          </div>
+          <!--Radar chart-->
+          <div class="d-flex justify-content-center">
+            <div style="width: 75%;">
+              <canvas id="radarChart" style = "margin-top: 2vw;"></canvas>
+            </div>
+          </div>
+
+        </div>
+        <div class="profile-section" style="width: 38%;">
+          <h2 class="poppins-semibold" style="font-size: 1.2vw; width: 100%; text-align: center;">Completed Courses</h2>
+        </div>
+      </div>
+
       
     </main>
 
     <!--footer-->
     <div class="footer-placeholder"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.1.2/chart.umd.js"></script>
     <script src="./scripts/common.js"></script>
+    <script src = "./scripts/profile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
