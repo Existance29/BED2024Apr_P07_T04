@@ -1,4 +1,5 @@
 const userID = getUrlParameter("user")
+const loggedInUserID = getUserID()
 //define the descriptions for each tooltip
 const tooltipDesc = {
     "accuracy": "Users that answer quiz questions correctly",
@@ -17,6 +18,11 @@ async function loadProfile(){
         //user not found
     }else if (response.status = 500){
         //error
+    }
+
+    //if user is view their own profile, show edit icon
+    if (userID === loggedInUserID){
+        document.getElementById("edit-icon").style.display = "block"
     }
     const data = await response.json()
 
@@ -75,4 +81,8 @@ function loadChart(data){
             },
         }
     })
+}
+
+function editSettings(){
+    location.href = "./settings.html"
 }

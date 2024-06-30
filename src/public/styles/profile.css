@@ -5,11 +5,23 @@ main{
     padding: 5vw 11%;
 }
 
+#edit-icon{
+    display:none;
+    object-fit: cover;
+    height: 1.5vw; 
+    width: 1.5vw; 
+    margin-left: auto; 
+    margin-top: 0.5vw; 
+    margin-right: 2vw;
+    cursor: pointer;
+
+}
+
 .profile-section{
     background: white;
     border-radius: 20px;
     width: 100%;
-    padding: 1.8vw 7% !important;
+    padding: 1.8vw 5% !important;
     height: max-content; /*Fit child's height*/
 }
 
