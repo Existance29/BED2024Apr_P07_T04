@@ -1,5 +1,7 @@
 const User = require("../models/user")
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+
 
 //use bcrypt to hash a password and return it
 const hashPassword = (password) => {
@@ -96,21 +98,32 @@ const createUser = async (req, res) => {
 }
 
 const updateProfilePic = async (req, res) => {
-  const data = req.files
-  const id = parseInt(req.params.id)
-  //check that user exists
-  try{
-    const user = await User.getUserById(id)
-    if (!user) {
-      return res.status(404).send("User not found")
-    }
-    await User.updateProfilePic(id,data)
-    res.status(201)
-  } catch (error) {
-    console.log(error)
-    res.status(500).send("Error updating profile picture")
+  const file = req.file;
+  const id = parseInt(req.params.id);
+
+  if (!file) {
+      return res.status(400).send("No file uploaded");
   }
-}
+
+  try {
+      const user = await User.getUserById(id);
+      if (!user) {
+          return res.status(404).send("User not found");
+      }
+
+      const imageBuffer = fs.readFileSync(file.path, { encoding: 'base64' });
+
+      await User.updateProfilePic(id, imageBuffer);
+
+      // Clean up uploaded file
+      fs.unlinkSync(file.path);
+
+      res.status(201).send("Profile picture updated successfully");
+  } catch (error) {
+      console.log(error);
+      res.status(500).send("Error updating profile picture");
+  }
+};
 
 const updateUser = async (req, res) => {
   const data = req.body;
