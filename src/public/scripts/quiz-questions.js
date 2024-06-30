@@ -1,10 +1,22 @@
 const urlParams = new URLSearchParams(window.location.search);
 const quizId = urlParams.get('quizId');
+const userId = getUserID(); 
 let questions = [];
 let startTime;
 let timerInterval;
 let maxDuration; // Maximum duration in seconds
 let alertShown = false; // Flag to track if the 15 seconds alert has been shown
+
+function getUserID(){
+    if (sessionStorage.userid != null){
+      return sessionStorage.userid
+  
+    } else if (localStorage.userid != null){
+      return localStorage.userid
+    } 
+  
+    return null
+  }
 
 function startQuiz() {
     startTime = new Date();
@@ -92,6 +104,7 @@ async function submitQuiz() {
     clearInterval(timerInterval);
     const endTime = new Date();
     const duration = Math.floor((endTime - startTime) / 1000); // Duration in seconds
+    const userId = getUserID(); // Get the userId here
 
     const answers = questions.map(question => {
         const selectedOption = document.querySelector(`input[name="question-${question.id}"]:checked`);
@@ -107,7 +120,7 @@ async function submitQuiz() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ quizId, answers, duration })
+            body: JSON.stringify({ quizId, userId, answers, duration }) // Include userId in the request body
         });
 
         if (!response.ok) {
@@ -121,6 +134,8 @@ async function submitQuiz() {
         console.error('Error submitting quiz:', error);
     }
 }
+
+
 
 fetchQuizQuestions();
 fetchQuizTitle();

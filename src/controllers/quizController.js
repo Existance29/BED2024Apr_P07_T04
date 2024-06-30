@@ -37,9 +37,9 @@ const getQuizQuestions = async (req, res) => {
 
 const submitQuizAnswers = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
-    const { answers, duration } = req.body;  // Expecting duration in the request body
+    const { userId, answers, duration } = req.body;  // Ensure userId is included in the request body
     try {
-        const result = await Quiz.submitQuizAnswers(quizId, answers, duration);
+        const result = await Quiz.submitQuizAnswers(quizId, userId, answers, duration);
         res.json(result);
     } catch (error) {
         console.error(error);
@@ -47,17 +47,22 @@ const submitQuizAnswers = async (req, res) => {
     }
 }
 
+
 const getQuizResult = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
     const resultId = parseInt(req.params.resultId);
+    const userId = parseInt(req.query.userId);  // Assuming userId is passed as a query parameter
+
     try {
-        const result = await Quiz.getQuizResult(quizId, resultId);
+        const result = await Quiz.getQuizResult(quizId, resultId, userId);
         res.json(result);
     } catch (error) {
         console.error(`Error fetching quiz result for quizId ${quizId} and resultId ${resultId}:`, error);
         res.status(500).send("Error fetching quiz result");
     }
 }
+
+
 
 const canAttemptQuiz = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
@@ -72,11 +77,25 @@ const canAttemptQuiz = async (req, res) => {
     }
 };
 
+
+const getUserQuizResults = async (req, res) => {
+    const userId = parseInt(req.params.userId);
+
+    try {
+        const results = await Quiz.getUserQuizResults(userId);
+        res.json(results);
+    } catch (error) {
+        console.error('Error fetching user quiz results:', error);
+        res.status(500).send("Error fetching user quiz results");
+    }
+};
+
 module.exports = {
     getAllQuizzes,
     getQuizById,
     getQuizQuestions,
     submitQuizAnswers,
     getQuizResult,
-    canAttemptQuiz // Add this line to export the new function
+    canAttemptQuiz,
+    getUserQuizResults 
 };

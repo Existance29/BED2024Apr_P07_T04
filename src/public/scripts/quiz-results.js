@@ -1,10 +1,22 @@
 const urlParams = new URLSearchParams(window.location.search);
 const quizId = urlParams.get('quizId');
 const resultId = urlParams.get('resultId');
+const userId = getUserID();  // Fetch user ID using the function
+
+function getUserID(){
+    if (sessionStorage.userid != null){
+      return sessionStorage.userid
+  
+    } else if (localStorage.userid != null){
+      return localStorage.userid
+    } 
+  
+    return null
+  }
 
 async function fetchQuizResults() {
     try {
-        const response = await fetch(`http://localhost:3000/quizzes/${quizId}/results/${resultId}`);
+        const response = await fetch(`http://localhost:3000/quizzes/${quizId}/results/${resultId}?userId=${userId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -31,6 +43,7 @@ function displayResults(result) {
         <h2>Total Score: ${result.score}/${result.totalMarks}</h2>
         <p>Time Taken: ${timeFormatted}</p>
         <p>Grade: ${result.grade}</p>
+        <p>Attempts: ${result.attempts}/${result.maxAttempts}</p>
         <h3>${result.incorrectQuestions ? result.incorrectQuestions.length : 0} Question(s) Wrong</h3>
         ${result.incorrectQuestions ? result.incorrectQuestions.map(question => `
             <div class="incorrect-question">
