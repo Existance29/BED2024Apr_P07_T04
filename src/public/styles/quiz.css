@@ -1,0 +1,55 @@
+main{
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-style: normal;
+  }
+
+h2{
+    font-size: 1.9vw !important;
+    font-weight:600 !important;
+}
+
+.quiz-item {
+    background-color: #fff;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    align-items: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.quiz-item .quiz-info {
+    flex-grow: 1;
+}
+.quiz-item h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.quiz-item p {
+    margin: 5px 0;
+    color: #777;
+}
+
+.quiz-btn {
+    margin-top: 30%;
+}
+
+.quiz-btn:hover {
+    color: white;
+    background-color: #245D51;
+}
+
+
+#quizList { 
+    padding-left: 10dvw;
+    padding-right: 10dvw;
+}
+
+.container {
+    width: 90%;
+    margin: 0 auto;
+    max-width: 500px;
+    padding: 20px 0;
+}
