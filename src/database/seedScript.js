@@ -100,11 +100,17 @@ CREATE TABLE Courses (
   Video VARBINARY(MAX) NOT NULL
 );
 
-
 CREATE TABLE Lectures (
   LectureID INT PRIMARY KEY IDENTITY(1,1),
   Name NVARCHAR(255) NOT NULL,
   Description NVARCHAR(MAX) NOT NULL,
+  Category NVARCHAR(MAX) NOT NULL,
+  Duration INT NOT NULL,
+);
+
+CREATE TABLE Comments (
+  CommentID INT PRIMARY KEY IDENTITY(1,1),
+  Message NVARCHAR(MAX) NOT NULL,
   Category NVARCHAR(MAX) NOT NULL,
   Duration INT NOT NULL,
 );
@@ -197,7 +203,6 @@ CREATE TABLE UserQuizAttempts (
 );
 
 `;
-
 
 // Course data with their respective lectures and sub-lectures
 const systemData = [
