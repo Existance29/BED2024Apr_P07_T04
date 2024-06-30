@@ -905,9 +905,9 @@ async function insertQuizzes(connection) {
 
 // Load the SQL and run the seed process
 async function run() {
+  const connection = await sql.connect(dbConfig);
   try {
     // Make sure that any items are correctly URL encoded in the connection string
-    const connection = await sql.connect(dbConfig);
     const request = connection.request();
     await request.query(seedSQL);
     console.log("Database reset and tables created");
@@ -924,6 +924,7 @@ async function run() {
     console.log("Seeding completed");
   } catch (err) {
     console.log("Seeding error:", err);
+    connection.close()
   }
 }
 
