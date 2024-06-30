@@ -72,9 +72,9 @@ class User {
         //check if user exists
         if (!result) return null
         //get more stats
-        const quizStats = this.getQuizOverall(id)
+        const quizStats = await this.getQuizOverall(id)
         console.log(quizStats)
-        const coursesCompleted = {"completed_courses": this.getCompletedCourses(id)}
+        const coursesCompleted = {"completed_courses": await this.getCompletedCourses(id)}
         //merge the objects and return it
         return {...result, ...quizStats, ...coursesCompleted}
     }
@@ -167,8 +167,8 @@ class User {
     static async getCompletedCourses(userID){
         //this sql table shows all courses completed by the user
         const sql = `
-        SELECT Title FROM (
-        SELECT c.Title, CASE WHEN COUNT(*) = COUNT(usl.user_id) THEN 'True' ELSE 'False' END AS 'Completed'
+        SELECT id FROM (
+        SELECT MAX(c.CourseID) AS id, CASE WHEN COUNT(*) = COUNT(usl.user_id) THEN 'True' ELSE 'False' END AS 'Completed'
         FROM User_Sub_Lectures usl
         RIGHT JOIN SubLectures sl ON usl.sub_lecture_id = sl.SubLectureID AND usl.user_id = @id
         LEFT JOIN Lectures l ON sl.LectureID = l.LectureID
@@ -178,11 +178,11 @@ class User {
         ) AS allCourseStatus 
         WHERE Completed = 'True'
         `
-        //return a list of 
+        //return a list of objects of the complete courses
         const result = (await this.query(sql, {"id":userID})).recordset
-        console.log(result)
         //return null if no courses are completed
-        return result.length? result : null
+        //return a list of course ids
+        return result.length? result.map((x) => x.id) : null
     }
 
     static async getQuizOverall(id){
@@ -192,12 +192,10 @@ class User {
         //limitation: number of questions for each quiz must never change
         //return the average of all scores for every quiz and the total number of questions
         const result  = (await this.query("SELECT AVG(s) AS score, SUM(q) AS questions FROM (SELECT MAX((score + 0.0)/(totalMarks + 0.0)) AS s, MAX(totalQuestions) AS q FROM Results WHERE userId = @id GROUP BY quizId) AS hi;", params)).recordset[0]
-        let quizAccuracy = 0
-        let questionsCompleted = 0
-        if (result){
-            quizAccuracy = result.score
-            questionsCompleted = result.questions
-        }
+        
+        //default to 0
+        let quizAccuracy = result.score ? result.score : 0
+        let questionsCompleted = result.questions? result.questions : 0
         return {
             quiz_accuracy: quizAccuracy,
             questions_completed: questionsCompleted,

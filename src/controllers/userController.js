@@ -155,7 +155,7 @@ const addSubLecture = async (req,res) => {
     //check if user exists
     if (!user) return res.status(404).send("User not found")
     //check if user already viewed lecture
-    if (User.hasViewedSubLecture(uid, lid)) return res.status(201).send("user already viewed sub lecture")
+    if (await User.hasViewedSubLecture(uid, lid)) return res.status(201).send("user already viewed sub lecture")
     User.addSubLecture(uid,lid)
     res.status(201).send("success");
   } catch (error) {
