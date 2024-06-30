@@ -1,3 +1,8 @@
+//Check if user is logged in before loading content
+//if user is not logged in, redirect them to login screen
+//Dont wait for content to load, redirect asap
+if (!isLoggedIn()) location.href = "./login.html"
+
 const urlParams = new URLSearchParams(window.location.search);
 const quizId = urlParams.get('quizId');
 const resultId = urlParams.get('resultId');
