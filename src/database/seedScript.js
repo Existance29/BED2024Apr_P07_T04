@@ -40,8 +40,12 @@ IF OBJECT_ID('FK_IncorrectQuestions_ResultID', 'F') IS NOT NULL
   ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_ResultID;
 IF OBJECT_ID('FK_IncorrectQuestions_QuestionID', 'F') IS NOT NULL
   ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_QuestionID;
-IF OBJECT_ID('FK_IncorrectQuestions_QuestionID', 'F') IS NOT NULL
-  ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_QuestionID;
+IF OBJECT_ID('FK_UserQuizAttempts_UserID', 'F') IS NOT NULL
+  ALTER TABLE UserQuizAttempts DROP CONSTRAINT FK_UserQuizAttempts_UserID;
+IF OBJECT_ID('FK_UserQuizAttempts_QuizID', 'F') IS NOT NULL
+  ALTER TABLE UserQuizAttempts DROP CONSTRAINT FK_UserQuizAttempts_QuizID;
+IF OBJECT_ID('FK_Results_UserID', 'F') IS NOT NULL
+  ALTER TABLE Results DROP CONSTRAINT FK_Results_UserID;
 
 -- Drop all tables if they exist
 IF OBJECT_ID('UserCourses', 'U') IS NOT NULL DROP TABLE UserCourses;
@@ -57,7 +61,7 @@ IF OBJECT_ID('Results', 'U') IS NOT NULL DROP TABLE Results;
 IF OBJECT_ID('IncorrectQuestions', 'U') IS NOT NULL DROP TABLE IncorrectQuestions;
 IF OBJECT_ID('Quizzes', 'U') IS NOT NULL DROP TABLE Quizzes;
 IF OBJECT_ID('Profile_Pictures', 'U') IS NOT NULL DROP TABLE Profile_Pictures;
-
+IF OBJECT_ID('UserQuizAttempts', 'U') IS NOT NULL DROP TABLE UserQuizAttempts;
 
 -- Create tables
 CREATE TABLE Users (
@@ -124,7 +128,8 @@ CREATE TABLE Quizzes (
   description VARCHAR(500) NOT NULL,
   totalQuestions INT NOT NULL,
   totalMarks INT NOT NULL,
-  duration INT NOT NULL
+  duration INT NOT NULL,
+  maxAttempts INT NOT NULL DEFAULT 2
 );
 
 CREATE TABLE Questions (
@@ -148,13 +153,15 @@ CREATE TABLE Answers (
 CREATE TABLE Results (
   id INT PRIMARY KEY IDENTITY,
   quizId INT NOT NULL,
+  userId INT NOT NULL,
   score INT NOT NULL,
   totalQuestions INT NOT NULL,
   correctAnswers INT NOT NULL,
   timeTaken INT NOT NULL,
   totalMarks INT NOT NULL,
   grade VARCHAR(2) NOT NULL,
-  FOREIGN KEY (quizId) REFERENCES Quizzes(id)
+  FOREIGN KEY (quizId) REFERENCES Quizzes(id),
+  FOREIGN KEY (userId) REFERENCES Users(id)
 );
 
 CREATE TABLE IncorrectQuestions (
@@ -166,6 +173,15 @@ CREATE TABLE IncorrectQuestions (
   questionId INT NOT NULL,
   FOREIGN KEY (resultId) REFERENCES Results(id),
   FOREIGN KEY (questionId) REFERENCES Questions(id)
+);
+
+CREATE TABLE UserQuizAttempts (
+    id INT PRIMARY KEY IDENTITY,
+    userId INT NOT NULL,
+    quizId INT NOT NULL,
+    attempts INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (userId) REFERENCES Users(id),
+    FOREIGN KEY (quizId) REFERENCES Quizzes(id)
 );
 
 `;
@@ -731,7 +747,8 @@ async function insertQuizzes(connection) {
       "description": "Test your knowledge on the basics of Angular JS.",
       "totalQuestions": 5,
       "totalMarks": 50,
-      "duration": 30,
+      "duration": 1,
+      "maxAttempts": 2,
       "questions": [
         {
           "text": "What is Angular JS?",
@@ -766,6 +783,7 @@ async function insertQuizzes(connection) {
       "totalQuestions": 5,
       "totalMarks": 50,
       "duration": 30,
+      "maxAttempts": 2,
       "questions": [
         {
           "text": "What is Vue JS primarily used for?",
@@ -800,6 +818,7 @@ async function insertQuizzes(connection) {
       "totalQuestions": 5,
       "totalMarks": 50,
       "duration": 30,
+      "maxAttempts": 2,
       "questions": [
         {
           "text": "What does EC2 stand for?",
@@ -834,6 +853,7 @@ async function insertQuizzes(connection) {
       "totalQuestions": 5,
       "totalMarks": 50,
       "duration": 30,
+      "maxAttempts": 2,
       "questions": [
         {
           "text": "What is the correct file extension for Python files?",
@@ -871,33 +891,34 @@ async function insertQuizzes(connection) {
       .input('totalQuestions', sql.Int, quiz.totalQuestions)
       .input('totalMarks', sql.Int, quiz.totalMarks)
       .input('duration', sql.Int, quiz.duration)
+      .input('maxAttempts', sql.Int, quiz.maxAttempts)
       .query(`
-        INSERT INTO Quizzes (title, description, totalQuestions, totalMarks, duration)
-        VALUES (@title, @description, @totalQuestions, @totalMarks, @duration);
+        INSERT INTO Quizzes (title, description, totalQuestions, totalMarks, duration, maxAttempts)
+        VALUES (@title, @description, @totalQuestions, @totalMarks, @duration, @maxAttempts);
         SELECT SCOPE_IDENTITY() AS id;
       `);
 
-      const quizId = result.recordset[0].id;
+    const quizId = result.recordset[0].id;
 
-      for (const question of quiz.questions) {
-          await connection.request()
-              .input('quizId', sql.Int, quizId)
-              .input('text', sql.VarChar, question.text)
-              .input('options', sql.NVarChar, question.options)
-              .input('correctAnswer', sql.Int, question.correctAnswer)
-              .query(`
-                  INSERT INTO Questions (quizId, text, options, correctAnswer)
-                  VALUES (@quizId, @text, @options, @correctAnswer);
-              `);
-      }
+    for (const question of quiz.questions) {
+      await connection.request()
+        .input('quizId', sql.Int, quizId)
+        .input('text', sql.VarChar, question.text)
+        .input('options', sql.NVarChar, question.options)
+        .input('correctAnswer', sql.Int, question.correctAnswer)
+        .query(`
+          INSERT INTO Questions (quizId, text, options, correctAnswer)
+          VALUES (@quizId, @text, @options, @correctAnswer);
+        `);
+    }
   }
-} 
+}
 
 // Load the SQL and run the seed process
 async function run() {
+  const connection = await sql.connect(dbConfig);
   try {
     // Make sure that any items are correctly URL encoded in the connection string
-    const connection = await sql.connect(dbConfig);
     const request = connection.request();
     await request.query(seedSQL);
     console.log("Database reset and tables created");
@@ -914,6 +935,7 @@ async function run() {
     console.log("Seeding completed");
   } catch (err) {
     console.log("Seeding error:", err);
+    connection.close()
   }
 }
 
