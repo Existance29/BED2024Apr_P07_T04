@@ -82,6 +82,11 @@ CREATE TABLE Profile_Pictures (
     img VARCHAR(MAX) NOT NULL
 );
 
+CREATE TABLE Users_Sub_Lectures (
+  user_id INT NOT NULL,
+  sub_lecture_id INT NOT NULL
+);
+
 CREATE TABLE Courses (
   CourseID INT PRIMARY KEY IDENTITY(1,1),
   Title NVARCHAR(255) NOT NULL,

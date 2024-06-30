@@ -118,7 +118,7 @@ class User {
         const result = (await this.query(query,{"id":id})).recordset[0]
         return result ? result : null
     }
-
+    
     static async updateProfilePic(userid, imageBuffer) {
         const params = {
             "user_id": userid,
@@ -146,6 +146,27 @@ class User {
         await this.query("UPDATE Users SET password = @password WHERE id = @id", {"id":id,"password":newPassword})
         //return the updated user
         return this.getUserById(id)
+    }
+
+    static async addSubLecture(userID, subLectureID){
+
+    }
+
+    static async viewedSubLecture(userID, subLectureID){
+        const result = await this.query("SELECT * FROM Users_Sub_Lectures WHERE user_id = @uid AND sub_lecture_id = @lid", {"uid":userID,"lid":subLectureID})
+        return !!result.recordset.length
+    }
+
+    static async getProgressStats(id){
+        const params = {"id": id}
+       //grab the highest score for each quiz and the number of questions
+        //limitation: number of questions for each quiz must never change
+        //return the average of all scores for every quiz and the total number of questions
+        const [quizAccuracy,questionsCompleted] = await this.query("SELECT AVG(s) AS score, SUM(q) AS questions FROM (SELECT MAX((score + 0.0)/(totalMarks + 0.0)) AS s, MAX(totalQuestions) AS q FROM Results WHERE userId = @id GROUP BY quizId) AS hi;", params).recordset[0]
+        return {
+            quizAccuracy: quizAccuracy,
+            questionsCompleted: questionsCompleted,
+        }
     }
 }
   
