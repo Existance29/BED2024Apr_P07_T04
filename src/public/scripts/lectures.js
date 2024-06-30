@@ -150,6 +150,7 @@ async function loadLectureVideo(lectureID, courseID) {
 
 // Function to load sub-lecture video
 async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
+    await post(`./users/sublecture/${userID}/${subLectureID}`) //add the viewed sublecture to the database
     const subLecture = await fetchLectureDetails(lectureID, subLectureID);
     const videoData = normalizeVideoProperty(subLecture);
 
@@ -202,7 +203,6 @@ document.getElementById('lectures-list').addEventListener('click', async (event)
         const subLectureID = subLectureItem.getAttribute('data-sub-lecture-id');
         const lectureID = subLectureItem.getAttribute('data-lecture-id');
         const courseID = new URLSearchParams(window.location.search).get('courseID');
-        await post(`./users/sublecture/${userID}/${subLectureID}`) //add the viewed sublecture to the database
         loadSubLectureVideo(subLectureID, lectureID, courseID);
     } else if (lectureItem) {
         const lectureID = lectureItem.getAttribute('data-lecture-id');
