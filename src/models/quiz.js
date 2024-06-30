@@ -217,8 +217,9 @@ class Quiz {
             const userAttemptResult = await connection.request()
                 .input('quizId', sql.Int, quizId)
                 .input('userId', sql.Int, userId)
-                .query('SELECT COUNT(*) AS attempts FROM UserQuizAttempts WHERE quizId = @quizId AND userId = @userId');
-    
+                .query('SELECT * FROM UserQuizAttempts WHERE quizId = @quizId AND userId = @userId');
+                
+            console.log(userAttemptResult.recordset)
             const attempts = userAttemptResult.recordset[0].attempts;
     
             return { canAttempt: attempts < maxAttempts, attempts: attempts, maxAttempts: maxAttempts };
