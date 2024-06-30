@@ -147,6 +147,23 @@ const updatePassword = async (req, res) => {
   }
 }
 
+const addSubLecture = async (req,res) => {
+  try {
+    const uid = parseInt(req.params.uid)
+    const lid = parseInt(req.params.lid)
+    const user = await User.getUserById(uid)
+    //check if user exists
+    if (!user) return res.status(404).send("User not found")
+    //check if user already viewed lecture
+    if (User.hasViewedSubLecture(uid, lid)) return res.status(201).send("user already viewed sub lecture")
+    User.addSubLecture(uid,lid)
+    res.status(201).send("success");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error adding viewed sub lecture")
+  }
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
@@ -157,5 +174,6 @@ module.exports = {
     updateUser,
     updatePassword,
     getProfilePictureByID,
-    hashPassword
+    hashPassword,
+    addSubLecture
 };

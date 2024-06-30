@@ -69,7 +69,14 @@ class User {
         //join all tables related to the user and return them
         const query = "SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id WHERE id = @id"
         const result = (await this.query(query,{"id":id})).recordset[0]
-        return result ? result : null
+        //check if user exists
+        if (!result) return null
+        //get more stats
+        const quizStats = this.getQuizOverall(id)
+        console.log(quizStats)
+        const coursesCompleted = {"completed_courses": this.getCompletedCourses(id)}
+        //merge the objects and return it
+        return {...result, ...quizStats, ...coursesCompleted}
     }
 
     //get a user by their email
@@ -149,23 +156,52 @@ class User {
     }
 
     static async addSubLecture(userID, subLectureID){
-
+        await this.query("INSERT INTO User_Sub_Lectures(user_id,sub_lecture_id) VALUES (@uid,@lid);", {"uid":userID,"lid":subLectureID})
     }
 
-    static async viewedSubLecture(userID, subLectureID){
-        const result = await this.query("SELECT * FROM Users_Sub_Lectures WHERE user_id = @uid AND sub_lecture_id = @lid", {"uid":userID,"lid":subLectureID})
-        return !!result.recordset.length
+    static async hasViewedSubLecture(userID, subLectureID){
+        const result = await this.query("SELECT * FROM User_Sub_Lectures WHERE user_id = @uid AND sub_lecture_id = @lid", {"uid":userID,"lid":subLectureID})
+        return Boolean(result.recordset.length) 
     }
 
-    static async getProgressStats(id){
+    static async getCompletedCourses(userID){
+        //this sql table shows all courses completed by the user
+        const sql = `
+        SELECT Title FROM (
+        SELECT c.Title, CASE WHEN COUNT(*) = COUNT(usl.user_id) THEN 'True' ELSE 'False' END AS 'Completed'
+        FROM User_Sub_Lectures usl
+        RIGHT JOIN SubLectures sl ON usl.sub_lecture_id = sl.SubLectureID AND usl.user_id = @id
+        LEFT JOIN Lectures l ON sl.LectureID = l.LectureID
+        LEFT JOIN CourseLectures cl ON l.LectureID = cl.LectureID
+        LEFT JOIN Courses c ON c.CourseID = cl.CourseID
+        GROUP BY c.Title
+        ) AS allCourseStatus 
+        WHERE Completed = 'True'
+        `
+        //return a list of 
+        const result = (await this.query(sql, {"id":userID})).recordset
+        console.log(result)
+        //return null if no courses are completed
+        return result.length? result : null
+    }
+
+    static async getQuizOverall(id){
+        //get the user's overall quiz stats, all-time avg accuracy + total questions answered
         const params = {"id": id}
        //grab the highest score for each quiz and the number of questions
         //limitation: number of questions for each quiz must never change
         //return the average of all scores for every quiz and the total number of questions
-        const [quizAccuracy,questionsCompleted] = await this.query("SELECT AVG(s) AS score, SUM(q) AS questions FROM (SELECT MAX((score + 0.0)/(totalMarks + 0.0)) AS s, MAX(totalQuestions) AS q FROM Results WHERE userId = @id GROUP BY quizId) AS hi;", params).recordset[0]
+        const result  = (await this.query("SELECT AVG(s) AS score, SUM(q) AS questions FROM (SELECT MAX((score + 0.0)/(totalMarks + 0.0)) AS s, MAX(totalQuestions) AS q FROM Results WHERE userId = @id GROUP BY quizId) AS hi;", params)).recordset[0]
+        let quizAccuracy = 0
+        let questionsCompleted = 0
+        if (result){
+            quizAccuracy = result.score
+            questionsCompleted = result.questions
+        }
         return {
-            quizAccuracy: quizAccuracy,
-            questionsCompleted: questionsCompleted,
+            quiz_accuracy: quizAccuracy,
+            questions_completed: questionsCompleted,
+
         }
     }
 }
