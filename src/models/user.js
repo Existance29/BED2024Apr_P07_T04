@@ -117,11 +117,7 @@ class User {
         return result ? result : null
     }
 
-    static async updateProfilePic(userid,blob){
-        //get the path of the image and convert it into binary
-        const imageBuffer = fs.readFileSync(blob["pic"].path, {encoding: 'base64'})
-        
-        //create a new sql row for the profile
+    static async updateProfilePic(userid, imageBuffer) {
         const params = {
             "user_id": userid,
             "img": imageBuffer,
