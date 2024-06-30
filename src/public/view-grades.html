@@ -5,31 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <link href="./styles/common.css" rel="stylesheet">
-    <link href="./styles/quiz.css" rel="stylesheet">
+    <link href="./styles/view-grades.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-    <!-- Navbar -->
     <div class="nav-placeholder"></div>
 
     <main class="background-img long-bg">
-        <div class="row" style="margin-left: 17%; color: white; width: 65%; height: 2vw;">
-            <div class="col-md-10 d-flex">
-                <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 5%;'>Quizzes</h1>
-            </div>
-            <div class="col-md-2 text-end">
-                <button onclick="redirectToQuizResults()" class="btn section-text" type="button" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Grades</button>
-            </div> 
+        <div class="d-flex" style="margin-left: 17%; margin-bottom: 3%;  color: #245D51;"> 
+            <a href="./quiz.html" class="btn section-text" type="button" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: white; color: #245D51;">Back</a>
         </div>
-        <div id="quizList" class="container"></div>
+        <div class="d-flex" style="margin-left: 17%; color: white; width: 65%; height: 2vw;"> 
+            <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 45%;'>My Quiz Grades</h1>
+        </div>
+        <div id="resultsContainer" class="results"></div>
     </main>
-    
 
     <div class="footer-placeholder"></div>
-
+    
+    <script src="./scripts/view-grades.js"></script>
     <script src="./scripts/common.js"></script>
-    <script src="./scripts/quizzes.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 </body>

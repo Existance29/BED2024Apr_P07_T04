@@ -145,14 +145,6 @@ class User {
         //return the updated user
         return this.getUserById(id)
     }
-
-    static async getQuizByID(id){
-        //return the base64 for the user's quiz history
-        const query = "SELECT * FROM Profile_Pictures WHERE user_id = @id"
-        const result = (await this.query(query,{"id":id})).recordset[0]
-        return result ? result : null
-
-    }
 }
   
   module.exports = User
