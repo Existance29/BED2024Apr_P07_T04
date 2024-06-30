@@ -73,7 +73,6 @@ class User {
         if (!result) return null
         //get more stats
         const quizStats = await this.getQuizOverall(id)
-        console.log(quizStats)
         const coursesCompleted = {"completed_courses": await this.getCompletedCourses(id)}
         //merge the objects and return it
         return {...result, ...quizStats, ...coursesCompleted}

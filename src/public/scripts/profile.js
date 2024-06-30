@@ -6,6 +6,10 @@ const tooltipDesc = {
     "activity": "Users that are active and frequently\ncomment and rate courses"
 }
 
+function roundToTwo(num) {
+    return +(Math.round(num + "e+2")  + "e-2");
+}
+
 async function loadProfile(){
     const response = await get(`/users/complete/${userID}`)
     //handle different responses
@@ -22,10 +26,11 @@ async function loadProfile(){
     document.getElementById("full-name").innerText = `${data.first_name} ${data.last_name}`
     document.getElementById("country").innerText = data.country
     document.getElementById("about-me").innerText = data.about_me
-    document.getElementById("join-date")
+    document.getElementById("progress-courses").innerText = data.completed_courses.length
+    document.getElementById("progress-questions").innerText = data.questions_completed
 
     //load the chart
-    loadChart([9, 8.5, 6])
+    loadChart([roundToTwo(data.quiz_accuracy)*10, 8.5, 6])
 }
 
 loadProfile()
