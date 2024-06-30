@@ -6,6 +6,7 @@ const dbConfig = require("./database/dbConfig")
 const sql = require("mssql")
 const route = require("./routes/routes")
 const bodyParser = require("body-parser")
+const formidableMiddleware = require('express-formidable-v2')
 
 //load frontend
 const staticMiddleware = express.static("public")
@@ -14,6 +15,7 @@ app.use(staticMiddleware)
 //use parse middlewares
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(formidableMiddleware())
 
 //setup routes
 route(app)
