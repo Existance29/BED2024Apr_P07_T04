@@ -26,11 +26,12 @@
     line-height: 110%; /*default line height was too big*/
     height: 100%;
 }
-/*set position to absolute, right to 0 to make sure text is same width as heading's*/
+
 #heading-desc{
     margin-top: 2.5vw;
     font-size: 0.9vw;
     color: #E1E1E1;
+    width: 33.5vw;
 }
 
 .join-btn{
