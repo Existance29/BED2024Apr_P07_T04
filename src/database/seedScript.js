@@ -5,6 +5,16 @@ const dbConfig = require("./dbConfig");
 
 // SQL data for seeding the database
 const seedSQL = `
+declare @sql nvarchar(max) = (
+    select 
+        'alter table ' + quotename(schema_name(schema_id)) + '.' +
+        quotename(object_name(parent_object_id)) +
+        ' drop constraint '+quotename(name) + ';'
+    from sys.foreign_keys
+    for xml path('')
+);
+exec sp_executesql @sql;
+
 -- Drop foreign key constraints
 IF OBJECT_ID('FK_CourseLectures_CourseID', 'F') IS NOT NULL
   ALTER TABLE CourseLectures DROP CONSTRAINT FK_CourseLectures_CourseID;
@@ -36,6 +46,10 @@ IF OBJECT_ID('FK_UserQuizAttempts_QuizID', 'F') IS NOT NULL
   ALTER TABLE UserQuizAttempts DROP CONSTRAINT FK_UserQuizAttempts_QuizID;
 IF OBJECT_ID('FK_Results_UserID', 'F') IS NOT NULL
   ALTER TABLE Results DROP CONSTRAINT FK_Results_UserID;
+IF OBJECT_ID('FK_User_Sub_Lectures_UserID', 'F') IS NOT NULL
+  ALTER TABLE Results DROP CONSTRAINT FK_User_Sub_Lectures_UserID;
+IF OBJECT_ID('FK_User_Sub_Lectures_SubLectureID', 'F') IS NOT NULL
+  ALTER TABLE Results DROP CONSTRAINT FK_User_Sub_Lectures_SubLectureID;
 
 -- Drop all tables if they exist
 IF OBJECT_ID('UserCourses', 'U') IS NOT NULL DROP TABLE UserCourses;
@@ -51,6 +65,7 @@ IF OBJECT_ID('Results', 'U') IS NOT NULL DROP TABLE Results;
 IF OBJECT_ID('IncorrectQuestions', 'U') IS NOT NULL DROP TABLE IncorrectQuestions;
 IF OBJECT_ID('Quizzes', 'U') IS NOT NULL DROP TABLE Quizzes;
 IF OBJECT_ID('Profile_Pictures', 'U') IS NOT NULL DROP TABLE Profile_Pictures;
+IF OBJECT_ID('User_Sub_Lectures', 'U') IS NOT NULL DROP TABLE User_Sub_Lectures;
 IF OBJECT_ID('UserQuizAttempts', 'U') IS NOT NULL DROP TABLE UserQuizAttempts;
 
 -- Create tables
@@ -61,7 +76,8 @@ CREATE TABLE Users (
   email VARCHAR(50) NOT NULL UNIQUE,
   password VARCHAR(100) NOT NULL,
   about_me VARCHAR(250) NOT NULL,
-  country VARCHAR(100) NOT NULL
+  country VARCHAR(100) NOT NULL,
+  join_date DATE NOT NULL,
 );
 
 CREATE TABLE Profile_Pictures (
@@ -101,6 +117,13 @@ CREATE TABLE SubLectures (
   Description NVARCHAR(MAX) NOT NULL,
   Duration INT NOT NULL,
   Video VARBINARY(MAX) NOT NULL
+);
+
+CREATE TABLE User_Sub_Lectures (
+  user_id INT NOT NULL,
+  sub_lecture_id INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES Users(id),
+  FOREIGN KEY (sub_lecture_id) REFERENCES SubLectures(SubLectureID)
 );
 
 CREATE TABLE CourseLectures (
