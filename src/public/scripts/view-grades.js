@@ -30,7 +30,7 @@ async function fetchUserQuizResults() {
 function displayUserQuizResults(results) {
     const resultsContainer = document.getElementById('resultsContainer');
     if (results.length === 0) {
-        resultsContainer.innerHTML = '<p>No quizzes taken yet.</p>';
+        resultsContainer.innerHTML = '<div class="d-flex" style="margin-left: 17%; color: white; width: 65%; height: 2vw;"><p class="exo-semibold" style="font-size: 1.8vw; margin-right: 45%;">No quizzes taken yet.</p><div>';
         return;
     }
 
