@@ -4,6 +4,11 @@
 if (!isLoggedIn()) location.href = "./login.html"
 const userID = getUserID()
 
+//change the font color of the sublecture description to gray
+function viewSubLecture(id){
+    document.getElementById(`desc-${id}`).style.color = "#7F7F7F"
+}
+
 // Fetch course details including lectures
 async function fetchCourseDetailsWithLectures(courseID) {
     try {
@@ -92,7 +97,7 @@ async function loadCourseAndLectureDetails() {
                     <div class="subchapter-container" style="margin-top: 1vw;">
                         <div class="subchapter ${subLecture.subLectureID === subLectureID ? 'active-sub' : ''}" data-sub-lecture-id="${subLecture.subLectureID}" data-lecture-id="${lec.lectureID}">
                             <div style="width: 70%;">
-                                <div style="font-size: 0.9vw; color: #333333; font-weight: 500;">${subLecture.description}</div>
+                                <div style="font-size: 0.9vw; color: #333333; font-weight: 500;" id = "desc-${subLecture.subLectureID}">${subLecture.description}</div>
                             </div>
                             <div class="d-flex align-items-center time-container">
                                 <img src="./assets/lectures/time-icon-2.png" style="height: 0.85vw; margin-right: 0.3vw;">
@@ -117,6 +122,10 @@ async function loadCourseAndLectureDetails() {
         document.getElementById('course-details-text').innerText = 'No course details available';
     }
 
+    //indicate the sublectures that have been viewed
+    const viewedSubLectures = await (await get(`/users/courses/sublectures/${userID}/${courseID}`)).json()
+    console.log(viewedSubLectures)
+    viewedSubLectures.forEach((x) => viewSubLecture(x))
     // Load the initial video
     if (subLectureID) {
         loadSubLectureVideo(subLectureID, lectureID, courseID);
@@ -150,7 +159,7 @@ async function loadLectureVideo(lectureID, courseID) {
 
 // Function to load sub-lecture video
 async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
-    await post(`./users/sublecture/${userID}/${subLectureID}`) //add the viewed sublecture to the database
+    const viewSubLectureResponse = await post(`./users/sublecture/${userID}/${subLectureID}`) //add the viewed sublecture to the database
     const subLecture = await fetchLectureDetails(lectureID, subLectureID);
     const videoData = normalizeVideoProperty(subLecture);
 
@@ -163,6 +172,11 @@ async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
     const lectureVideoElement = document.getElementById('lecture-video');
     lectureVideoElement.src = videoSrc;
     lectureVideoElement.load();
+
+    //if updating the user's viwed sublecture database was successful, show view indicator
+    if (viewSubLectureResponse.status == 201){ 
+        viewSubLecture(subLectureID)
+    }
 
     // Highlight the selected sub-lecture
     const subLectureItems = document.querySelectorAll('.subchapter');
