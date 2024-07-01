@@ -67,6 +67,7 @@ IF OBJECT_ID('Quizzes', 'U') IS NOT NULL DROP TABLE Quizzes;
 IF OBJECT_ID('Profile_Pictures', 'U') IS NOT NULL DROP TABLE Profile_Pictures;
 IF OBJECT_ID('User_Sub_Lectures', 'U') IS NOT NULL DROP TABLE User_Sub_Lectures;
 IF OBJECT_ID('UserQuizAttempts', 'U') IS NOT NULL DROP TABLE UserQuizAttempts;
+IF OBJECT_ID('Comments', 'U') IS NOT NULL DROP TABLE Comments;
 
 -- Create tables
 CREATE TABLE Users (
