@@ -57,6 +57,7 @@ h3{
 
 .course-content{
     padding: 2vw 0;
+    cursor: pointer;
 }
 
 .course-thumbnail{

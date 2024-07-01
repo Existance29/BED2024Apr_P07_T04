@@ -46,55 +46,58 @@ async function loadProfile(){
     document.getElementById("full-name").innerText = `${data.first_name} ${data.last_name}`
     document.getElementById("country").innerText = data.country
     document.getElementById("about-me").innerText = data.about_me
-    document.getElementById("progress-courses").innerText = data.completed_courses.length
+    document.getElementById("progress-courses").innerText = data.completed_courses ? data.completed_courses.length : 0
     document.getElementById("progress-questions").innerText = data.questions_completed
 
     //get courses
     const courses = await (await get("/courses/without-video")).json()
-    
-    //generate a list of all course categories + categories of courses user has completed
-    let allCourseCategories = []
-    let userCourseCategories = []
-    courses.forEach((course) => {
-        //get an array of all categories in the course
-        const courseCategories = course.category.replaceAll(' ','').split(",")
-        courseCategories.forEach((cat) => {
-            //add all categories
-            if (!allCourseCategories.includes(cat)) allCourseCategories.push(cat)
-            //add categories of courses user has completed
-            if (data.completed_courses.includes(course.courseID) && !userCourseCategories.includes(cat)) userCourseCategories.push(cat)
-        })
-        }
-    )
-
-    //load the chart and calculate the data values
-    const accuracy = roundToTwo(data.quiz_accuracy)*10
-    const versatility = roundToTwo(userCourseCategories.length/allCourseCategories.length)*10
-    loadChart([accuracy, versatility, 6])
 
     //display completed courses
     //check if completed_courses is null (user has not completed any courses)
     const completedCourses = document.getElementById("course-section")
     if (!data.completed_courses){
         completedCourses.innerHTML += "User has not completed any courses"
-        return
+    } else{
+        //there are courses to display
+        completedCourses.innerHTML += `<div class = "course-seperator"></div>`
+        data.completed_courses.forEach((id) => {
+            const course = courses[id-1]
+            const html = `
+            <div id = "course" style="width: 100%">
+                <div class = "d-flex course-content align-items-center" onclick = "location.href = 'course-chapters.html?courseID=${id}'">
+                    <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
+                    <p class = "poppins-medium course-title">${course.title}</p>
+                </div>
+                <div class = "course-seperator"></div>
+            </div>
+            `
+            completedCourses.innerHTML += html
+        })
     }
 
-    //there are courses to display
-    completedCourses.innerHTML += `<div class = "course-seperator"></div>`
-    data.completed_courses.forEach((id) => {
-        const course = courses[id-1]
-        const html = `
-        <div id = "course" style="width: 100%">
-            <div class = "d-flex course-content align-items-center">
-                <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
-                <p class = "poppins-medium course-title">${course.title}</p>
-            </div>
-            <div class = "course-seperator"></div>
-        </div>
-        `
-        completedCourses.innerHTML += html
-    })
+    //load the chart and calculate the data values
+    const accuracy = roundToTwo(data.quiz_accuracy)*10
+    let versatility = 0
+    //generate a list of all course categories + categories of courses user has completed
+    //calculate versatility
+    if (data.completed_courses){
+        let allCourseCategories = []
+        let userCourseCategories = []
+        courses.forEach((course) => {
+            //get an array of all categories in the course
+            const courseCategories = course.category.replaceAll(' ','').split(",")
+            courseCategories.forEach((cat) => {
+                //add all categories
+                if (!allCourseCategories.includes(cat)) allCourseCategories.push(cat)
+                //add categories of courses user has completed
+                if (data.completed_courses.includes(course.courseID) && !userCourseCategories.includes(cat)) userCourseCategories.push(cat)
+            })
+            }
+        )
+        versatility = roundToTwo(userCourseCategories.length/allCourseCategories.length)*10
+    }
+    console.log(accuracy,versatility)
+    loadChart([accuracy, versatility, 6])
 
 }
 
