@@ -69,5 +69,10 @@ h3{
     color: black; 
     font-size: 0.95vw; 
     text-align: left;
-    margin-left: 2vw;
+}
+
+.course-complete-date{
+    color: #585858;
+    font-size: 0.85vw;
+    text-align: left;
 }

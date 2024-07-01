@@ -155,7 +155,28 @@ class User {
     }
 
     static async addSubLecture(userID, subLectureID){
+        //update the sub lecture table
         await this.query("INSERT INTO User_Sub_Lectures(user_id,sub_lecture_id) VALUES (@uid,@lid);", {"uid":userID,"lid":subLectureID})
+        //check if the user has completed the course after viewing the sub lecture
+        //query returns the id of the course if its completed, else returns nothing
+        const sql = `
+        SELECT courseID FROM (
+            SELECT MAX(c.CourseID) AS courseID, CASE WHEN COUNT(*) = COUNT(usl.user_id) THEN 'T' ELSE 'F' END AS 'Completed'
+            FROM User_Sub_Lectures usl
+            RIGHT JOIN SubLectures sl ON usl.sub_lecture_id = sl.SubLectureID AND usl.user_id = @id
+            LEFT JOIN Lectures l ON sl.LectureID = l.LectureID
+            LEFT JOIN CourseLectures cl ON l.LectureID = cl.LectureID
+            LEFT JOIN Courses c ON c.CourseID = cl.CourseID
+            GROUP BY c.Title
+            HAVING max( CASE "SubLectureID"  WHEN @slid THEN 1 ELSE 0 END ) = 1
+        ) AS a 
+        WHERE Completed = 'T'
+        `
+        const result = (await this.query(sql, {"id":userID,"slid":subLectureID})).recordset[0]
+        //check if course completed and if it is, update the completed courses table
+        if (!result) return
+        const completedCourseID = result.courseID
+        await this.query("INSERT User_Completed_Courses (user_id,course_id,date_completed) VALUES (@uid,@cid,GETDATE());", {"uid":userID, "cid":completedCourseID})
     }
 
     static async hasViewedSubLecture(userID, subLectureID){
@@ -164,24 +185,10 @@ class User {
     }
 
     static async getCompletedCourses(userID){
-        //this sql table shows all courses completed by the user
-        const sql = `
-        SELECT id FROM (
-        SELECT MAX(c.CourseID) AS id, CASE WHEN COUNT(*) = COUNT(usl.user_id) THEN 'True' ELSE 'False' END AS 'Completed'
-        FROM User_Sub_Lectures usl
-        RIGHT JOIN SubLectures sl ON usl.sub_lecture_id = sl.SubLectureID AND usl.user_id = @id
-        LEFT JOIN Lectures l ON sl.LectureID = l.LectureID
-        LEFT JOIN CourseLectures cl ON l.LectureID = cl.LectureID
-        LEFT JOIN Courses c ON c.CourseID = cl.CourseID
-        GROUP BY c.Title
-        ) AS allCourseStatus 
-        WHERE Completed = 'True'
-        `
         //return a list of objects of the complete courses
-        const result = (await this.query(sql, {"id":userID})).recordset
+        const result = (await this.query("SELECT course_id, date_completed FROM User_Completed_Courses WHERE user_id = @id", {"id":userID})).recordset
         //return null if no courses are completed
-        //return a list of course ids
-        return result.length? result.map((x) => x.id) : null
+        return result.length? result : null
     }
 
     static async getQuizOverall(id){

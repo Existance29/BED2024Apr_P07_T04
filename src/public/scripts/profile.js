@@ -11,6 +11,32 @@ function roundToTwo(num) {
     return +(Math.round(num + "e+2")  + "e-2");
 }
 
+function readableDate(timestamp){
+    //extract date from timestamp (string) in format: DD MMM YY
+    //DD: 2 digits for day, MMM: first 3 chars of the month, YYYY: year
+
+    //extract date and split based on dash
+    let date = ((timestamp.split("T")[0]).split("-")).reverse()
+
+    //convert month to format
+    const monthNumToName = {
+        "01": "Jan",
+        "02": "Feb",
+        "03": "Mar",
+        "04": "Apr",
+        "05": "May",
+        "06": "Jun",
+        "07": "July",
+        "08": "Aug",
+        "09": "Sep",
+        "10": "Oct",
+        "11": "Nov",
+        "12": "Dec"
+    }
+    date[1] = monthNumToName[date[1]]
+    return date.join(" ")
+}
+
 // Convert binary data to base64 string
 function arrayBufferToBase64(buffer) {
     let binary = '';
@@ -55,18 +81,22 @@ async function loadProfile(){
     //display completed courses
     //check if completed_courses is null (user has not completed any courses)
     const completedCourses = document.getElementById("course-section")
+    console.log(data.completed_courses)
     if (!data.completed_courses){
         completedCourses.innerHTML += "User has not completed any courses"
     } else{
         //there are courses to display
         completedCourses.innerHTML += `<div class = "course-seperator"></div>`
-        data.completed_courses.forEach((id) => {
-            const course = courses[id-1]
+        data.completed_courses.forEach((completedCourse) => {
+            const course = courses[completedCourse.course_id-1]
             const html = `
             <div id = "course" style="width: 100%">
-                <div class = "d-flex course-content align-items-center" onclick = "location.href = 'course-chapters.html?courseID=${id}'">
+                <div class = "d-flex course-content" onclick = "location.href = 'course-chapters.html?courseID=${completedCourse.course_id}'">
                     <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
-                    <p class = "poppins-medium course-title">${course.title}</p>
+                    <div class = "d-flex flex-column justify-content-between" style = "margin-left: 2vw;">
+                        <div class = "poppins-medium course-title">${course.title}</div>
+                        <div class = "poppins-medium course-complete-date">Completed: ${readableDate(completedCourse.date_completed)}</div>
+                    </div>
                 </div>
                 <div class = "course-seperator"></div>
             </div>
@@ -90,7 +120,7 @@ async function loadProfile(){
                 //add all categories
                 if (!allCourseCategories.includes(cat)) allCourseCategories.push(cat)
                 //add categories of courses user has completed
-                if (data.completed_courses.includes(course.courseID) && !userCourseCategories.includes(cat)) userCourseCategories.push(cat)
+                if (data.completed_courses.some( e => e.course_id === course.courseID) && !userCourseCategories.includes(cat)) userCourseCategories.push(cat)
             })
             }
         )
