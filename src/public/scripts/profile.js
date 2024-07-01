@@ -95,7 +95,7 @@ async function loadProfile(){
                     <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
                     <div class = "d-flex flex-column justify-content-between" style = "margin-left: 2vw;">
                         <div class = "poppins-medium course-title">${course.title}</div>
-                        <div class = "poppins-medium course-complete-date">Completed: ${readableDate(completedCourse.date_completed)}</div>
+                        <div class = "poppins-medium course-complete-date">Completed on: ${readableDate(completedCourse.date_completed)}</div>
                     </div>
                 </div>
                 <div class = "course-seperator"></div>
