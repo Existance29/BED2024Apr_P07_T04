@@ -48,11 +48,8 @@ async function post(url, jsondata){
 async function get(url){
     let settings = {
       method: "GET",
-      crossDomain: true,
       headers: {
         "content-type": "application/json",
-        "cache-control": "no-cache",
-        
       }
     }
     return await fetch(url, settings)
@@ -61,8 +58,6 @@ async function get(url){
 
 async function put(url, jsondata){
   let settings = {
-    keepalive: true,
-    crossDomain: true,
     method: "PUT",
     headers: {
       "content-type": "application/json",

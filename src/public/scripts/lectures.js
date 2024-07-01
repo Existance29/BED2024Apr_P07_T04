@@ -2,6 +2,7 @@
 //if user is not logged in, redirect them to login screen
 //Dont wait for content to load, redirect asap
 if (!isLoggedIn()) location.href = "./login.html"
+const userID = getUserID()
 
 // Fetch course details including lectures
 async function fetchCourseDetailsWithLectures(courseID) {
@@ -129,8 +130,6 @@ async function loadLectureVideo(lectureID, courseID) {
     const lecture = await fetchLectureDetails(lectureID);
     const videoData = normalizeVideoProperty(lecture);
 
-    
-
     // Highlight the selected lecture
     const lectureItems = document.querySelectorAll('.lecture-item');
     lectureItems.forEach(item => item.classList.remove('active'));
@@ -149,6 +148,7 @@ async function loadLectureVideo(lectureID, courseID) {
 
 // Function to load sub-lecture video
 async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
+    await post(`./users/sublecture/${userID}/${subLectureID}`) //add the viewed sublecture to the database
     const subLecture = await fetchLectureDetails(lectureID, subLectureID);
     const videoData = normalizeVideoProperty(subLecture);
 
@@ -193,7 +193,7 @@ function arrayBufferToBase64(buffer) {
 document.addEventListener('DOMContentLoaded', loadCourseAndLectureDetails);
 
 // Event delegation for lecture items
-document.getElementById('lectures-list').addEventListener('click', (event) => {
+document.getElementById('lectures-list').addEventListener('click', async (event) => {
     const lectureItem = event.target.closest('.lecture-item');
     const subLectureItem = event.target.closest('.subchapter');
     
