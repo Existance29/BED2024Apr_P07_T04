@@ -50,3 +50,23 @@ h3{
     margin-left: 0.8vw;
 }
 
+.course-seperator{
+    height: 0.13vw;
+    background-color: #D9D9D9; 
+}
+
+.course-content{
+    padding: 2vw 0;
+}
+
+.course-thumbnail{
+    object-fit: contain;
+    width: 18%;
+}
+
+.course-title{
+    color: black; 
+    font-size: 0.95vw; 
+    text-align: left;
+    margin-left: 2vw;
+}

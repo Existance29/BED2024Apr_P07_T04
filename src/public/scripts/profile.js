@@ -11,6 +11,17 @@ function roundToTwo(num) {
     return +(Math.round(num + "e+2")  + "e-2");
 }
 
+// Convert binary data to base64 string
+function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer.data);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+
 async function loadProfile(){
     const response = await get(`/users/complete/${userID}`)
     //handle different responses
@@ -26,7 +37,6 @@ async function loadProfile(){
     }
     const data = await response.json()
 
-    console.log(data)
     //display the user data
     document.getElementById("profile-img").src = `data:image/png;base64,${data.img}`
     document.getElementById("full-name").innerText = `${data.first_name} ${data.last_name}`
@@ -35,8 +45,53 @@ async function loadProfile(){
     document.getElementById("progress-courses").innerText = data.completed_courses.length
     document.getElementById("progress-questions").innerText = data.questions_completed
 
-    //load the chart
-    loadChart([roundToTwo(data.quiz_accuracy)*10, 8.5, 6])
+    //get courses
+    const courses = await (await get("/courses/without-video")).json()
+    
+    //generate a list of all course categories + categories of courses user has completed
+    let allCourseCategories = []
+    let userCourseCategories = []
+    courses.forEach((course) => {
+        //get an array of all categories in the course
+        const courseCategories = course.category.replaceAll(' ','').split(",")
+        courseCategories.forEach((cat) => {
+            //add all categories
+            if (!allCourseCategories.includes(cat)) allCourseCategories.push(cat)
+            //add categories of courses user has completed
+            if (data.completed_courses.includes(course.courseID) && !userCourseCategories.includes(cat)) userCourseCategories.push(cat)
+        })
+        }
+    )
+
+    //load the chart and calculate the data values
+    const accuracy = roundToTwo(data.quiz_accuracy)*10
+    const versatility = roundToTwo(userCourseCategories.length/allCourseCategories.length)*10
+    loadChart([accuracy, versatility, 6])
+
+    //display completed courses
+    //check if completed_courses is null (user has not completed any courses)
+    const completedCourses = document.getElementById("course-section")
+    if (!data.completed_courses){
+        completedCourses.innerHTML += "User has not completed any courses"
+        return
+    }
+
+    //there are courses to display
+    completedCourses.innerHTML += `<div class = "course-seperator"></div>`
+    data.completed_courses.forEach((id) => {
+        const course = courses[id-1]
+        const html = `
+        <div id = "course" style="width: 100%">
+            <div class = "d-flex course-content align-items-center">
+                <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
+                <p class = "poppins-medium course-title">${course.title}</p>
+            </div>
+            <div class = "course-seperator"></div>
+        </div>
+        `
+        completedCourses.innerHTML += html
+    })
+
 }
 
 loadProfile()
