@@ -26,7 +26,9 @@ function goToProfile(){
 }
 
 function logout(redirect=true){
+    //show login button and hide profile icon
     document.getElementById("login").style.display = "block"
+    document.getElementById("profile").style.display = "none" 
     //remove userID from storage and redirect user
     localStorage.removeItem("userid")
     sessionStorage.removeItem("userid")
