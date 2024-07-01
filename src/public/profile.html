@@ -24,9 +24,11 @@
             <div class="d-flex align-items-center" style="gap: 1vw;">
               <h3 id = "role" class="poppins-medium">Member</h3>
               <div class = "circle-seperator"></div>
-              <h3 id = "country" class="poppins-medium">Singapore</h3>
+              <h3 id = "country" class="poppins-medium">Country</h3>
             </div>
           </div>
+          <!--edit button-->
+          <img src="../assets/profile/edit-icon.png" onclick = "editSettings()" id = "edit-icon">
         </div>
         <p class = "poppins-regular" style="font-size: 0.95vw;" id = "about-me">Hey! This is a about me section where I share more about me so that you know more about me. Hopefully you now know about me and more about me (:</p>
       </div>
@@ -35,12 +37,12 @@
       <!--Other content-->
       <div class = "d-flex" style="margin-top: 2vw; justify-content: space-between;">
         <!--Progress section-->
-        <div class="profile-section" style="width: 58%;">
+        <div class="profile-section" style="width: 60%;">
           <div class="d-flex">
             <img src = "./assets/profile/progress-icon.png" style="width: 3vw; margin-right: 2vw; object-fit: cover; height: 3.7vw;">
             <!--Progress stats-->
             <div>
-              <h2 class="poppins-semibold" style="font-size: 1.2vw; margin-bottom: 1.5vw;">Progress</h2>
+              <h2 class="poppins-semibold" style="font-size: 1.2vw; margin-bottom: 1vw;">Progress</h2>
               <div class = "poppins-medium progress-stat-label">Courses Completed:<span class = "progress-stat-value" id = "progress-courses">0</span></div>
               <div class = "poppins-medium progress-stat-label">Questions Completed:<span class = "progress-stat-value" id = "progress-questions">0</span></div>
               <div class = "poppins-medium progress-stat-label">Comments:<span class = "progress-stat-value" id = "progress-comments">0</span></div>
@@ -53,11 +55,12 @@
               <canvas id="radarChart" style = "margin-top: 2vw;"></canvas>
             </div>
           </div>
-
         </div>
-        <div class="profile-section" style="width: 38%;text-align: center; size: 0.9vw;">
-          <h2 class="poppins-semibold" style="font-size: 1.2vw; width: 100%; text-align: center;">Completed Courses</h2>
-          User has not completed any courses
+
+        <div class="profile-section" style="width: 35%;text-align: center; size: 0.9vw; padding: 1.8vw 4% !important;" id = "course-section">
+          <!--Completed courses-->
+          <h2 class="poppins-semibold" style="font-size: 1.2vw; width: 100%; text-align: center; margin-bottom: 1vw;">Completed Courses</h2>
+          <!--User has not completed any courses-->
         </div>
       </div>
 
