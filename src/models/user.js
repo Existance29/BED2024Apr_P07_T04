@@ -184,6 +184,25 @@ class User {
         return Boolean(result.recordset.length) 
     }
 
+    static async getViewedSubLecturesByCourse(userID, courseID){
+        //return all viewed sublectures under a course by a user
+        const sql = 
+        `
+        SELECT usl.sub_lecture_id
+        FROM User_Sub_Lectures usl
+        RIGHT JOIN SubLectures sl ON usl.sub_lecture_id = sl.SubLectureID AND usl.user_id = @uid
+        LEFT JOIN Lectures l ON sl.LectureID = l.LectureID
+        LEFT JOIN CourseLectures cl ON l.LectureID = cl.LectureID
+        INNER JOIN Courses c ON c.CourseID = cl.CourseID AND c.CourseID = @cid
+        WHERE usl.user_id IS NOT NULL 
+        `
+
+        const result = await this.query(sql, {"uid": userID, "cid":courseID})
+        //unlike the other get functions, dont return null if its empty. Just return the empty array
+        //return an array containing the ints representing the sublecture ids
+        return result.recordset.map((x) => x.sub_lecture_id)
+    }
+
     static async getCompletedCourses(userID){
         //return a list of objects of the complete courses
         const result = (await this.query("SELECT course_id, date_completed FROM User_Completed_Courses WHERE user_id = @id", {"id":userID})).recordset

@@ -147,6 +147,22 @@ const updatePassword = async (req, res) => {
   }
 }
 
+const getViewedSubLecturesByCourse = async (req,res) => {
+  //retrieved all viewed sublectures by a user under a course
+  try {
+    const uid = parseInt(req.params.uid)
+    const cid = parseInt(req.params.cid)
+    const user = await User.getUserById(uid)
+    //check if user exists
+    if (!user) return res.status(404).send("User not found")
+    const result = User.getViewedSubLecturesByCourse(uid,cid)
+    res.status(201).json(await User.getViewedSubLecturesByCourse(uid,cid))
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error checking if viewed sub lecture")
+  }
+}
+
 const addSubLecture = async (req,res) => {
   try {
     const uid = parseInt(req.params.uid)
@@ -175,5 +191,6 @@ module.exports = {
     updatePassword,
     getProfilePictureByID,
     hashPassword,
-    addSubLecture
+    addSubLecture,
+    getViewedSubLecturesByCourse
 };
