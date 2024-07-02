@@ -99,7 +99,7 @@ class User {
             "password": user.password,
             "about_me": user.about_me,
             "country": user.country,
-            "job_title": "Student"
+            "job_title": user.job_title
         }
         //add user data
         const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country, join_date, job_title) VALUES (@first_name, @last_name, @email, @password, @about_me, @country, GETDATE(), @job_title); SELECT SCOPE_IDENTITY() AS id;", params)

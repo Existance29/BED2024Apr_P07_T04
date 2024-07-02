@@ -12,6 +12,7 @@ const profileImg = document.getElementById("profile-img")
 const imgInput = document.getElementById("upload-img")
 const firstName = document.getElementById("first_name")
 const lastName = document.getElementById("last_name")
+const jobTitle = document.getElementById("job_title")
 const email = document.getElementById("email")
 const country = document.getElementById("country")
 const aboutMe = document.getElementById("about_me")
@@ -21,6 +22,7 @@ const repeatNewPassword = document.getElementById("repeat_new_password")
 
 firstName.addEventListener("input", inputChanged)
 lastName.addEventListener("input", inputChanged)
+jobTitle.addEventListener("input", inputChanged)
 email.addEventListener("input", inputChanged)
 aboutMe.addEventListener("input", inputChanged)
 currentPassword.addEventListener("input", inputChanged)
@@ -100,6 +102,7 @@ async function saveAccount(){
         "email": email.value,
         "about_me": aboutMe.value,
         "country": country.value,
+        "job_title": jobTitle.value
     }
 
     const response = await put("/users", updateData)
@@ -177,6 +180,7 @@ async function resetSettings(load = false){
     email.value = data.email
     country.value = data.country
     aboutMe.value = data.about_me
+    jobTitle.value = data.job_title
     clearPasswordFields()
 }
 

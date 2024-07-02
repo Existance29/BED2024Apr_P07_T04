@@ -35,7 +35,8 @@ async function signUp(){
         "email": emailInput.value,
         "password": passwordInput.value,
         "about_me": "",
-        "country": (await (await get("http://ip-api.com/json")).json()).country //auto-detect the user's country
+        "country": (await (await get("http://ip-api.com/json")).json()).country, //auto-detect the user's country
+        "job_title": "Student" //default to student
     }
     //update database
     const response = await post("/users", user)
