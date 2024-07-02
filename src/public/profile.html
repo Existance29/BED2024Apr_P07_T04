@@ -13,7 +13,7 @@
     <div class="nav-placeholder"></div>
 
     <!--background-->
-    <main class = "background-img" id = "main">
+    <main class = "background-img full-bg" id = "main">
       <div class = "profile-section">
         <!--Profile picture + name + country + join date-->
         <div class = "d-flex align-middle" style="margin-bottom: 2.5vw">
@@ -21,11 +21,12 @@
           <div class  = "d-flex flex-column justify-content-center" style="margin-left: 2vw;">
             <h2 id = "full-name" class="poppins-semibold" style="font-size: 1.2vw;">Full name</h2>
             <!--Role + country + join date-->
-            <div class="d-flex align-items-center" style="gap: 1vw;">
+            <div class="d-flex align-items-center" style="gap: 1vw; margin-bottom: 0.5vw;">
               <h3 id = "role" class="poppins-medium">Member</h3>
               <div class = "circle-seperator"></div>
               <h3 id = "country" class="poppins-medium">Country</h3>
             </div>
+            <div id = "job-title" class="poppins-medium" style="font-size: 0.9vw; color: #5d5d5d;">Job Title</div>
           </div>
           <!--edit button-->
           <img src="../assets/profile/edit-icon.png" onclick = "editSettings()" id = "edit-icon">

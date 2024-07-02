@@ -29,6 +29,11 @@ a{
     padding-top: 4vw;
 }
 
+.full-bg{
+    background-color: #32CB94;
+    background-image: url('../assets/general/pattern-bg-full.png');
+}
+
 /*setup classes for font types*/
 .poppins-regular {
     font-family: "Poppins", sans-serif;

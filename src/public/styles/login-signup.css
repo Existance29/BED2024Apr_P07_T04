@@ -1,7 +1,5 @@
 
 main{
-    background-color: #32CB94;
-    background-image: url('../assets/general/pattern-bg-full.png');
     height: 100vh; /*Take up entire screen height*/
     position: relative;
 }

@@ -1,6 +1,4 @@
 main{
-    background-color: #32CB94;
-    background-image: url('../assets/general/pattern-bg-full.png');
     min-height: 150vh; /*Keep screen height consistent to avoid as much background shifting as possible*/
     position: relative;
     padding: 4vw 11%;

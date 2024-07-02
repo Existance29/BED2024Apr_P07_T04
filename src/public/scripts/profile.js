@@ -71,6 +71,7 @@ async function loadProfile(){
     document.getElementById("profile-img").src = `data:image/png;base64,${data.img}`
     document.getElementById("full-name").innerText = `${data.first_name} ${data.last_name}`
     document.getElementById("country").innerText = data.country
+    document.getElementById("job-title").innerText = data.job_title
     document.getElementById("about-me").innerText = data.about_me
     document.getElementById("progress-courses").innerText = data.completed_courses ? data.completed_courses.length : 0
     document.getElementById("progress-questions").innerText = data.questions_completed
@@ -127,7 +128,7 @@ async function loadProfile(){
         versatility = roundToTwo(userCourseCategories.length/allCourseCategories.length)*10
     }
     console.log(accuracy,versatility)
-    loadChart([accuracy, versatility, 6])
+    loadChart([accuracy, versatility, 0])
 
 }
 
