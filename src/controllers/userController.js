@@ -1,12 +1,19 @@
 const User = require("../models/user")
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 
 //use bcrypt to hash a password and return it
 const hashPassword = (password) => {
   const salt = bcrypt.genSaltSync(10)
   return bcrypt.hashSync(password,salt)
+}
+
+const generateAccessToken = (userID) => {
+  const accessToken = jwt.sign({userId: userID}, process.env.ACCESS_TOKEN_SECRET)
+  return {accessToken: accessToken}
 }
 
 const getAllUsers = async (req, res) => {
@@ -23,6 +30,20 @@ const getUserById = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
     const user = await User.getUserById(id)
+    if (!user) {
+      return res.status(404).send("User not found")
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Error retrieving users")
+  }
+}
+
+const getPrivateUserById = async (req, res) => {
+  const id = parseInt(req.userId);
+  try {
+    const user = await User.getPrivateUserById(id)
     if (!user) {
       return res.status(404).send("User not found")
     }
@@ -61,7 +82,7 @@ const getProfilePictureByID = async (req, res) => {
   }
 }
 
-const getUserByLogin = async (req, res) => {
+const loginUser = async (req, res) => {
   const email = req.params.email
   const password = req.params.password
   try {
@@ -70,13 +91,13 @@ const getUserByLogin = async (req, res) => {
     if (!user) {
       return res.status(404).send("Incorrect login details")
     }
-
     //verify password
     if (!bcrypt.compareSync(password,user.password)){
       return res.status(404).send("Incorrect login details")
     }
     
-    res.json(user);
+    //generate jwt token
+    res.json(generateAccessToken(user.id));
   } catch (error) {
     console.error(error)
     res.status(500).send("Error logging in")
@@ -120,7 +141,7 @@ const updateProfilePic = async (req, res) => {
 
       res.status(201).send("Profile picture updated successfully");
   } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).send("Error updating profile picture");
   }
 };
@@ -183,7 +204,8 @@ const addSubLecture = async (req,res) => {
 module.exports = {
     getAllUsers,
     getUserById,
-    getUserByLogin,
+    getPrivateUserById,
+    loginUser,
     createUser,
     updateProfilePic,
     getCompleteUserByID,
