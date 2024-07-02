@@ -14,7 +14,7 @@ function inputChanged(e){
 }
 
 async function login(){
-    const response = await get(`/users/login/${emailInput.value}/${passwordInput.value}`)
+    const response = await post(`/users/login`,{email:emailInput.value, password: passwordInput.value})
     //check if login successful
     if (response.status == 404){
         //clear password field

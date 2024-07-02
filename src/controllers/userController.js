@@ -83,8 +83,8 @@ const getProfilePictureByID = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
-  const email = req.params.email
-  const password = req.params.password
+  const email = req.body.email
+  const password = req.body.password
   try {
     //check if email exists
     const user = await User.getUserByEmail(email)
