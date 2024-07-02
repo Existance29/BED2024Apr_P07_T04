@@ -14,7 +14,7 @@ function inputChanged(e){
 }
 
 async function login(){
-    const response = await get(`/users/login/${emailInput.value}/${passwordInput.value}`)
+    const response = await post(`/users/login`,{email:emailInput.value, password: passwordInput.value})
     //check if login successful
     if (response.status == 404){
         //clear password field
@@ -25,10 +25,12 @@ async function login(){
     }
     //login successful
     
-    const id = (await response.json()).id
-    //if remember me enabled, store it in local storage
-    sessionStorage.userid = id
-    if (rememberInput.checked) localStorage.userid = id 
+    const token = (await response.json()).accessToken
+    //store the token in a session storage
+    //store it in local if remember me is enabled
+    sessionStorage.accessToken = token
+    
+    if (rememberInput.checked) localStorage.accessToken = token 
 
     //redirect user to courses
     window.location.href = "../courses.html"

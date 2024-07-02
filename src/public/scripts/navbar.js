@@ -2,7 +2,6 @@
 if (isLoggedIn()){
     document.getElementById("profile").style.display = "block" 
     const userid = getUserID()
-
     //use asynchronous fetch, we want the header and content to load asap
     fetch(`/users/pic/${userid}`)
     .then((response) => {
@@ -29,9 +28,9 @@ function logout(redirect=true){
     //show login button and hide profile icon
     document.getElementById("login").style.display = "block"
     document.getElementById("profile").style.display = "none" 
-    //remove userID from storage and redirect user
-    localStorage.removeItem("userid")
-    sessionStorage.removeItem("userid")
+    //remove access token cookie
+    localStorage.removeItem("accessToken")
+    sessionStorage.removeItem("accessToken")
     if (redirect) window.location.href = "../index.html"
 
 }

@@ -124,7 +124,6 @@ async function loadCourseAndLectureDetails() {
 
     //indicate the sublectures that have been viewed
     const viewedSubLectures = await (await get(`/users/courses/sublectures/${userID}/${courseID}`)).json()
-    console.log(viewedSubLectures)
     viewedSubLectures.forEach((x) => viewSubLecture(x))
     // Load the initial video
     if (subLectureID) {
@@ -157,7 +156,7 @@ async function loadLectureVideo(lectureID, courseID) {
 
 // Function to load sub-lecture video
 async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
-    const viewSubLectureResponse = await post(`./users/sublecture/${userID}/${subLectureID}`) //add the viewed sublecture to the database
+    const viewSubLectureResponse = await post(`./users/sublecture/${subLectureID}`) //add the viewed sublecture to the database
     const subLecture = await fetchLectureDetails(lectureID, subLectureID);
     const videoData = normalizeVideoProperty(subLecture);
 

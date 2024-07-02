@@ -11,10 +11,19 @@ $(".footer-placeholder").load("./commonHTML/footer.html")
 //load the header for course-view pages
 $(".course-header-placeholder").load("./commonHTML/course-header.html")
 
+//get the access token
+var accessToken = null
+if (localStorage.accessToken){
+  accessToken = localStorage.accessToken
+}else if (sessionStorage.accessToken){
+  accessToken = sessionStorage.accessToken
+}
+//console.log(accessToken)
 //returns a string with title-casing
 function title(str) {
     return str.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
+
 
 //get the value of the url parameter of the current address
 function getUrlParameter(sParam){
@@ -36,7 +45,8 @@ async function post(url, jsondata){
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "cache-control": "no-cache"
+        "cache-control": "no-cache",
+        "authorization": `Bearer ${accessToken}`
       },
   
       body: JSON.stringify(jsondata)
@@ -50,6 +60,7 @@ async function get(url){
       method: "GET",
       headers: {
         "content-type": "application/json",
+        "authorization": `Bearer ${accessToken}`
       }
     }
     return await fetch(url, settings)
@@ -61,7 +72,8 @@ async function put(url, jsondata){
     method: "PUT",
     headers: {
       "content-type": "application/json",
-      "cache-control": "no-cache"
+      "cache-control": "no-cache",
+      "authorization": `Bearer ${accessToken}`
     },
     body: JSON.stringify(jsondata)
   }
@@ -72,23 +84,11 @@ async function put(url, jsondata){
 
 //check if user is logged in 
 function isLoggedIn(){
-    //check both local and session storage
-    var localUser = localStorage.userid
-    var sessionUser = sessionStorage.userid
-    //if localuser or sessionuser exist, user is logged in
-    return !(localUser == null && sessionUser === undefined && sessionUser == null && sessionUser === undefined)
+    return Boolean(accessToken)
 }
-
 //returns the user id stored in local/session storage
 function getUserID(){
-  if (sessionStorage.userid != null){
-    return sessionStorage.userid
-
-  } else if (localStorage.userid != null){
-    return localStorage.userid
-  } 
-
-  return null
+  return JSON.parse(atob(accessToken.split('.')[1])).userId
 }
 
 //prevent reloading page when form submitted

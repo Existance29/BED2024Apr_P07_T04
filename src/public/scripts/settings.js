@@ -5,13 +5,13 @@ const settingDesc = document.getElementById("settings-desc")
 
 //api 
 const userid = getUserID()
-const initialData = get(`/users/complete/${userid}`)
 
 //input fields
 const profileImg = document.getElementById("profile-img")
 const imgInput = document.getElementById("upload-img")
 const firstName = document.getElementById("first_name")
 const lastName = document.getElementById("last_name")
+const jobTitle = document.getElementById("job_title")
 const email = document.getElementById("email")
 const country = document.getElementById("country")
 const aboutMe = document.getElementById("about_me")
@@ -21,6 +21,7 @@ const repeatNewPassword = document.getElementById("repeat_new_password")
 
 firstName.addEventListener("input", inputChanged)
 lastName.addEventListener("input", inputChanged)
+jobTitle.addEventListener("input", inputChanged)
 email.addEventListener("input", inputChanged)
 aboutMe.addEventListener("input", inputChanged)
 currentPassword.addEventListener("input", inputChanged)
@@ -89,17 +90,17 @@ async function saveAccount(){
         //send it via a form data
         var formDataSend = new FormData();
         formDataSend.append("pic",imgInput.files[0], "fileName.jpg");
-        fetch(`/users/pic/${userid}`, {method: "PUT", body: formDataSend})
+        fetch("/users/pic/", {method: "PUT", headers:{"authorization": `Bearer ${accessToken}`},body: formDataSend})
     }
 
     //save main settings
     const updateData = {
-        "id": data.id,
         "first_name": firstName.value,
         "last_name": lastName.value,
         "email": email.value,
         "about_me": aboutMe.value,
         "country": country.value,
+        "job_title": jobTitle.value
     }
 
     const response = await put("/users", updateData)
@@ -108,7 +109,6 @@ async function saveAccount(){
         //iterate through all errors, display the error message
         for (var i = 0; i < body.errors.length; i++){
             const x  = body.errors[i]
-            console.log(x[0])
             const errorEle = document.getElementById(`${x[0]}-error`) //get the error messasge element associated with the error
             errorEle.innerText = x[1].replaceAll("_"," ").replaceAll('"','') //do a bit of formatting to make the message more readable
             errorEle.style.display = "block"
@@ -136,7 +136,7 @@ async function savePassword(){
         "repeat_new_password": repeatNewPassword.value
     }
 
-    const response = await put(`/users/password/${userid}`, updateData)
+    const response = await put("/users/password", updateData)
     const body = await response.json()
     if (response.status == 400 && "message" in body){
         //iterate through all errors, display the error message
@@ -156,19 +156,21 @@ async function savePassword(){
 
 async function resetSettings(load = false){
     if (load){
-        //take initial data
-        const response = await initialData
+        //load data
+        const response = await get("/users/private")
         if (response.status == 500) return
-        //cant find user
-        if (response.status == 404){
+        //cant find user or token is invalid
+        if (!response.ok){
             //log user out and redirect to login page
-            localStorage.removeItem("userid")
-            sessionStorage.removeItem("userid")
+            localStorage.removeItem("accessToken")
+            sessionStorage.removeItem("accessToken")
             window.location.href = "login.html"
             return
         }
+        //get the profile img
+        const profileImg = await(await get(`/users/pic/${userid}`)).json()
         //data is global variable
-        data = await response.json()
+        data = {...await response.json(),...profileImg}
     }
     //set input values
     profileImg.src = `data:image/png;base64,${data.img}`
@@ -177,6 +179,7 @@ async function resetSettings(load = false){
     email.value = data.email
     country.value = data.country
     aboutMe.value = data.about_me
+    jobTitle.value = data.job_title
     clearPasswordFields()
 }
 

@@ -1,12 +1,19 @@
 const User = require("../models/user")
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 
 //use bcrypt to hash a password and return it
 const hashPassword = (password) => {
   const salt = bcrypt.genSaltSync(10)
   return bcrypt.hashSync(password,salt)
+}
+
+const generateAccessToken = (userID) => {
+  const accessToken = jwt.sign({userId: userID, role: "member"}, process.env.ACCESS_TOKEN_SECRET)
+  return {accessToken: accessToken}
 }
 
 const getAllUsers = async (req, res) => {
@@ -23,6 +30,20 @@ const getUserById = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
     const user = await User.getUserById(id)
+    if (!user) {
+      return res.status(404).send("User not found")
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Error retrieving users")
+  }
+}
+
+const getPrivateUserById = async (req, res) => {
+  const id = parseInt(req.userId);
+  try {
+    const user = await User.getPrivateUserById(id)
     if (!user) {
       return res.status(404).send("User not found")
     }
@@ -61,22 +82,22 @@ const getProfilePictureByID = async (req, res) => {
   }
 }
 
-const getUserByLogin = async (req, res) => {
-  const email = req.params.email
-  const password = req.params.password
+const loginUser = async (req, res) => {
+  const email = req.body.email
+  const password = req.body.password
   try {
     //check if email exists
     const user = await User.getUserByEmail(email)
     if (!user) {
       return res.status(404).send("Incorrect login details")
     }
-
     //verify password
     if (!bcrypt.compareSync(password,user.password)){
       return res.status(404).send("Incorrect login details")
     }
     
-    res.json(user);
+    //generate jwt token
+    res.json(generateAccessToken(user.id));
   } catch (error) {
     console.error(error)
     res.status(500).send("Error logging in")
@@ -90,7 +111,7 @@ const createUser = async (req, res) => {
     newUser.password = hashPassword(newUser.password)
     const createdUser = await User.createUser(newUser)
     //create user successful, display it as json
-    res.status(201).json(createdUser);
+    res.status(201).json(generateAccessToken(createdUser.id));
   } catch (error) {
     console.error(error);
     res.status(500).send("Error creating user")
@@ -99,7 +120,7 @@ const createUser = async (req, res) => {
 
 const updateProfilePic = async (req, res) => {
   const file = req.file;
-  const id = parseInt(req.params.id);
+  const id = parseInt(req.userId);
 
   if (!file) {
       return res.status(400).send("No file uploaded");
@@ -120,15 +141,16 @@ const updateProfilePic = async (req, res) => {
 
       res.status(201).send("Profile picture updated successfully");
   } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).send("Error updating profile picture");
   }
 };
 
 const updateUser = async (req, res) => {
-  const data = req.body;
+  const data = req.body
+  const id = req.userId
   try {
-    const updatedUser = await User.updateUser(data)
+    const updatedUser = await User.updateUser(id,data)
     res.status(201).json(updatedUser);
   } catch (error) {
     console.error(error);
@@ -139,7 +161,7 @@ const updateUser = async (req, res) => {
 const updatePassword = async (req, res) => {
   try {
     
-    const updatedUser = await User.updatePassword(req.params.id,hashPassword(req.body.new_password))
+    const updatedUser = await User.updatePassword(req.userId,hashPassword(req.body.new_password))
     res.status(201).json(updatedUser);
   } catch (error) {
     console.error(error);
@@ -165,7 +187,7 @@ const getViewedSubLecturesByCourse = async (req,res) => {
 
 const addSubLecture = async (req,res) => {
   try {
-    const uid = parseInt(req.params.uid)
+    const uid = req.userId
     const lid = parseInt(req.params.lid)
     const user = await User.getUserById(uid)
     //check if user exists
@@ -180,10 +202,15 @@ const addSubLecture = async (req,res) => {
   }
 }
 
+const verifyUserToken = async (req, res) => {
+  res.status(201).send("token is valid")
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
-    getUserByLogin,
+    getPrivateUserById,
+    loginUser,
     createUser,
     updateProfilePic,
     getCompleteUserByID,
@@ -192,5 +219,6 @@ module.exports = {
     getProfilePictureByID,
     hashPassword,
     addSubLecture,
-    getViewedSubLecturesByCourse
+    getViewedSubLecturesByCourse,
+    verifyUserToken
 };
