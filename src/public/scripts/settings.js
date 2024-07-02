@@ -1,9 +1,11 @@
+//ensure user is logged in
+guardLoginPage()
+
 const tabs = Array.prototype.slice.call(document.getElementsByClassName("side-select"))
 const tabContents = Array.prototype.slice.call(document.getElementsByClassName("tab-content"))
 const settingTitle = document.getElementById("settings-title")
 const settingDesc = document.getElementById("settings-desc")
 
-//api 
 const userid = getUserID()
 
 //input fields

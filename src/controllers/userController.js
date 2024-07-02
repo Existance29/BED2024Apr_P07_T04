@@ -11,8 +11,9 @@ const hashPassword = (password) => {
   return bcrypt.hashSync(password,salt)
 }
 
-const generateAccessToken = (userID) => {
-  const accessToken = jwt.sign({userId: userID, role: "member"}, process.env.ACCESS_TOKEN_SECRET)
+const generateAccessToken = (user) => {
+  //make a jsonwetoken containing the user's id and role
+  const accessToken = jwt.sign({userId: user.id, role: user.role}, process.env.ACCESS_TOKEN_SECRET)
   return {accessToken: accessToken}
 }
 
@@ -97,7 +98,7 @@ const loginUser = async (req, res) => {
     }
     
     //generate jwt token
-    res.json(generateAccessToken(user.id));
+    res.json(generateAccessToken(user));
   } catch (error) {
     console.error(error)
     res.status(500).send("Error logging in")
@@ -111,7 +112,7 @@ const createUser = async (req, res) => {
     newUser.password = hashPassword(newUser.password)
     const createdUser = await User.createUser(newUser)
     //create user successful, display it as json
-    res.status(201).json(generateAccessToken(createdUser.id));
+    res.status(201).json(generateAccessToken(createdUser));
   } catch (error) {
     console.error(error);
     res.status(500).send("Error creating user")
@@ -119,20 +120,21 @@ const createUser = async (req, res) => {
 }
 
 const updateProfilePic = async (req, res) => {
-  const file = req.file;
+  const file = req.file; //file obj from form data
   const id = parseInt(req.userId);
-
+  //verify that a file has been added
   if (!file) {
       return res.status(400).send("No file uploaded");
   }
 
   try {
+      //ensure that user exists
       const user = await User.getUserById(id);
       if (!user) {
           return res.status(404).send("User not found");
       }
 
-      const imageBuffer = fs.readFileSync(file.path, { encoding: 'base64' });
+      const imageBuffer = fs.readFileSync(file.path, { encoding: 'base64' }); //read the file and convert it to base64
 
       await User.updateProfilePic(id, imageBuffer);
 
@@ -147,6 +149,7 @@ const updateProfilePic = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+  //update the data found in the user table
   const data = req.body
   const id = req.userId
   try {
@@ -159,8 +162,8 @@ const updateUser = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
+  //update the user's password
   try {
-    
     const updatedUser = await User.updatePassword(req.userId,hashPassword(req.body.new_password))
     res.status(201).json(updatedUser);
   } catch (error) {
@@ -193,7 +196,10 @@ const addSubLecture = async (req,res) => {
     //check if user exists
     if (!user) return res.status(404).send("User not found")
     //check if user already viewed lecture
+    //we do not want duplicates of a table entry
+    //still return status 201 anyways, its still a success
     if (await User.hasViewedSubLecture(uid, lid)) return res.status(201).send("user already viewed sub lecture")
+    //user has not viewed lecture, add it
     User.addSubLecture(uid,lid)
     res.status(201).send("success");
   } catch (error) {
