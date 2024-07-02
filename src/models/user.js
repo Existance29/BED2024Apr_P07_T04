@@ -166,10 +166,10 @@ class User {
         await this.query("UPDATE Profile_Pictures SET img = @img WHERE user_id = @user_id", params)
     }
 
-    static async updateUser(user){
+    static async updateUser(id,user){
         //accept a object and add it to the database
         const params = {
-            "id": user.id,
+            "id": id,
             "first_name": user.first_name,
             "last_name": user.last_name,
             "email": user.email,
@@ -179,7 +179,7 @@ class User {
         }
         await this.query("UPDATE Users SET first_name = @first_name, last_name = @last_name, email = @email, about_me = @about_me, country = @country, job_title = @job_title WHERE id = @id", params)
         //return the updated user
-        return this.getUserById(user.id)
+        return this.getUserById(id)
     }
 
     static async updatePassword(id, newPassword){

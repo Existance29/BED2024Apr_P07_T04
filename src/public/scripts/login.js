@@ -25,10 +25,12 @@ async function login(){
     }
     //login successful
     
-    const id = (await response.json()).id
-    //if remember me enabled, store it in local storage
-    sessionStorage.userid = id
-    if (rememberInput.checked) localStorage.userid = id 
+    const token = (await response.json()).accessToken
+    //store the token in a session storage
+    //store it in local if remember me is enabled
+    sessionStorage.accessToken = token
+    
+    if (rememberInput.checked) localStorage.accessToken = token 
 
     //redirect user to courses
     window.location.href = "../courses.html"

@@ -12,7 +12,7 @@ const hashPassword = (password) => {
 }
 
 const generateAccessToken = (userID) => {
-  const accessToken = jwt.sign({userId: userID}, process.env.ACCESS_TOKEN_SECRET)
+  const accessToken = jwt.sign({userId: userID, role: "member"}, process.env.ACCESS_TOKEN_SECRET)
   return {accessToken: accessToken}
 }
 
@@ -111,7 +111,7 @@ const createUser = async (req, res) => {
     newUser.password = hashPassword(newUser.password)
     const createdUser = await User.createUser(newUser)
     //create user successful, display it as json
-    res.status(201).json(createdUser);
+    res.status(201).json(generateAccessToken(createdUser.id));
   } catch (error) {
     console.error(error);
     res.status(500).send("Error creating user")
@@ -120,7 +120,7 @@ const createUser = async (req, res) => {
 
 const updateProfilePic = async (req, res) => {
   const file = req.file;
-  const id = parseInt(req.params.id);
+  const id = parseInt(req.userId);
 
   if (!file) {
       return res.status(400).send("No file uploaded");
@@ -147,9 +147,10 @@ const updateProfilePic = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const data = req.body;
+  const data = req.body
+  const id = req.userId
   try {
-    const updatedUser = await User.updateUser(data)
+    const updatedUser = await User.updateUser(id,data)
     res.status(201).json(updatedUser);
   } catch (error) {
     console.error(error);
@@ -160,7 +161,7 @@ const updateUser = async (req, res) => {
 const updatePassword = async (req, res) => {
   try {
     
-    const updatedUser = await User.updatePassword(req.params.id,hashPassword(req.body.new_password))
+    const updatedUser = await User.updatePassword(req.userId,hashPassword(req.body.new_password))
     res.status(201).json(updatedUser);
   } catch (error) {
     console.error(error);
@@ -186,7 +187,7 @@ const getViewedSubLecturesByCourse = async (req,res) => {
 
 const addSubLecture = async (req,res) => {
   try {
-    const uid = parseInt(req.params.uid)
+    const uid = req.userId
     const lid = parseInt(req.params.lid)
     const user = await User.getUserById(uid)
     //check if user exists
@@ -199,6 +200,10 @@ const addSubLecture = async (req,res) => {
     console.error(error);
     res.status(500).send("Error adding viewed sub lecture")
   }
+}
+
+const verifyUserToken = async (req, res) => {
+  res.status(201).send("token is valid")
 }
 
 module.exports = {
@@ -214,5 +219,6 @@ module.exports = {
     getProfilePictureByID,
     hashPassword,
     addSubLecture,
-    getViewedSubLecturesByCourse
+    getViewedSubLecturesByCourse,
+    verifyUserToken
 };

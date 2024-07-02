@@ -57,7 +57,6 @@ const validateUser = async (req, res, next) => {
 
 const validateUpdate = async (req,res,next) => {
   const schema = Joi.object({
-    id: Joi.number().required(),
     first_name: Joi.string().min(1).max(40).required(),
     last_name: Joi.string().min(1).max(40).required(),
     email: Joi.string().min(3).max(50).required().email().external((value,helper) => uniqueUpdateEmail(req.body.id,value,helper)),

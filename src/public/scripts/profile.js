@@ -82,7 +82,7 @@ async function loadProfile(){
     //display completed courses
     //check if completed_courses is null (user has not completed any courses)
     const completedCourses = document.getElementById("course-section")
-    console.log(data.completed_courses)
+
     if (!data.completed_courses){
         completedCourses.innerHTML += "User has not completed any courses"
     } else{
@@ -127,7 +127,6 @@ async function loadProfile(){
         )
         versatility = roundToTwo(userCourseCategories.length/allCourseCategories.length)*10
     }
-    console.log(accuracy,versatility)
     loadChart([accuracy, versatility, 0])
 
 }
