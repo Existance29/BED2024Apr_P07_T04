@@ -48,7 +48,8 @@ const validateUser = async (req, res, next) => {
     email: Joi.string().min(3).max(50).required().email().external(uniqueEmail),
     password: Joi.string().min(5).max(100).required(),
     about_me: Joi.string().max(250).required().allow(''),
-    country: Joi.string().max(100).required()
+    country: Joi.string().max(100).required(),
+    job_title: Joi.string().max(100).required()
   })
   //check if validation successful
   if (await validateSchema(req,res,schema)) next()
@@ -61,7 +62,8 @@ const validateUpdate = async (req,res,next) => {
     last_name: Joi.string().min(1).max(40).required(),
     email: Joi.string().min(3).max(50).required().email().external((value,helper) => uniqueUpdateEmail(req.body.id,value,helper)),
     about_me: Joi.string().max(250).required().allow(''),
-    country: Joi.string().max(100).required()
+    country: Joi.string().max(100).required(),
+    job_title: Joi.string().max(100).required()
   })
    //check if validation successful
    if (await validateSchema(req,res,schema)) next()

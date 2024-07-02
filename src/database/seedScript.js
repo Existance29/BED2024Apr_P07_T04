@@ -80,6 +80,7 @@ CREATE TABLE Users (
   about_me VARCHAR(250) NOT NULL,
   country VARCHAR(100) NOT NULL,
   join_date DATE NOT NULL,
+  job_title VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE Profile_Pictures (

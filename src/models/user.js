@@ -5,7 +5,7 @@ const fs = require("fs");
 
 class User {
     //setup user object
-    constructor(id, first_name, last_name, email, password, about_me, country, join_date) {
+    constructor(id, first_name, last_name, email, password, about_me, country, join_date, job_title) {
       this.id = id
       this.first_name = first_name
       this.last_name = last_name
@@ -14,11 +14,12 @@ class User {
       this.about_me = about_me
       this.country = country
       this.join_date = join_date
+      this.job_title = job_title
     }
 
     //pass the sql recordset into the user constructor
     static toUserObj(row){
-        return new User(row.id, row.first_name, row.last_name, row.email, row.password, row.about_me, row.country, row.join_date)
+        return new User(row.id, row.first_name, row.last_name, row.email, row.password, row.about_me, row.country, row.join_date, row.job_title)
     }
     
 
@@ -98,9 +99,10 @@ class User {
             "password": user.password,
             "about_me": user.about_me,
             "country": user.country,
+            "job_title": "Student"
         }
         //add user data
-        const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country, join_date) VALUES (@first_name, @last_name, @email, @password, @about_me, @country, GETDATE()); SELECT SCOPE_IDENTITY() AS id;", params)
+        const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country, join_date, job_title) VALUES (@first_name, @last_name, @email, @password, @about_me, @country, GETDATE(), @job_title); SELECT SCOPE_IDENTITY() AS id;", params)
 
         
         //get the newly-created user
@@ -141,9 +143,10 @@ class User {
             "last_name": user.last_name,
             "email": user.email,
             "about_me": user.about_me,
-            "country": user.country
+            "country": user.country,
+            "job_title": user.job_title
         }
-        await this.query("UPDATE Users SET first_name = @first_name, last_name = @last_name, email = @email, about_me = @about_me, country = @country WHERE id = @id", params)
+        await this.query("UPDATE Users SET first_name = @first_name, last_name = @last_name, email = @email, about_me = @about_me, country = @country, job_title = @job_title WHERE id = @id", params)
         //return the updated user
         return this.getUserById(user.id)
     }
