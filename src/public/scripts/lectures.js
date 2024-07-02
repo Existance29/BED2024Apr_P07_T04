@@ -139,8 +139,6 @@ async function loadLectureVideo(lectureID, courseID) {
     const lecture = await fetchLectureDetails(lectureID);
     const videoData = normalizeVideoProperty(lecture);
 
-    
-
     // Highlight the selected lecture
     const lectureItems = document.querySelectorAll('.lecture-item');
     lectureItems.forEach(item => item.classList.remove('active'));

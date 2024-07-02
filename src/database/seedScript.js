@@ -68,6 +68,7 @@ IF OBJECT_ID('Profile_Pictures', 'U') IS NOT NULL DROP TABLE Profile_Pictures;
 IF OBJECT_ID('User_Sub_Lectures', 'U') IS NOT NULL DROP TABLE User_Sub_Lectures;
 IF OBJECT_ID('UserQuizAttempts', 'U') IS NOT NULL DROP TABLE UserQuizAttempts;
 IF OBJECT_ID('User_Completed_Courses', 'U') IS NOT NULL DROP TABLE User_Completed_Courses;
+IF OBJECT_ID('Comments', 'U') IS NOT NULL DROP TABLE Comments;
 
 -- Create tables
 CREATE TABLE Users (
@@ -101,11 +102,17 @@ CREATE TABLE Courses (
   Video VARBINARY(MAX) NOT NULL
 );
 
-
 CREATE TABLE Lectures (
   LectureID INT PRIMARY KEY IDENTITY(1,1),
   Name NVARCHAR(255) NOT NULL,
   Description NVARCHAR(MAX) NOT NULL,
+  Category NVARCHAR(MAX) NOT NULL,
+  Duration INT NOT NULL,
+);
+
+CREATE TABLE Comments (
+  CommentID INT PRIMARY KEY IDENTITY(1,1),
+  Message NVARCHAR(MAX) NOT NULL,
   Category NVARCHAR(MAX) NOT NULL,
   Duration INT NOT NULL,
 );
@@ -206,7 +213,6 @@ CREATE TABLE UserQuizAttempts (
 );
 
 `;
-
 
 // Course data with their respective lectures and sub-lectures
 const systemData = [

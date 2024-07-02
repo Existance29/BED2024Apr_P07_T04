@@ -49,7 +49,7 @@ function displayQuizDetails(quiz, attemptDetails) {
         <p>Attempts: ${attemptDetails.attempts}/${attemptDetails.maxAttempts}</p>  <!-- Corrected attempt details display -->
         ${attemptDetails.canAttempt ? 
             `<a href="quizQuestions.html?quizId=${quiz.id}" class="quiz-btn btn section-text" type="button" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Start</a>` :
-            `<p style="color: red;">You have reached the maximum number of attempts for this quiz. Attempts left: ${attemptDetails.attemptsLeft}</p>`
+            `<p style="color: red;">You have reached the maximum number of attempts for this quiz.</p>`
         }
     `;
 }
