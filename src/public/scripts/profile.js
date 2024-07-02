@@ -11,6 +11,32 @@ function roundToTwo(num) {
     return +(Math.round(num + "e+2")  + "e-2");
 }
 
+function readableDate(timestamp){
+    //extract date from timestamp (string) in format: DD MMM YY
+    //DD: 2 digits for day, MMM: first 3 chars of the month, YYYY: year
+
+    //extract date and split based on dash
+    let date = ((timestamp.split("T")[0]).split("-")).reverse()
+
+    //convert month to format
+    const monthNumToName = {
+        "01": "Jan",
+        "02": "Feb",
+        "03": "Mar",
+        "04": "Apr",
+        "05": "May",
+        "06": "Jun",
+        "07": "July",
+        "08": "Aug",
+        "09": "Sep",
+        "10": "Oct",
+        "11": "Nov",
+        "12": "Dec"
+    }
+    date[1] = monthNumToName[date[1]]
+    return date.join(" ")
+}
+
 // Convert binary data to base64 string
 function arrayBufferToBase64(buffer) {
     let binary = '';
@@ -26,7 +52,11 @@ async function loadProfile(){
     const response = await get(`/users/complete/${userID}`)
     //handle different responses
     if (response.status == 404){
-        //user not found
+        const content = document.getElementById("main")
+        content.innerHTML = `<h2 style = "color:white; font-size: 2vw">404 User Not Found</h2>`
+        content.innerHTML += `<div style = "color:white; font-size: 1.2vw; margin-top:2vw">We couldn't find this user. Maybe the user has been deleted, or possibly never existed</div>`
+        content.style.minHeight = "100vh"
+
     }else if (response.status = 500){
         //error
     }
@@ -42,55 +72,62 @@ async function loadProfile(){
     document.getElementById("full-name").innerText = `${data.first_name} ${data.last_name}`
     document.getElementById("country").innerText = data.country
     document.getElementById("about-me").innerText = data.about_me
-    document.getElementById("progress-courses").innerText = data.completed_courses.length
+    document.getElementById("progress-courses").innerText = data.completed_courses ? data.completed_courses.length : 0
     document.getElementById("progress-questions").innerText = data.questions_completed
 
     //get courses
     const courses = await (await get("/courses/without-video")).json()
-    
-    //generate a list of all course categories + categories of courses user has completed
-    let allCourseCategories = []
-    let userCourseCategories = []
-    courses.forEach((course) => {
-        //get an array of all categories in the course
-        const courseCategories = course.category.replaceAll(' ','').split(",")
-        courseCategories.forEach((cat) => {
-            //add all categories
-            if (!allCourseCategories.includes(cat)) allCourseCategories.push(cat)
-            //add categories of courses user has completed
-            if (data.completed_courses.includes(course.courseID) && !userCourseCategories.includes(cat)) userCourseCategories.push(cat)
-        })
-        }
-    )
-
-    //load the chart and calculate the data values
-    const accuracy = roundToTwo(data.quiz_accuracy)*10
-    const versatility = roundToTwo(userCourseCategories.length/allCourseCategories.length)*10
-    loadChart([accuracy, versatility, 6])
 
     //display completed courses
     //check if completed_courses is null (user has not completed any courses)
     const completedCourses = document.getElementById("course-section")
+    console.log(data.completed_courses)
     if (!data.completed_courses){
         completedCourses.innerHTML += "User has not completed any courses"
-        return
+    } else{
+        //there are courses to display
+        completedCourses.innerHTML += `<div class = "course-seperator"></div>`
+        data.completed_courses.forEach((completedCourse) => {
+            const course = courses[completedCourse.course_id-1]
+            const html = `
+            <div id = "course" style="width: 100%">
+                <div class = "d-flex course-content" onclick = "location.href = 'course-chapters.html?courseID=${completedCourse.course_id}'">
+                    <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
+                    <div class = "d-flex flex-column justify-content-between" style = "margin-left: 2vw;">
+                        <div class = "poppins-medium course-title">${course.title}</div>
+                        <div class = "poppins-medium course-complete-date">Completed on: ${readableDate(completedCourse.date_completed)}</div>
+                    </div>
+                </div>
+                <div class = "course-seperator"></div>
+            </div>
+            `
+            completedCourses.innerHTML += html
+        })
     }
 
-    //there are courses to display
-    completedCourses.innerHTML += `<div class = "course-seperator"></div>`
-    data.completed_courses.forEach((id) => {
-        const course = courses[id-1]
-        const html = `
-        <div id = "course" style="width: 100%">
-            <div class = "d-flex course-content align-items-center">
-                <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
-                <p class = "poppins-medium course-title">${course.title}</p>
-            </div>
-            <div class = "course-seperator"></div>
-        </div>
-        `
-        completedCourses.innerHTML += html
-    })
+    //load the chart and calculate the data values
+    const accuracy = roundToTwo(data.quiz_accuracy)*10
+    let versatility = 0
+    //generate a list of all course categories + categories of courses user has completed
+    //calculate versatility
+    if (data.completed_courses){
+        let allCourseCategories = []
+        let userCourseCategories = []
+        courses.forEach((course) => {
+            //get an array of all categories in the course
+            const courseCategories = course.category.replaceAll(' ','').split(",")
+            courseCategories.forEach((cat) => {
+                //add all categories
+                if (!allCourseCategories.includes(cat)) allCourseCategories.push(cat)
+                //add categories of courses user has completed
+                if (data.completed_courses.some( e => e.course_id === course.courseID) && !userCourseCategories.includes(cat)) userCourseCategories.push(cat)
+            })
+            }
+        )
+        versatility = roundToTwo(userCourseCategories.length/allCourseCategories.length)*10
+    }
+    console.log(accuracy,versatility)
+    loadChart([accuracy, versatility, 6])
 
 }
 

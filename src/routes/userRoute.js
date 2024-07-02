@@ -10,6 +10,7 @@ const userRoute = (app, upload) => {
     app.get("/users/pic/:id", usersController.getProfilePictureByID)
     app.get("/users/complete/:id", usersController.getCompleteUserByID)
     app.get("/users/login/:email/:password", usersController.getUserByLogin)
+    app.get("/users/courses/sublectures/:uid/:cid", usersController.getViewedSubLecturesByCourse)
     app.put("/users/pic/:id", upload.single('pic'), usersController.updateProfilePic) // using multer for uploading profile pictures
     app.put("/users", validateUser.validateUpdate, usersController.updateUser)
     app.put("/users/password/:id", validateUser.validateNewPassword, usersController.updatePassword)

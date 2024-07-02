@@ -1,4 +1,4 @@
-//check if the user is logged in, if they are, display profile icon, else display login button
+//check if the user is logged in, if they are, display profile icon, else display login button (by triggering logout)
 if (isLoggedIn()){
     document.getElementById("profile").style.display = "block" 
     const userid = getUserID()
@@ -17,7 +17,7 @@ if (isLoggedIn()){
         document.getElementById("nav-profile-img").src = `data:image/png;base64,${body.img}`
     })
 }else{
-    document.getElementById("login").style.display = "block"
+    logout(false)
 }
 
 function goToProfile(){
@@ -26,6 +26,9 @@ function goToProfile(){
 }
 
 function logout(redirect=true){
+    //show login button and hide profile icon
+    document.getElementById("login").style.display = "block"
+    document.getElementById("profile").style.display = "none" 
     //remove userID from storage and redirect user
     localStorage.removeItem("userid")
     sessionStorage.removeItem("userid")

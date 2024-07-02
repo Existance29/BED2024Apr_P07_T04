@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.student-card{
+    background: white;
+    box-shadow: 0px 4px 88px 0px rgb(0 0 0 / 13%);
+    padding: 1.5vw 2%;
+    font-family: "Roboto", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    flex: 1 1 0px; /*Make sure all cards are the same size*/
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.student-quote{
+    color: #ACACAC;
+    font-size: 0.9vw;
+}
+
+.student-img{
+    width: 15%;
+    object-fit: contain;
+}
+
+.student-name{
+    font-size: 0.86vw;
+    color: #353535;
+    font-weight: 500;
+}
+
+.student-job{
+    color: #8E8E8E;
+    font-size: 0.83vw;
+}

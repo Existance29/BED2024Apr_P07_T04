@@ -67,6 +67,7 @@ IF OBJECT_ID('Quizzes', 'U') IS NOT NULL DROP TABLE Quizzes;
 IF OBJECT_ID('Profile_Pictures', 'U') IS NOT NULL DROP TABLE Profile_Pictures;
 IF OBJECT_ID('User_Sub_Lectures', 'U') IS NOT NULL DROP TABLE User_Sub_Lectures;
 IF OBJECT_ID('UserQuizAttempts', 'U') IS NOT NULL DROP TABLE UserQuizAttempts;
+IF OBJECT_ID('User_Completed_Courses', 'U') IS NOT NULL DROP TABLE User_Completed_Courses;
 IF OBJECT_ID('Comments', 'U') IS NOT NULL DROP TABLE Comments;
 
 -- Create tables
@@ -131,6 +132,14 @@ CREATE TABLE User_Sub_Lectures (
   sub_lecture_id INT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES Users(id),
   FOREIGN KEY (sub_lecture_id) REFERENCES SubLectures(SubLectureID)
+);
+
+ CREATE TABLE User_Completed_Courses (
+  user_id INT NOT NULL,
+  course_id INT NOT NULL,
+  date_completed DATE,
+  FOREIGN KEY (user_id) REFERENCES Users(id),
+  FOREIGN KEY (course_id) REFERENCES Courses(CourseID)
 );
 
 CREATE TABLE CourseLectures (
