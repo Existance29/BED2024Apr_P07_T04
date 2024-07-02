@@ -75,6 +75,7 @@ async function loadProfile(){
     document.getElementById("about-me").innerText = data.about_me
     document.getElementById("progress-courses").innerText = data.completed_courses ? data.completed_courses.length : 0
     document.getElementById("progress-questions").innerText = data.questions_completed
+    document.getElementById("role").innerText = title(data.role)
 
     //get courses
     const courses = await (await get("/courses/without-video")).json()

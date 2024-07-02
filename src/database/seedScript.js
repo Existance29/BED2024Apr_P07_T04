@@ -71,6 +71,8 @@ IF OBJECT_ID('User_Completed_Courses', 'U') IS NOT NULL DROP TABLE User_Complete
 IF OBJECT_ID('Comments', 'U') IS NOT NULL DROP TABLE Comments;
 
 -- Create tables
+
+
 CREATE TABLE Users (
   id INT PRIMARY KEY IDENTITY,
   first_name VARCHAR(40) NOT NULL,
@@ -80,7 +82,8 @@ CREATE TABLE Users (
   about_me VARCHAR(250) NOT NULL,
   country VARCHAR(100) NOT NULL,
   join_date DATE NOT NULL,
-  job_title VARCHAR(100) NOT NULL
+  job_title VARCHAR(100) NOT NULL,
+  role VARCHAR(8) NOT NULL
 );
 
 CREATE TABLE Profile_Pictures (

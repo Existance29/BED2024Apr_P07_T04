@@ -83,11 +83,32 @@ async function put(url, jsondata){
 }
 
 //check if user is logged in 
-function isLoggedIn(){
-    return Boolean(accessToken)
+async function isLoggedIn(){
+  if (accessToken === null) return false
+  //make sure the jwt is valid
+  const response = await get("/users/verifyjwt")
+  return (response.status == 201)
 }
+
+//ensures the user is logged in before accessing the page, else they get redirected to login page
+async function guardLoginPage(){
+  if (!await isLoggedIn()) location.href = "login.html"
+}
+
+//opposite of guardLoginPage, redirect user to home (course) page if they are logged in
+async function guardAlreadyLoginPage(){
+  if (await isLoggedIn()) location.href = "courses.html"
+}
+
 //returns the user id stored in local/session storage
 function getUserID(){
+  //a jwt is split into three parts seperated by a .
+  //the json object is stored in the 2nd part
+  //so split by ., get the json object and use atob to decode it (since its in base64)
+  //use json.parse to turn it into an object and return its userId
+
+  //ensure that accessToken exists
+  if (!accessToken) return null
   return JSON.parse(atob(accessToken.split('.')[1])).userId
 }
 
