@@ -1,3 +1,6 @@
+var ratings = {5:0,4:0,3:0,2:0,1:0}
+var categories = {}
+
 // Fetch courses from the server
 async function fetchCourses() {
     try {
@@ -26,8 +29,20 @@ async function loadCourses() {
     const grid = document.getElementById("system-grid"); // Clear grid
     grid.innerHTML = "";
 
+    //also get the total number of ratings for each course and the course categories
     courses.forEach(course => {
-        const rating = Math.round(course.TotalRate / course.Ratings);
+        const rating = Math.round(course.totalRate/course.ratings);
+        ratings[rating] += 1 //update rating count obj
+
+        const cats = course.category.replaceAll(" ","").split(","); // assuming Category is a comma-separated string
+        cats.forEach(c => {
+            if (categories[c]) {
+                categories[c] += 1;
+            } else {
+                categories[c] = 1;
+            }
+        });
+
         const thumbnailBase64 = arrayBufferToBase64(course.thumbnail.data);
         const systemHTML = `
             <div id="${course.title.toLowerCase()}" class="system@ ${course.category.split(',').join(" ")} rating:${rating}">
@@ -56,18 +71,6 @@ function filterSection(title) {
 async function loadFilters() {
     const courses = await fetchCourses();
     const categoryDiv = document.getElementById("filters"); // Get div
-
-    const categories = {};
-    courses.forEach(course => {
-        const cats = course.category.split(","); // assuming Category is a comma-separated string
-        cats.forEach(c => {
-            if (categories[c]) {
-                categories[c] += 1;
-            } else {
-                categories[c] = 1;
-            }
-        });
-    });
 
     let out = "";
     // Add category filters
@@ -108,7 +111,7 @@ async function loadFilters() {
                     </div>
                 </td>
                 <td>
-                    <label class="form-check-label form-count">6</label>
+                    <label class="form-check-label form-count">${ratings[i]}</label>
                 </td>
         </tr>`;
         // Add the HTML for number of stars
