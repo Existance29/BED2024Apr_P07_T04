@@ -13,12 +13,11 @@ const getAllBooks = async (req, res) => {
     }
   }
 
-const updateBook = async (req, res) => {
-    const {username, password} = req.body
-
+const updateBookAvailability = async (req, res) => {
+    const id = req.params.id
     try {
         //check if book exists
-        //update book
+        //update book availability
     
         return res.status(201).json()
     } catch (error) {
@@ -27,4 +26,4 @@ const updateBook = async (req, res) => {
     }
   }
 
-module.exports = {getAllBooks, updateBook}
+module.exports = {getAllBooks, updateBookAvailability}

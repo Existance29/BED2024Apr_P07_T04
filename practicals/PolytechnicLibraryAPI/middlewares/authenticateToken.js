@@ -14,9 +14,24 @@ const authenticateToken = (req,res,next) => {
     //verify token
     jwt.verify(token,process.env.ACCESS_TOKEN_SECRET, (err,user) => {
         if (err) return res.sendStatus(403) //forbidden
-        //success, pass the info to the req
-        req.role = user.role
-        req.id = user.id
+
+        //check if the user's role matches up with the endpoint
+        const role  = user.role
+        const route = req.url
+        const authorizedRoles = {
+            "/books": ["member","librarian"],
+            "/books/[0-9]+/availability": ["librarian"]
+        }
+        //use regex to match route with the key in authorizedRoles and check if the role is valid
+
+        //iterate through authorizedRoles
+        for (const [k, v] of Object.entries(authorizedRoles)) {
+            const regex = new RegExp(`^${k}$`) //create a regex
+            //regex matches with route but role is not authorized - reject
+            if (regex.test(route) && !v.includes(role)) return res.sendStatus(403)
+        }
+
+        //success
         next()
     })
 }
