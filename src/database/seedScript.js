@@ -581,7 +581,7 @@ const systemData = [
       "description": "Learn the fastest way to build a modern dashboard for any platforms, browser, or device.",
       "details": "Core UI course focuses on building modern dashboards and user interfaces for any platform, browser, or device. You will learn how to use Core UI components to create responsive and interactive dashboards. The course covers the use of Bootstrap and other frameworks to enhance your UI development skills. \nThroughout the course, you will work on projects that require you to apply your knowledge in real-world scenarios. By the end of the course, you will be proficient in developing modern user interfaces that are both functional and aesthetically pleasing.",
       "caption": "Core UI development.",
-      "category": "frontend, ui",
+      "category": "frontend, UI components",
       "totalRate": 6000,
       "ratings": 3000,
       "video": "ads_video.mp4"
@@ -640,7 +640,7 @@ const systemData = [
       "description": "An interactive data visualization software developed by Microsoft with primary focus on business intelligence.",
       "details": "Power BI is an interactive data visualization software developed by Microsoft. This course covers the essentials of using Power BI for business intelligence. You will learn how to connect to various data sources, transform and clean data, and create interactive reports and dashboards. \nThe course includes hands-on labs and projects that simulate real-world data analysis scenarios. You will gain insights into best practices for data visualization and storytelling with data. By the end of the course, you will be able to leverage Power BI to make data-driven decisions and present data in a compelling way.",
       "caption": "Power BI for data visualization.",
-      "category": "data",
+      "category": "data, software",
       "totalRate": 8000,
       "ratings": 7000,
       "video": "ads_video.mp4"
