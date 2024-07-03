@@ -286,7 +286,7 @@ const systemData = [
       "description": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud.",
       "details": "AWS (Amazon Web Services) Coaching and Certification course is designed to help you build and validate your cloud skills. This comprehensive course covers the essentials of AWS, including computing, storage, database, and networking. You will learn how to deploy and manage applications on the AWS platform, ensuring they are scalable, secure, and cost-effective. \nThroughout the course, you will engage in hands-on labs and real-world projects that simulate the AWS environment. Our expert instructors will guide you through the best practices for using AWS services and tools. By the end of the course, you will be well-prepared for the AWS certification exams, enhancing your career prospects in the cloud computing domain.",
       "caption": "Master AWS with expert training.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "cloud computing",
       "totalRate": 1200,
       "ratings": 500,
       "video": "ads_video.mp4"
