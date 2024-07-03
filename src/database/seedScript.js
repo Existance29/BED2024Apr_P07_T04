@@ -640,7 +640,7 @@ const systemData = [
       "description": "An interactive data visualization software developed by Microsoft with primary focus on business intelligence.",
       "details": "Power BI is an interactive data visualization software developed by Microsoft. This course covers the essentials of using Power BI for business intelligence. You will learn how to connect to various data sources, transform and clean data, and create interactive reports and dashboards. \nThe course includes hands-on labs and projects that simulate real-world data analysis scenarios. You will gain insights into best practices for data visualization and storytelling with data. By the end of the course, you will be able to leverage Power BI to make data-driven decisions and present data in a compelling way.",
       "caption": "Power BI for data visualization.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "data",
       "totalRate": 8000,
       "ratings": 7000,
       "video": "ads_video.mp4"
