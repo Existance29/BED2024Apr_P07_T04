@@ -14,7 +14,7 @@ const registerUser = async (req, res) => {
     try {
         //check if user with the username exists
         //return the error message in the same format as the one in validateSchema
-        if (await User.getUserByUsername(username)) return res.status(201).send({message: "Validation error", "errors": [["username","\"username\" is taken"]]})
+        if (await User.getUserByUsername(username)) return res.status(400).send({message: "Validation error", "errors": [["username","\"username\" is taken"]]})
       //hash the password and replace the password field with the new hashed password
       const salt = bcrypt.genSaltSync(10)
       const hashPassword = bcrypt.hashSync(password,salt)
@@ -26,11 +26,33 @@ const registerUser = async (req, res) => {
       }
       await User.createUser(newUser)
 
-      return res.status(201).send({message: "User successfully registered"})
+      return res.status(201).json({message: "User successfully registered"})
     } catch (error) {
       console.error(error);
-      res.status(500).send({ message: "Internal server error" })
+      res.status(500).json({ message: "Internal server error" })
     }
   }
 
-module.exports = {registerUser,}
+const loginUser = async (req, res) => {
+    const {username, password} = req.body
+    //error message in the same format as the one in validateSchema
+    const invalidMessage = {message: "Validation error", "errors": [["username","Username or password is incorrect"],["password","Username or password is incorrect"]]}
+    try {
+        //check if user with the username exists and get the user
+        const user  = await User.getUserByUsername(username)
+        if (!user) return res.status(400).json(invalidMessage)
+        //verify password
+        if (!bcrypt.compareSync(password,user.passwordHash)) return res.status(400).json(invalidMessage)
+        
+        //vertification successfully, generate jwt token
+        
+        const accessToken = jwt.sign({id: user.user_id, role: user.role}, process.env.ACCESS_TOKEN_SECRET)
+    
+        return res.status(201).json({accessToken: accessToken})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" })
+    }
+  }
+
+module.exports = {registerUser,loginUser}

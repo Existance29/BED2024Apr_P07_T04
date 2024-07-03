@@ -16,7 +16,7 @@ const validateSchema = async (req,res,schema) =>{
 }
 
 //validate the user input when creating account
-const validateUser = async (req, res, next) => {
+const validateRegistration = async (req, res, next) => {
   //create schema to validate user object
   const schema = Joi.object({
     username: Joi.string().max(255).required(), //required, max 255 chars
@@ -27,6 +27,20 @@ const validateUser = async (req, res, next) => {
   if (await validateSchema(req,res,schema)) next()
 };
 
+
+//validate the user input when creating account
+const validateLogin = async (req, res, next) => {
+  //create schema to validate user object
+  const schema = Joi.object({
+    username: Joi.string().max(255).required(), //required, max 255 chars
+    password: Joi.string().max(100).required(), //required, max 100 chars
+  })
+  //check if validation successful
+  if (await validateSchema(req,res,schema)) next()
+};
+
+
+//validate user input when updating books
 const validateBooks = async (req, res, next) => {
     //create schema to validate user object
     const schema = Joi.object({
@@ -39,6 +53,7 @@ const validateBooks = async (req, res, next) => {
   };
 
 module.exports = {
-  validateUser,
-  validateBooks
+  validateRegistration,
+  validateLogin,
+  validateBooks,
 }
