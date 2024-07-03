@@ -581,7 +581,7 @@ const systemData = [
       "description": "Learn the fastest way to build a modern dashboard for any platforms, browser, or device.",
       "details": "Core UI course focuses on building modern dashboards and user interfaces for any platform, browser, or device. You will learn how to use Core UI components to create responsive and interactive dashboards. The course covers the use of Bootstrap and other frameworks to enhance your UI development skills. \nThroughout the course, you will work on projects that require you to apply your knowledge in real-world scenarios. By the end of the course, you will be proficient in developing modern user interfaces that are both functional and aesthetically pleasing.",
       "caption": "Core UI development.",
-      "category": "frontend, UI components",
+      "category": "front-end, UI components",
       "totalRate": 6000,
       "ratings": 3000,
       "video": "ads_video.mp4"
