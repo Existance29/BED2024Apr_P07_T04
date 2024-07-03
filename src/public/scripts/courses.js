@@ -2,6 +2,15 @@ var ratings = {5:0,4:0,3:0,2:0,1:0}
 var categories = {}
 
 // Fetch courses from the server
+let editMode = false;
+
+// Function to toggle edit mode
+function toggleEditMode() {
+    editMode = !editMode;
+    loadCourses();
+}
+
+// fetch courses from the server
 async function fetchCourses() {
     try {
         const response = await fetch("/courses/without-video"); 
@@ -13,7 +22,7 @@ async function fetchCourses() {
     }
 }
 
-// Convert binary data to base64 string
+// convert binary data to base64 string
 function arrayBufferToBase64(buffer) {
     let binary = '';
     const bytes = new Uint8Array(buffer);
@@ -23,7 +32,8 @@ function arrayBufferToBase64(buffer) {
     }
     return window.btoa(binary);
 }
-// Load the courses in the grid format
+
+// load the courses in the grid format
 async function loadCourses() {
     const courses = await fetchCourses();
     const grid = document.getElementById("system-grid"); // Clear grid
@@ -46,22 +56,56 @@ async function loadCourses() {
         //the class names are categories for the filters
         //each category is seperated by a &. We cant use spaces to normally seperate classes since some category names have spaces in them
         const thumbnailBase64 = arrayBufferToBase64(course.thumbnail.data);
+        const editDeleteButtons = editMode ? `
+            <div class="edit-delete-buttons">
+                <button class="edit-btn" onclick="editCourse('${course.courseID}')">
+                    <img src="assets/lectures/edit-button.png" alt="Edit" style="width: 25px; height: 25px;">
+                </button>
+                <button class="delete-btn" onclick="deleteCourse('${course.courseID}')">
+                    <img src="assets/lectures/delete.png" alt="Delete" style="width: 25px; height: 25px;">
+                </button>
+            </div>
+        ` : '';
+
         const systemHTML = `
             <div id="${course.title.toLowerCase()}" class="system@ ${course.category.split(',').join("&")}&rating:${rating}">
-                <div class="system-logo">
-                    <img src="data:image/png;base64,${thumbnailBase64}" style="width: 33%; margin: auto; display: block;">
-                </div>
-                <div class="system-info">
-                    <h3 class="poppins-semibold system-name">${course.title}</h3>
-                    <p class="poppins-regular system-desc">${course.description}</p>
-                    
-                </div>
-                <div class="learn-btn-container">
-                    <button type="submit" class="poppins-medium learn-btn" onclick="goCourse('${course.courseID}')">Learn Now</button>
+                <div class="course-card">
+                    ${editDeleteButtons}
+                    <div class="system-logo">
+                        <img src="data:image/png;base64,${thumbnailBase64}" style="width: 33%; margin: auto; display: block;">
+                    </div>
+                    <div class="system-info">
+                        <h3 class="poppins-semibold system-name">${course.title}</h3>
+                        <p class="poppins-regular system-desc">${course.description}</p>
+                    </div>
+                    <div class="learn-btn-container">
+                        <button type="submit" class="poppins-medium learn-btn" onclick="goCourse('${course.courseID}')">Learn Now</button>
+                    </div>
                 </div>
             </div>`;
         grid.innerHTML += systemHTML; // Add to grid
     });
+}
+
+// Send DELETE request to delete course
+async function deleteCourse(courseID) {
+    try {
+        const response = await fetch(`/courses/${courseID}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            // Course deleted successfully, reload the courses
+            loadCourses();
+        } else {
+            console.error('Error deleting course:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error deleting course:', error);
+    }
 }
 
 // Return the html for the title of a new filter section
@@ -178,8 +222,6 @@ function search() {
         }
 
         if (!show) continue
-
-        console.log(ele)
         //check rating filters (this should always be the last check)
         if (ratingFilters.length && !ratingFilters.includes(ratingFilter)){
             ele.style.display = "none"
@@ -193,5 +235,10 @@ function search() {
 function goCourse(courseID) {
     window.location.href = `course-chapters.html?courseID=${courseID}`;
 }
+
+// function editCourse(courseID) {
+//     // Implement the logic to edit a course
+//     console.log(`Edit course: ${courseID}`);
+// }
 
 document.addEventListener("DOMContentLoaded", topicOnLoad);
