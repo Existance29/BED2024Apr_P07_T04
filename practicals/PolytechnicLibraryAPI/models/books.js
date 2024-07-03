@@ -9,8 +9,8 @@ class Book {
     }
 
     //pass a objj from sql recordset  
-    //returns a user object
-    static toUserObj(row){
+    //returns a book object
+    static toBookObj(row){
         return new Book(row.id, row.title, row.author, row.availability)
     }
 
@@ -18,14 +18,20 @@ class Book {
         //get first user from database that matches username
         const result = (await query.query("SELECT * FROM Books")).recordset
         //return null if no books found, else return the list of boo objects
-        return result.length ? result.map(x => this.toUserObj(x)) : null
+        return result.length ? result.map(x => this.toBookObj(x)) : null
     }
 
-    static async updateBook(id){
-        //no need to make an id, rely on sql to generate one
-        const params = {username: user.username, passwordHash: user.passwordHash, role: user.role}
+    static async getBookByID(id){
+        //get first book from database that matches id
+        const result = (await query.query("SELECT * FROM Books WHERE book_id = @id", {id:id})).recordset[0]
+        //return null if no user found, else return the user
+        return result ? this.toBookObj(result) : null
+    }
+    static async updateBookAvailability(id, newAvailability){
+        //update book
+        const params = {id: id, availability: newAvailability}
         //nothing to return
-        await query.query("INSERT INTO Users (username, passwordHash, role) VALUES (@username, @passwordHash, @role); SELECT SCOPE_IDENTITY() AS user_id;", params)
+        await query.query("UPDATE Books SET availability = @availability WHERE book_id = @id", params)
 
     }
 }

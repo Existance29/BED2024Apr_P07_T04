@@ -1,5 +1,4 @@
 const Joi = require("joi")
-const { password } = require("../dbConfig")
 
 //function to validate the schema. Return error code 400 and false if fails, else true
 const validateSchema = async (req,res,schema) =>{
@@ -39,21 +38,7 @@ const validateLogin = async (req, res, next) => {
   if (await validateSchema(req,res,schema)) next()
 };
 
-
-//validate user input when updating books
-const validateBooks = async (req, res, next) => {
-    //create schema to validate user object
-    const schema = Joi.object({
-        title: Joi.string().max(255).required(), //required, max 255 chars
-        author: Joi.string().max(255).required(), //required, max 255 chars
-        availability: Joi.string().required().valid("Y","N") //required, value is either Y/N
-    })
-    //check if validation successful
-    if (await validateSchema(req,res,schema)) next()
-  };
-
 module.exports = {
   validateRegistration,
   validateLogin,
-  validateBooks,
 }

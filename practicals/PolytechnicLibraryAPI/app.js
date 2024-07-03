@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.post("/register",validateSchema.validateRegistration, userController.registerUser)
 app.post("/login",validateSchema.validateLogin, userController.loginUser)
 app.get("/books", authenticateToken, bookController.getAllBooks)
+app.put("/books/:bookId/availability", authenticateToken, bookController.updateBookAvailability)
 
 app.listen(port, async () => {
   try {
