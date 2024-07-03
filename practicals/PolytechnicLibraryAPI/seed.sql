@@ -11,3 +11,7 @@ CREATE TABLE Books(
     author VARCHAR(255),
     availability CHAR(1), CHECK(availability = 'Y' or availability = 'N')
 )
+
+INSERT INTO Books (title,author,availability) VALUES ('The Adventures of Huckleberry Finn', 'Mark Twain', 'N'); SELECT SCOPE_IDENTITY() AS book_id;
+INSERT INTO Books (title,author,availability) VALUES ('The Scarlet Letter', 'Nathaniel Hawthorne', 'Y'); SELECT SCOPE_IDENTITY() AS book_id;
+INSERT INTO Books (title,author,availability) VALUES ('David Copperfield', 'Charles Dickens', 'N'); SELECT SCOPE_IDENTITY() AS book_id;

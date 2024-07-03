@@ -46,7 +46,7 @@ const loginUser = async (req, res) => {
         
         //vertification successfully, generate jwt token
         
-        const accessToken = jwt.sign({id: user.user_id, role: user.role}, process.env.ACCESS_TOKEN_SECRET)
+        const accessToken = jwt.sign({id: user.user_id, role: user.role}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "3600s" })
     
         return res.status(201).json({accessToken: accessToken})
     } catch (error) {
