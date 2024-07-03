@@ -24,7 +24,7 @@ You can change the content of the file to match your settings or set up the sql 
 
 ### Database setup
 run ``npm run seed`` <br />
-You can also rerun this command to reset the database to its seeded form (you might need to run it 2-3 to drop all tables and foreign key constrains) <br />
+You can also rerun this command to reset the database to its seeded form <br />
 The sql to seed the database can be found in src/database/seedScript.js <br />
 
 ### Starting server
