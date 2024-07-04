@@ -110,6 +110,9 @@ async function loadProfile(){
         })
     }
 
+    //show the profile
+    loadContent()
+
     //load the chart and calculate the data values
     const accuracy = roundToTwo(data.quiz_accuracy)*10
     let versatility = 0
@@ -156,7 +159,7 @@ function loadChart(data){
         options: {
             scales: {
                 r: {
-                    max:10,
+                    max:10, //max and min values
                     min:0,
                 pointLabels: {
                     font: {size:13} //set font size
