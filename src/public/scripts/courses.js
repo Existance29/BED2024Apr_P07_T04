@@ -43,7 +43,7 @@ async function loadCourses() {
                 <button class="edit-btn" onclick="editCourse('${course.courseID}')">
                     <img src="assets/lectures/edit-button.png" alt="Edit" style="width: 25px; height: 25px;">
                 </button>
-                <button class="delete-btn" onclick="deleteCourse('${course.courseID}')">
+                <button class="delete-btn" onclick="confirmDeleteCourse('${course.courseID}')">
                     <img src="assets/lectures/delete.png" alt="Delete" style="width: 25px; height: 25px;">
                 </button>
             </div>
@@ -67,6 +67,14 @@ async function loadCourses() {
             </div>`;
         grid.innerHTML += systemHTML; // Add to grid
     });
+}
+
+// Confirm before sending DELETE request
+function confirmDeleteCourse(courseID) {
+    const isConfirmed = confirm("Are you sure you want to delete this course?");
+    if (isConfirmed) {
+        deleteCourse(courseID);
+    }
 }
 
 // Send DELETE request to delete course

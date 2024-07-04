@@ -12,6 +12,20 @@ async function fetchCourseDetailsWithLectures(courseID) {
     }
 }
 
+// Fetch basic course details without lectures
+async function fetchBasicCourseDetails(courseID) {
+    try {
+        const response = await fetch(`/courses/${courseID}`);
+        if (!response.ok) throw new Error('Failed to fetch basic course details');
+        const course = await response.json();
+        console.log('Basic Course Details:', course);  // Log for debugging
+        return course;
+    } catch (error) {
+        console.error('Error fetching basic course details:', error);
+        return null;
+    }
+}
+
 // Load course details and lectures
 async function loadCourseDetails() {
     const params = new URLSearchParams(window.location.search);
@@ -26,29 +40,24 @@ async function loadCourseDetails() {
 
     // Fetch course details including lectures
     const courseWithLectures = await fetchCourseDetailsWithLectures(courseID);
-    if (!courseWithLectures) {
-        console.error('Failed to load course details with lectures');
+    if (!courseWithLectures || !Array.isArray(courseWithLectures.lectures) || courseWithLectures.lectures.length === 0) {
+        console.error('No lecture in the course, fetching basic course details');
+        const basicCourseDetails = await fetchBasicCourseDetails(courseID);
+        if (!basicCourseDetails) {
+            console.error('Failed to load basic course details');
+            return;
+        }
+
+        updateCourseDetails(basicCourseDetails);
+        document.getElementById('chapter-grid').innerHTML = '<p>No lectures found for this course.</p>';
         return;
     }
 
     console.log('Loaded course with lectures:', courseWithLectures);
 
-    const course = courseWithLectures;  // Use the first object in the array
-    const lectures = course.lectures;
+    updateCourseDetails(courseWithLectures);
 
-    // Update course title, description, and video
-    document.getElementById('title').innerText = course.title;
-    document.getElementById('header-desc').innerText = course.description;
-    if (course.video && course.video.data) {
-        const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(course.video.data)}`;
-        document.getElementById('course-video').src = videoSrc;
-    }
-
-    // Ensure lectures is an array and has length
-    if (!Array.isArray(lectures) || lectures.length === 0) {
-        document.getElementById('chapter-grid').innerHTML = '<p>No lectures found for this course.</p>';
-        return;
-    }
+    const lectures = courseWithLectures.lectures;
 
     // Display lectures and their sub-lectures
     const chapterGrid = document.getElementById('chapter-grid');
@@ -61,7 +70,7 @@ async function loadCourseDetails() {
         if (lecture.subLectures && lecture.subLectures.length > 0) {
             subLectureHTML = lecture.subLectures.map((subLecture, subIndex) => `
                 <div class="subchapter-container" style=" margin-top: 1vw;">
-                    <div class="subchapter" onclick="openLecture('${course.courseID}', '${lecture.lectureID}', '${subLecture.subLectureID}')">
+                    <div class="subchapter" onclick="openLecture('${courseID}', '${lecture.lectureID}', '${subLecture.subLectureID}')">
                         <div style="width: 70%;">
                             <div style="font-size: 0.9vw; color: #333333; font-weight: 500;">${subLecture.description}</div>
                             <div style="font-size: 0.85vw; color: #59595A; font-weight: 400; margin-top: 0.2vw;">${subLecture.category}</div>
@@ -83,6 +92,16 @@ async function loadCourseDetails() {
             </div>`;
         chapterGrid.innerHTML += lectureHTML;
     });
+}
+
+// Update course details (title, description, video)
+function updateCourseDetails(course) {
+    document.getElementById('title').innerText = course.title;
+    document.getElementById('header-desc').innerText = course.description;
+    if (course.video && course.video.data) {
+        const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(course.video.data)}`;
+        document.getElementById('course-video').src = videoSrc;
+    }
 }
 
 // Redirect to lecture page
