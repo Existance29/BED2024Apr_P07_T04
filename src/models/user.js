@@ -46,7 +46,8 @@ class User {
     }
 
     //query but we can choose what columns to exclude
-    static async exceptQuery(columnExclude, queryString, params){
+    //only for select statements
+    static async exceptSelectQuery(columnExclude, queryString, params){
         //first we load the data into a temp table
         let sql = `
         SELECT * INTO #TempTable
@@ -71,7 +72,7 @@ class User {
     //functions
     static async getAllUsers() {
         //get all users excluding the password
-        const result  = (await this.exceptQuery(["password","email"],"SELECT * FROM Users")).recordset
+        const result  = (await this.exceptSelectQuery(["password","email"],"SELECT * FROM Users")).recordset
         
         //if there is result array is blank, return null
         //else, map it into the user obj
@@ -83,7 +84,7 @@ class User {
         //assign sql params to their respective values
         const params = {"id": id}
          //get first user from database that matches id and exclude the password
-        const result = (await this.exceptQuery(["password","email"],"SELECT * FROM Users WHERE id = @id", params)).recordset[0]
+        const result = (await this.exceptSelectQuery(["password","email"],"SELECT * FROM Users WHERE id = @id", params)).recordset[0]
         //return null if no user found
         return result ? this.toUserObj(result) : null
         
@@ -93,7 +94,7 @@ class User {
         //unlike getUserById, this function is only meant to be accessed by the logged in user
         //returns email, still exclude password
          //get first user from database that matches id and exclude the password
-        const result = (await this.exceptQuery(["password"],"SELECT * FROM Users WHERE id = @id", {"id": id})).recordset[0]
+        const result = (await this.exceptSelectQuery(["password"],"SELECT * FROM Users WHERE id = @id", {"id": id})).recordset[0]
         //return null if no user found
         return result ? this.toUserObj(result) : null
     }
@@ -101,7 +102,7 @@ class User {
     static async getCompleteUserByID(id) {
         //join all tables related to the user and return them (excluding password)
         const query = "SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id WHERE id = @id"
-        const result = (await this.exceptQuery(["password","email"],query,{"id":id})).recordset[0]
+        const result = (await this.exceptSelectQuery(["password","email"],query,{"id":id})).recordset[0]
         //check if user exists
         if (!result) return null
         //get more stats
