@@ -5,7 +5,7 @@ const fs = require("fs");
 
 class User {
     //setup user object
-    constructor(id, first_name, last_name, email, about_me, country, join_date, job_title) {
+    constructor(id, first_name, last_name, email, about_me, country, join_date, job_title, role) {
       this.id = id
       this.first_name = first_name
       this.last_name = last_name
@@ -14,11 +14,12 @@ class User {
       this.country = country
       this.join_date = join_date
       this.job_title = job_title
+      this.role = role
     }
 
     //pass the sql recordset into the user constructor
     static toUserObj(row){
-        return new User(row.id, row.first_name, row.last_name, row.email, row.about_me, row.country, row.join_date, row.job_title)
+        return new User(row.id, row.first_name, row.last_name, row.email, row.about_me, row.country, row.join_date, row.job_title, row.role)
     }
     
 
@@ -130,10 +131,11 @@ class User {
             "password": user.password,
             "about_me": user.about_me,
             "country": user.country,
-            "job_title": user.job_title
+            "job_title": user.job_title,
+            "role": user.role
         }
         //add user data
-        const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country, join_date, job_title) VALUES (@first_name, @last_name, @email, @password, @about_me, @country, GETDATE(), @job_title); SELECT SCOPE_IDENTITY() AS id;", params)
+        const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country, join_date, job_title, role) VALUES (@first_name, @last_name, @email, @password, @about_me, @country, GETDATE(), @job_title, @role); SELECT SCOPE_IDENTITY() AS id;", params)
 
         
         //get the newly-created user
@@ -159,6 +161,7 @@ class User {
     }
     
     static async updateProfilePic(userid, imageBuffer) {
+        //update the base64 of the user's profile pic
         const params = {
             "user_id": userid,
             "img": imageBuffer,
@@ -175,7 +178,7 @@ class User {
             "email": user.email,
             "about_me": user.about_me,
             "country": user.country,
-            "job_title": user.job_title
+            "job_title": user.job_title,
         }
         await this.query("UPDATE Users SET first_name = @first_name, last_name = @last_name, email = @email, about_me = @about_me, country = @country, job_title = @job_title WHERE id = @id", params)
         //return the updated user
@@ -220,6 +223,8 @@ class User {
 
     static async getViewedSubLecturesByCourse(userID, courseID){
         //return all viewed sublectures under a course by a user
+        //this is done by joining the user's viewed sublectures -> all sublectures -> lectures -> course tables together
+        //and filtering out the userid and courseid
         const sql = 
         `
         SELECT usl.sub_lecture_id

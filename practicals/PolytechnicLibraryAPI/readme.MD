@@ -1,18 +1,22 @@
 ## Project Setup
 
 ### Installing node modules
-1. cd into the src directory
+1. cd into practicals/PolyTechnicLibraryAPI
 2. run ``npm install``
+
+### Database setup
+1. navigate to practicals/PolyTechnicLibraryAPI/seed.sql
+2. run the contents of the sql file 
 
 ### Database configuration
 
-Create src/database/dbConfig.js with the following content: <br />
+Create practicals/PolyTechnicLibraryAPI/dbConfig.js with the following content: <br />
 ```js
 module.exports = {
-    user: "sa", 
-    password: "sa", 
+    user: "sa", //your username here
+    password: "sa", //your password
     server: "localhost",
-    database: "bed-assg-1",
+    database: "bed-assg-1", //your database name
     trustServerCertificate: true,
     options: {
       port: 1433, 
@@ -22,10 +26,6 @@ module.exports = {
 ```
 You can change the content of the file to match your settings or set up the sql server to match its content
 
-### Database setup
-run ``npm run seed`` <br />
-You can also rerun this command to reset the database to its seeded form <br />
-The sql to seed the database can be found in src/database/seedScript.js <br />
 
 ### Starting server
 ``npm start`` (for nodemon) <br />

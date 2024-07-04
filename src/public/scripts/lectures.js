@@ -1,7 +1,6 @@
 //Check if user is logged in before loading content
 //if user is not logged in, redirect them to login screen
-//Dont wait for content to load, redirect asap
-if (!isLoggedIn()) location.href = "./login.html"
+guardLoginPage()
 const userID = getUserID()
 
 //change the font color of the sublecture description to gray

@@ -71,6 +71,8 @@ IF OBJECT_ID('User_Completed_Courses', 'U') IS NOT NULL DROP TABLE User_Complete
 IF OBJECT_ID('Comments', 'U') IS NOT NULL DROP TABLE Comments;
 
 -- Create tables
+
+
 CREATE TABLE Users (
   id INT PRIMARY KEY IDENTITY,
   first_name VARCHAR(40) NOT NULL,
@@ -80,7 +82,8 @@ CREATE TABLE Users (
   about_me VARCHAR(250) NOT NULL,
   country VARCHAR(100) NOT NULL,
   join_date DATE NOT NULL,
-  job_title VARCHAR(100) NOT NULL
+  job_title VARCHAR(100) NOT NULL,
+  role VARCHAR(8) NOT NULL
 );
 
 CREATE TABLE Profile_Pictures (
@@ -224,7 +227,7 @@ const systemData = [
       "description": "A JavaScript-based open-source front-end web framework for developing single-page applications.",
       "details": "Learn the fundamentals of Angular JS, a powerful JavaScript-based open-source front-end web framework. This course will take you through the essentials of developing single-page applications using Angular's MVC architecture. You will understand the core concepts such as modules, controllers, services, and directives. The course provides a hands-on approach to mastering Angular JS, ensuring you can build dynamic and responsive web applications. \nJoin industry experts as they guide you through practical exercises and real-world scenarios to apply your knowledge. By the end of the course, you will have a solid foundation in Angular JS, enabling you to develop robust applications. Whether you are a beginner or looking to enhance your skills, this course is designed to cater to your needs.",
       "caption": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "front-end,framework",
       "totalRate": 2000,
       "ratings": 500,
       "video": "ads_video.mp4"
@@ -283,7 +286,7 @@ const systemData = [
       "description": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud.",
       "details": "AWS (Amazon Web Services) Coaching and Certification course is designed to help you build and validate your cloud skills. This comprehensive course covers the essentials of AWS, including computing, storage, database, and networking. You will learn how to deploy and manage applications on the AWS platform, ensuring they are scalable, secure, and cost-effective. \nThroughout the course, you will engage in hands-on labs and real-world projects that simulate the AWS environment. Our expert instructors will guide you through the best practices for using AWS services and tools. By the end of the course, you will be well-prepared for the AWS certification exams, enhancing your career prospects in the cloud computing domain.",
       "caption": "Master AWS with expert training.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "cloud computing",
       "totalRate": 1200,
       "ratings": 500,
       "video": "ads_video.mp4"
@@ -342,7 +345,7 @@ const systemData = [
       "description": "An open-source model-view–viewmodel front end JavaScript framework for building user interfaces & single-page applications.",
       "details": "This course offers an in-depth exploration of Vue JS, an open-source model-view–viewmodel front-end JavaScript framework. You will learn how to build user interfaces and single-page applications using Vue's declarative rendering, component system, and reactivity mechanisms. The course emphasizes practical application, guiding you through the creation of complex and dynamic web applications. \nGain insights from industry professionals on how to effectively use Vue's ecosystem, including Vue Router and Vuex for state management. By the end of this course, you will have a thorough understanding of Vue JS and the skills needed to create high-performance web applications.",
       "caption": "Get started with Vue JS.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "front-end,framework",
       "totalRate": 1000,
       "ratings": 500,
       "video": "ads_video.mp4"
@@ -398,10 +401,10 @@ const systemData = [
     course: {
       "title": "Python",
       "thumbnail": "python.png",
-      "description": "Python is an interpreted high-level general-purpose programming language.",
+      "description": "Python is an interpreted high-level general-purpose programming-language.",
       "details": "Python programming language is known for its simplicity and versatility. This course covers Python from the basics to advanced topics, providing a comprehensive understanding of the language. You will start with syntax and basic programming constructs, then move on to more complex topics such as object-oriented programming, data structures, and web development with Django and Flask. \nThe course includes numerous coding exercises and projects to reinforce your learning. By the end of the course, you will be proficient in Python, capable of developing various types of applications and scripts. This course is ideal for beginners as well as experienced programmers looking to enhance their Python skills.",
       "caption": "Python programming made easy.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "programming language",
       "totalRate": 400,
       "ratings": 200,
       "video": "ads_video.mp4"
@@ -460,7 +463,7 @@ const systemData = [
       "description": "React is a free and open-source front-end JavaScript library for building user interfaces based on UI components.",
       "details": "React JS is a popular JavaScript library for building user interfaces. This course will guide you through the process of developing dynamic web applications using React's component-based architecture. You will learn about JSX, state management, props, and the lifecycle methods of React components. \nThe course provides hands-on experience through projects that cover practical use cases. By the end of the course, you will be able to build and deploy complex React applications. This course is suitable for both beginners and those looking to deepen their knowledge of React.",
       "caption": "React JS for beginners.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "front-end,framework",
       "totalRate": 3000,
       "ratings": 5000,
       "video": "ads_video.mp4"
@@ -519,7 +522,7 @@ const systemData = [
       "description": "The process of evaluating and verifying that a software product or application does what it is supposed to do.",
       "details": "Software testing is a crucial aspect of the development process. This course covers the fundamentals of software testing, including manual and automated testing techniques. You will learn how to design test cases, execute tests, and analyze results to ensure software quality. \nThe course includes practical exercises and real-world scenarios to help you understand different types of testing, such as unit testing, integration testing, system testing, and acceptance testing. By the end of the course, you will have the skills to effectively test software applications, ensuring they meet the required standards and specifications.",
       "caption": "Become an expert in software testing.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "software development",
       "totalRate": 6000,
       "ratings": 2000,
       "video": "ads_video.mp4"
@@ -578,7 +581,7 @@ const systemData = [
       "description": "Learn the fastest way to build a modern dashboard for any platforms, browser, or device.",
       "details": "Core UI course focuses on building modern dashboards and user interfaces for any platform, browser, or device. You will learn how to use Core UI components to create responsive and interactive dashboards. The course covers the use of Bootstrap and other frameworks to enhance your UI development skills. \nThroughout the course, you will work on projects that require you to apply your knowledge in real-world scenarios. By the end of the course, you will be proficient in developing modern user interfaces that are both functional and aesthetically pleasing.",
       "caption": "Core UI development.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "front-end",
       "totalRate": 6000,
       "ratings": 3000,
       "video": "ads_video.mp4"
@@ -637,7 +640,7 @@ const systemData = [
       "description": "An interactive data visualization software developed by Microsoft with primary focus on business intelligence.",
       "details": "Power BI is an interactive data visualization software developed by Microsoft. This course covers the essentials of using Power BI for business intelligence. You will learn how to connect to various data sources, transform and clean data, and create interactive reports and dashboards. \nThe course includes hands-on labs and projects that simulate real-world data analysis scenarios. You will gain insights into best practices for data visualization and storytelling with data. By the end of the course, you will be able to leverage Power BI to make data-driven decisions and present data in a compelling way.",
       "caption": "Power BI for data visualization.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "data,software",
       "totalRate": 8000,
       "ratings": 7000,
       "video": "ads_video.mp4"

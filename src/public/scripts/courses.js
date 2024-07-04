@@ -1,3 +1,7 @@
+var ratings = {5:0,4:0,3:0,2:0,1:0}
+var categories = {}
+
+// Fetch courses from the server
 let editMode = false;
 
 // Function to toggle edit mode
@@ -35,8 +39,22 @@ async function loadCourses() {
     const grid = document.getElementById("system-grid"); // Clear grid
     grid.innerHTML = "";
 
+    //also get the total number of ratings for each course and the course categories
     courses.forEach(course => {
-        const rating = Math.round(course.TotalRate / course.Ratings);
+        const rating = Math.round(course.totalRate/course.ratings);
+        ratings[rating] += 1 //update rating count obj
+
+        const cats = course.category.split(","); // assuming Category is a comma-separated string
+        cats.forEach(c => {
+            if (categories[c]) {
+                categories[c] += 1;
+            } else {
+                categories[c] = 1;
+            }
+        });
+
+        //the class names are categories for the filters
+        //each category is seperated by a &. We cant use spaces to normally seperate classes since some category names have spaces in them
         const thumbnailBase64 = arrayBufferToBase64(course.thumbnail.data);
         const editDeleteButtons = editMode ? `
             <div class="edit-delete-buttons">
@@ -50,7 +68,7 @@ async function loadCourses() {
         ` : '';
 
         const systemHTML = `
-            <div id="${course.title.toLowerCase()}" class="system@ ${course.category.split(',').join(" ")} rating:${rating}">
+            <div id="${course.title.toLowerCase()}" class="system@ ${course.category.split(',').join("&")}&rating:${rating}">
                 <div class="course-card">
                     ${editDeleteButtons}
                     <div class="system-logo">
@@ -107,18 +125,6 @@ async function loadFilters() {
     const courses = await fetchCourses();
     const categoryDiv = document.getElementById("filters"); // Get div
 
-    const categories = {};
-    courses.forEach(course => {
-        const cats = course.category.split(","); // assuming Category is a comma-separated string
-        cats.forEach(c => {
-            if (categories[c]) {
-                categories[c] += 1;
-            } else {
-                categories[c] = 1;
-            }
-        });
-    });
-
     let out = "";
     // Add category filters
     for (const [key, value] of Object.entries(categories)) {
@@ -127,7 +133,7 @@ async function loadFilters() {
             <td>
                 <div class="checkbox-full">
                     <label class="check-container">
-                        <input type="checkbox" class="categoryCheckbox" value="" id="${key}">
+                        <input type="checkbox" class="categoryCheckbox" value="" id="${key}" onclick = "search()">
                         <span class="checkmark"></span>
                     </label>
                     <label class="form-check-label" style="margin-left: 1.25rem;">${title(key)}</label>
@@ -149,7 +155,7 @@ async function loadFilters() {
             <td>
                 <div class="checkbox-full">
                     <label class="check-container">
-                        <input type="checkbox" class="categoryCheckbox" value="" id="rating:${i}">
+                        <input type="checkbox" class="ratingCheckbox" value="" id="rating:${i}" onclick = "search()">
                         <span class="checkmark"></span>
                     </label>
                     <div class="d-flex align-items-center" style="margin-left: 1.25rem; column-gap: 0.35vw;">`;
@@ -158,7 +164,7 @@ async function loadFilters() {
                     </div>
                 </td>
                 <td>
-                    <label class="form-check-label form-count">6</label>
+                    <label class="form-check-label form-count">${ratings[i]}</label>
                 </td>
         </tr>`;
         // Add the HTML for number of stars
@@ -178,17 +184,58 @@ function topicOnLoad() {
 
 // Filter systems
 function search() {
+    //get all checkboxes
+    //store the enabled checkbox's ids and use those to filter
+    categoryFilters = []
+    for (const ele of document.getElementsByClassName("categoryCheckbox")) {
+        
+        if (ele.checked) categoryFilters.push(ele.id)
+    }
+
+    ratingFilters = []
+    for (const ele of document.getElementsByClassName("ratingCheckbox")) {
+        
+        if (ele.checked) ratingFilters.push(ele.id)
+    }
     // Get input and convert to lowercase
     const input = document.getElementById("search").value.toLowerCase();
     // Get the system elements and iterate through each one, checking if they should be shown
     const items = document.getElementsByClassName("system@");
     for (let i = 0; i < items.length; i++) {
         const ele = items[i];
+        var show = false
+        ele.style.display = "none"
         // Check if input is a substring of the id
-        if (ele.id.indexOf(input) > -1) {
-            ele.style.display = "block";
-        } else {
-            ele.style.display = "none";
+        //also make sure it matches the checkbox's filters
+        if (ele.id.indexOf(input) > -1) show = true
+
+        // get the different filters by splitting by "&" (as loaded)
+        //need to split by space first to get rid of the "system@" class
+        const filters = ele.className.split("system@ ")[1].split("&")
+        const ratingFilter = filters.at(-1)
+        const courseFilters = filters.slice(0,-1)
+
+        //this is where the filtering differs
+        //when it comes to course category, show only courses that match the course category (and)
+        //when it comes to rating, show courses that meet at least one of the rating category (or)
+        for (const j in categoryFilters){
+            const e = categoryFilters[j]
+            console.log(ratingFilter)
+            //check course filters
+            if (!courseFilters.includes(e)){ 
+                show = false
+                break
+            }
+
+        }
+
+        if (!show) continue
+        //check rating filters (this should always be the last check)
+        if (ratingFilters.length && !ratingFilters.includes(ratingFilter)){
+            ele.style.display = "none"
+        }
+        else{
+            ele.style.display = "block"
         }
     }
 }

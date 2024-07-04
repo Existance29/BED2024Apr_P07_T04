@@ -7,7 +7,7 @@ emailInput.addEventListener("input", inputChanged)
 passwordInput.addEventListener("input", inputChanged)
 
 //redirect to home if user is already logged in
-if (isLoggedIn()) location.href = "./courses.html"
+guardAlreadyLoginPage()
 //hide the error message when the input field is changed
 function inputChanged(e){
     errorMsg.style.display = "none"
