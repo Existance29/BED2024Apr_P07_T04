@@ -135,6 +135,7 @@ class User {
             "job_title": user.job_title,
             "role": user.role
         }
+        console.log(user.password)
         //add user data
         const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country, join_date, job_title, role) VALUES (@first_name, @last_name, @email, @password, @about_me, @country, GETDATE(), @job_title, @role); SELECT SCOPE_IDENTITY() AS id;", params)
 
