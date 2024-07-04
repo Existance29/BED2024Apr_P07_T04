@@ -1,13 +1,5 @@
 const User = require("../models/user")
 const bcrypt = require('bcryptjs')
-const jwt = require("jsonwebtoken")
-require("dotenv").config()
-
-const generateAccessToken = (user) => {
-    //make a jsonwetoken containing the user's id and role
-    const accessToken = jwt.sign({userId: user.id, role: user.role}, process.env.ACCESS_TOKEN_SECRET)
-    return {accessToken: accessToken}
-}
 
 const registerUser = async (req, res) => {
     const {username, password, role} = req.body
@@ -30,28 +22,6 @@ const registerUser = async (req, res) => {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" })
-    }
-  }
-
-const loginUser = async (req, res) => {
-    const {username, password} = req.body
-    //error message in the same format as the one in validateSchema
-    const invalidMessage = {message: "Validation error", "errors": [["username","Username or password is incorrect"],["password","Username or password is incorrect"]]}
-    try {
-        //check if user with the username exists and get the user
-        const user  = await User.getUserByUsername(username)
-        if (!user) return res.status(400).json(invalidMessage)
-        //verify password
-        if (!bcrypt.compareSync(password,user.passwordHash)) return res.status(400).json(invalidMessage)
-        
-        //vertification successfully, generate jwt token
-        
-        const accessToken = jwt.sign({id: user.user_id, role: user.role}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "3600s" })
-    
-        return res.status(201).json({accessToken: accessToken})
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" })
     }
   }
 
