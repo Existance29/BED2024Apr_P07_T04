@@ -33,6 +33,7 @@ const uniqueUpdateEmail = async (id,email, helper) =>{
 //function to validate the schema. Return error code 400 and false if fails, else true
 const validateSchema = async (req,res,schema) =>{
   //validate 
+  //abort early set to false since we want to get all validation errors
   try{
     await schema.validateAsync(req.body, { abortEarly: false })
   }catch(err){
