@@ -38,15 +38,9 @@ function displayQuizzes(quizzes) {
         quizList.appendChild(quizDiv);
     });
 }
-function getUserID() {
-    if (sessionStorage.userid != null) {
-        return sessionStorage.userid;
-    } else if (localStorage.userid != null) {
-        return localStorage.userid;
-    } 
-    return null;
-}
 
+//to jung sek: I removed the getUserID function, its not required.
+//as long as your html includes common.js, quizzes.js can access the functions in it
 function redirectToQuizResults() {
     const userId = getUserID();
     if (userId) {
