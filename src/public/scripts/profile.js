@@ -15,7 +15,7 @@ function readableDate(timestamp){
     //extract date from timestamp (string) in format: DD MMM YY
     //DD: 2 digits for day, MMM: first 3 chars of the month, YYYY: year
 
-    //extract date and split based on dash
+    //extract date from timestamp and split based on dash
     let date = ((timestamp.split("T")[0]).split("-")).reverse()
 
     //convert month to format
@@ -37,7 +37,7 @@ function readableDate(timestamp){
     return date.join(" ")
 }
 
-// Convert binary data to base64 string
+// Convert a buffer obj (binary data) to base64 string
 function arrayBufferToBase64(buffer) {
     let binary = '';
     const bytes = new Uint8Array(buffer.data);
@@ -52,6 +52,7 @@ async function loadProfile(){
     const response = await get(`/users/complete/${userID}`)
     //handle different responses
     if (response.status == 404){
+        //user not found
         const content = document.getElementById("main")
         content.innerHTML = `<h2 style = "color:white; font-size: 2vw">404 User Not Found</h2>`
         content.innerHTML += `<div style = "color:white; font-size: 1.2vw; margin-top:2vw">We couldn't find this user. Maybe the user has been deleted, or possibly never existed</div>`
@@ -62,10 +63,12 @@ async function loadProfile(){
     }
 
     //if user is view their own profile, show edit icon
-    if (userID === loggedInUserID){
+    if (userID == loggedInUserID){
+        console.log("a")
         document.getElementById("edit-icon").style.display = "block"
     }
     const data = await response.json()
+    console.log(data)
 
     //display the user data
     document.getElementById("profile-img").src = `data:image/png;base64,${data.img}`
@@ -106,6 +109,9 @@ async function loadProfile(){
             completedCourses.innerHTML += html
         })
     }
+
+    //show the profile
+    loadContent()
 
     //load the chart and calculate the data values
     const accuracy = roundToTwo(data.quiz_accuracy)*10
@@ -153,7 +159,7 @@ function loadChart(data){
         options: {
             scales: {
                 r: {
-                    max:10,
+                    max:10, //max and min values
                     min:0,
                 pointLabels: {
                     font: {size:13} //set font size
