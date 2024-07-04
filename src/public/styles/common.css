@@ -103,7 +103,7 @@ a{
     position: absolute; /* Positions the animation absolutely within its container */
     top: 50%; left: 50%; /* Centers the animation */
     transform: translate(-50%, -50%); /* Adjusts the animation's position to be truly centered */
-    width: 13%; /* Sets the width of the animation to 10% of its container */
+    width: 10%; /* Sets the width of the animation to 10% of its container */
 }
 
 /*content to be loaded*/
