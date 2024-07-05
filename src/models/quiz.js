@@ -219,7 +219,8 @@ class Quiz {
                 .input('userId', sql.Int, userId)
                 .query('SELECT * FROM UserQuizAttempts WHERE quizId = @quizId AND userId = @userId');
 
-                
+            connection.close();
+            
             const attempts = userAttemptResult.recordset.length? userAttemptResult.recordset[0].attempts : 0;
     
             return { canAttempt: attempts < maxAttempts, attempts: attempts, maxAttempts: maxAttempts };

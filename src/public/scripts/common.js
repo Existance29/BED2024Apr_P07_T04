@@ -112,6 +112,13 @@ function getUserID(){
   return JSON.parse(atob(accessToken.split('.')[1])).userId
 }
 
+//to be called when content is done loading
+//shows the content and hides the loading animation
+function loadContent(){
+  document.getElementById("loading-main").style.display = "block"
+  document.getElementById("loading-screen").style.display = "none"
+}
+
 //prevent reloading page when form submitted
 document.addEventListener("DOMContentLoaded", function () {
   //get all forms

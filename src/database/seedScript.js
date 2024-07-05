@@ -117,8 +117,7 @@ CREATE TABLE Lectures (
 CREATE TABLE Comments (
   CommentID INT PRIMARY KEY IDENTITY(1,1),
   Message NVARCHAR(MAX) NOT NULL,
-  Category NVARCHAR(MAX) NOT NULL,
-  Duration INT NOT NULL,
+  Rating NVARCHAR(MAX) NOT NULL,
 );
 
 CREATE TABLE SubLectures (
