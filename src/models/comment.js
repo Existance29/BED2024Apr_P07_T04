@@ -1,7 +1,7 @@
 const sql = require("mssql");
 const dbConfig = require("../database/dbConfig");
 
-class Course {
+class Comment {
     constructor(commentID, message, rating) {
         this.commentID = commentID;
         this.message = message;
