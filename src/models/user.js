@@ -17,13 +17,16 @@ class User {
       this.role = role
     }
 
-    //pass the sql recordset into the user constructor
+    //pass the sql recordset in
+    //returns a new user obj
     static toUserObj(row){
         return new User(row.id, row.first_name, row.last_name, row.email, row.about_me, row.country, row.join_date, row.job_title, row.role)
     }
     
 
     //execute a query and return the result
+    //note: there is a need to create a new connection for every query, so this function will not accept multiple queries with queryString as an array
+    //mssql seems to have a bug when running more than 1 query per connection, https://github.com/tediousjs/node-mssql/issues/138
     static async query(queryString, params){
         //queryString is the query to run
         //params is a dictionary for the parameters, key: sql param, value: value to pass
@@ -64,14 +67,13 @@ class User {
         sql += "SELECT * FROM #TempTable"
         //run the query
         const result = await this.query(sql,params)
-        //Delete the temp tample
+        //Delete the temp table
         await this.query("IF OBJECT_ID('#TempTable', 'U') IS NOT NULL DROP TABLE #TempTable")
         return result
     }
 
-    //functions
     static async getAllUsers() {
-        //get all users excluding the password
+        //get all users excluding the password and email
         const result  = (await this.exceptSelectQuery(["password","email"],"SELECT * FROM Users")).recordset
         
         //if there is result array is blank, return null
@@ -101,13 +103,14 @@ class User {
 
     static async getCompleteUserByID(id) {
         //join all tables related to the user and return them (excluding password)
+        //this is mostly meant for the user's profile page
         const query = "SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id WHERE id = @id"
         const result = (await this.exceptSelectQuery(["password","email"],query,{"id":id})).recordset[0]
         //check if user exists
         if (!result) return null
         //get more stats
-        const quizStats = await this.getQuizOverall(id)
-        const coursesCompleted = {"completed_courses": await this.getCompletedCourses(id)}
+        const quizStats = await this.getQuizOverall(id) //quiz data (al)
+        const coursesCompleted = {"completed_courses": await this.getCompletedCourses(id)} //courses completed (courseID, date of completion)
         //merge the objects and return it
         return {...result, ...quizStats, ...coursesCompleted}
     }
@@ -135,7 +138,6 @@ class User {
             "job_title": user.job_title,
             "role": user.role
         }
-        console.log(user.password)
         //add user data
         const result = await this.query("INSERT INTO Users (first_name, last_name, email, password, about_me, country, join_date, job_title, role) VALUES (@first_name, @last_name, @email, @password, @about_me, @country, GETDATE(), @job_title, @role); SELECT SCOPE_IDENTITY() AS id;", params)
 
@@ -198,6 +200,11 @@ class User {
         await this.query("INSERT INTO User_Sub_Lectures(user_id,sub_lecture_id) VALUES (@uid,@lid);", {"uid":userID,"lid":subLectureID})
         //check if the user has completed the course after viewing the sub lecture
         //query returns the id of the course if its completed, else returns nothing
+        //merge the user's completed sublectures with all sublectures, lectures, courses
+        //group the resulting table by course
+        //if the total number of sublectures in a course = total number of sublectures user (counted using userid) has completed in the same course, 
+        //set complete to the course as "T", else "F"
+        //from there, select the course if its "T"
         const sql = `
         SELECT courseID FROM (
             SELECT MAX(c.CourseID) AS courseID, CASE WHEN COUNT(*) = COUNT(usl.user_id) THEN 'T' ELSE 'F' END AS 'Completed'
@@ -226,7 +233,7 @@ class User {
     static async getViewedSubLecturesByCourse(userID, courseID){
         //return all viewed sublectures under a course by a user
         //this is done by joining the user's viewed sublectures -> all sublectures -> lectures -> course tables together
-        //and filtering out the userid and courseid
+        //and filtering out the userid and courseid that matches the parameters
         const sql = 
         `
         SELECT usl.sub_lecture_id
@@ -240,7 +247,7 @@ class User {
 
         const result = await this.query(sql, {"uid": userID, "cid":courseID})
         //unlike the other get functions, dont return null if its empty. Just return the empty array
-        //return an array containing the ints representing the sublecture ids
+        //return an array containing ints representing the sublecture ids
         return result.recordset.map((x) => x.sub_lecture_id)
     }
 
@@ -254,7 +261,7 @@ class User {
     static async getQuizOverall(id){
         //get the user's overall quiz stats, all-time avg accuracy + total questions answered
         const params = {"id": id}
-       //grab the highest score for each quiz and the number of questions
+        //grab the highest score for each quiz and the number of questions
         //limitation: number of questions for each quiz must never change
         //return the average of all scores for every quiz and the total number of questions
         const result  = (await this.query("SELECT AVG(s) AS score, SUM(q) AS questions FROM (SELECT MAX((score + 0.0)/(totalMarks + 0.0)) AS s, MAX(totalQuestions) AS q FROM Results WHERE userId = @id GROUP BY quizId) AS hi;", params)).recordset[0]
