@@ -73,7 +73,7 @@ async function loadCourseDetails() {
                     <div class="subchapter" onclick="openLecture('${courseID}', '${lecture.lectureID}', '${subLecture.subLectureID}')">
                         <div style="width: 70%;">
                             <div style="font-size: 0.9vw; color: #333333; font-weight: 500;">${subLecture.description}</div>
-                            <div style="font-size: 0.85vw; color: #59595A; font-weight: 400; margin-top: 0.2vw;">${subLecture.category}</div>
+                            <div style="font-size: 0.85vw; color: #59595A; font-weight: 400; margin-top: 0.2vw;">Lesson ${subIndex + 1}</div>
                         </div>
                         <div class="d-flex align-items-center time-container">
                             <img src="./assets/lectures/time-icon-2.png" style="height: 0.85vw; margin-right: 0.3vw;">
@@ -118,6 +118,12 @@ function arrayBufferToBase64(buffer) {
         binary += String.fromCharCode(bytes[i]);
     }
     return window.btoa(binary);
+}
+
+function redirectToUploadLecture() {
+    const params = new URLSearchParams(window.location.search);
+    const courseID = params.get('courseID');
+    window.location.href = `upload-lecture.html?courseID=${courseID}`;
 }
 
 document.addEventListener('DOMContentLoaded', loadCourseDetails);

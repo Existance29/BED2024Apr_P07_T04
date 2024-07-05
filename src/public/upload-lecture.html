@@ -57,12 +57,28 @@
                         <input type="number" class="form-control" name="duration" id="duration" required>
                         <div id="duration-error" class="field-error">Please enter a valid duration</div>
                     </div>
-                    <div class="mb-3">
-                        <label for="subLectures" class="form-label">Sub Lectures</label>
-                        <div id="subLectureContainer"></div>
-                        <button type="button" class="btn btn-secondary" onclick="addSubLecture()">Add Sub Lecture</button>
-                    </div>
+                    <input type="hidden" name="courseID" id="courseID">
                     <button type="submit" class="btn btn-primary w-100">Upload</button>
+                </form>
+                <form id="subLectureUploadForm" enctype="multipart/form-data" style="display:none;">
+                    <div class="mb-3">
+                        <label for="subLectureName" class="form-label">Sub Lecture Name</label>
+                        <input type="text" class="form-control" name="name" id="subLectureName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subLectureDescription" class="form-label">Description</label>
+                        <textarea class="form-control" name="description" id="subLectureDescription" rows="2" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subLectureDuration" class="form-label">Duration (minutes)</label>
+                        <input type="number" class="form-control" name="duration" id="subLectureDuration" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subLectureVideo" class="form-label">Video</label>
+                        <input type="file" class="form-control-file" name="video" id="subLectureVideo" accept="video/*" required>
+                    </div>
+                    <input type="hidden" name="lectureID" id="lectureID">
+                    <button type="submit" class="btn btn-primary w-100">Upload Sub Lecture</button>
                 </form>
             </div>
         </div>
