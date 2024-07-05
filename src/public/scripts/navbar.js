@@ -1,4 +1,8 @@
 
+const navSearchBarForm = document.getElementById("nav-search-bar-form")
+const navSearchBarDiv = document.getElementById("nav-search-bar")
+const navSearchBar = document.querySelector("#nav-search-bar input")
+
 async function loadNavBar(){
     //check if the user is logged in, if they are, display profile icon, else display login button (by triggering logout)
     const loggedIn = await isLoggedIn()
@@ -22,6 +26,36 @@ async function loadNavBar(){
         logout(false)
     }
 }
+
+function searchBar(){
+    for (const x of document.getElementsByClassName("search-bar-hide")){
+        x.style.display = "none"
+    }
+    //show the search bar
+    navSearchBarForm.style.display = "flex"
+    //trigger the animation
+    navSearchBarDiv.classList.add("active")
+
+}
+
+function hideSearchBar(){
+    //hide the search bar
+    navSearchBarForm.style.display = "none"
+    //remove the class (so it can be triggered again)
+    navSearchBarDiv.classList.remove("active")
+    //also clear the text
+    navSearchBar.value = ""
+    //note: only 1 li element uses flex, but its fine to force display to flex instead of block since its just text
+    for (const x of document.getElementsByClassName("search-bar-hide")){
+        x.style.display = "flex"
+    }
+}
+
+navSearchBarDiv.addEventListener("keyup", ({key}) => {
+    if (key === "Enter") {
+        console.log(navSearchBar.value)
+    }
+})
 
 loadNavBar()
 

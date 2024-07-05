@@ -245,8 +245,8 @@ class User {
     }
 
     static async getCompletedCourses(userID){
-        //return a list of objects of the complete courses
-        const result = (await this.query("SELECT course_id, date_completed FROM User_Completed_Courses WHERE user_id = @id", {"id":userID})).recordset
+        //return a list of objects of the complete courses (sorted by date descending)
+        const result = (await this.query("SELECT course_id, date_completed FROM User_Completed_Courses WHERE user_id = @id ORDER BY date_completed DESC", {"id":userID})).recordset
         //return null if no courses are completed
         return result.length? result : null
     }

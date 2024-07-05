@@ -26,7 +26,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     opacity: 1; /* Firefox */
 }
 
-input {
+input[type="search"] {
     color: #fff !important;
     font-size: 1.2vw !important;
 }
