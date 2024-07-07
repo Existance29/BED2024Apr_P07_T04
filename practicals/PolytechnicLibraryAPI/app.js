@@ -6,6 +6,8 @@ const sql = require("mssql")
 const bodyParser = require("body-parser")
 const validateSchema = require("./middlewares/validateSchema")
 const userController = require("./controllers/userController")
+const bookController = require('./controllers/bookController');
+const verifyJWT = require('./middlewares/authMiddleware').verifyJWT; 
 
 //use parse middlewares
 app.use(bodyParser.json())
@@ -14,6 +16,13 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //routes
 app.post("/register",validateSchema.validateRegistration, userController.registerUser)
 app.post("/login", validateSchema.validateLogin, userController.loginUser)
+
+
+// librarian
+app.put('/books/:bookId/availability', verifyJWT, bookController.updateBookAvailability);
+
+// get all books for both member and librarian
+app.get('/books', verifyJWT, bookController.getAllBooks);
 
 app.listen(port, async () => {
   try {
