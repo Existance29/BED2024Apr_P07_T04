@@ -4,9 +4,9 @@ const bcrypt = require('bcryptjs')
 const registerUser = async (req, res) => {
   const {username, password, role} = req.body
   try {
-      //check if user with the username exists
-      //return the error message in the same format as the one in validateSchema
-      if (await User.getUserByUsername(username)) return res.status(400).send({message: "Validation error", "errors": [["username","\"username\" is taken"]]})
+    //check if user with the username exists
+    //return the error message in the same format as the one in validateSchema
+    if (await User.getUserByUsername(username)) return res.status(400).send({message: "Validation error", "errors": [["username","\"username\" is taken"]]})
     //hash the password and replace the password field with the new hashed password
     const salt = bcrypt.genSaltSync(10)
     const hashPassword = bcrypt.hashSync(password, salt)
