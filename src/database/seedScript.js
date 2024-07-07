@@ -115,9 +115,12 @@ CREATE TABLE Lectures (
 );
 
 CREATE TABLE Comments (
+  UserID INT NOT NULL,
   CommentID INT PRIMARY KEY IDENTITY(1,1),
   Message NVARCHAR(MAX) NOT NULL,
   Rating NVARCHAR(MAX) NOT NULL,
+  FOREIGN KEY (UserID) REFERENCES Users(id),
+  FOREIGN KEY (sub_lecture_id) REFERENCES SubLectures(SubLectureID)
 );
 
 CREATE TABLE SubLectures (
