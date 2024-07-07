@@ -1,5 +1,7 @@
 const User = require("../models/user")
 const bcrypt = require('bcryptjs')
+require("dotenv").config()
+const jwt = require("jsonwebtoken")
 
 const registerUser = async (req, res) => {
   const {username, password, role} = req.body
@@ -45,7 +47,7 @@ const loginUser = async (req, res) => {
       id: user.id,
       role: user.role,
     };
-    const token = jwt.sign(payload, "bed_secret_key", { expiresIn: "3600s" }); // Expires in 1 hour
+    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "3600s" }); // Expires in 1 hour
 
     return res.status(200).json({ token });
   } catch (err) {
