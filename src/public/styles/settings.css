@@ -1,5 +1,5 @@
 main{
-    min-height: 150vh; /*Keep screen height consistent to avoid as much background shifting as possible*/
+    min-height: 160vh; /*Keep screen height consistent to avoid as much background shifting as possible*/
     position: relative;
     padding: 4vw 11%;
     color: white;

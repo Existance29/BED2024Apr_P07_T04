@@ -38,7 +38,7 @@ async function signUp(){
         "password": passwordInput.value,
         "about_me": "",
         "country": (await (await get("http://ip-api.com/json")).json()).country, //auto-detect the user's country
-        "job_title": "Member", //default to member
+        "job_title": "", //default to blank
         "role": roleInput.value
     }
     //update database
