@@ -45,7 +45,7 @@ const loginUser = async (req, res) => {
       id: user.id,
       role: user.role,
     };
-    const token = jwt.sign(payload, "your_secret_key", { expiresIn: "3600s" }); // Expires in 1 hour
+    const token = jwt.sign(payload, "bed_secret_key", { expiresIn: "3600s" }); // Expires in 1 hour
 
     return res.status(200).json({ token });
   } catch (err) {
