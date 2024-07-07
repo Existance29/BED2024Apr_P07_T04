@@ -26,6 +26,17 @@ const validateRegistration = async (req, res, next) => {
   if (await validateSchema(req,res,schema)) next()
 };
 
+//validate the user input when logging in
+const validateLogin = async (req, res, next) => {
+  //create schema to validate user object
+  const schema = Joi.object({
+    username: Joi.string().max(255).required(), //required, max 255 chars
+    password: Joi.string().max(100).required(), //required, max 100 chars
+  })
+  //check if validation successful
+  if (await validateSchema(req,res,schema)) next()
+};
+
 module.exports = {
-  validateRegistration,
+  validateRegistration, validateLogin,
 }

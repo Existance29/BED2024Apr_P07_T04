@@ -83,7 +83,7 @@ CREATE TABLE Users (
   country VARCHAR(100) NOT NULL,
   join_date DATE NOT NULL,
   job_title VARCHAR(100) NOT NULL,
-  role VARCHAR(8) NOT NULL
+  role VARCHAR(8) NOT NULL, CHECK (role = 'student' OR role = 'lecturer')
 );
 
 CREATE TABLE Profile_Pictures (
@@ -115,9 +115,12 @@ CREATE TABLE Lectures (
 );
 
 CREATE TABLE Comments (
+  UserID INT NOT NULL,
   CommentID INT PRIMARY KEY IDENTITY(1,1),
   Message NVARCHAR(MAX) NOT NULL,
   Rating NVARCHAR(MAX) NOT NULL,
+  FOREIGN KEY (UserID) REFERENCES Users(id),
+  FOREIGN KEY (sub_lecture_id) REFERENCES SubLectures(SubLectureID)
 );
 
 CREATE TABLE SubLectures (
@@ -944,6 +947,58 @@ async function insertQuizzes(connection) {
   }
 }
 
+async function insertUsers(connection){
+  //insert user info, completed courses and quiz results
+  await connection.request().query(`
+    INSERT INTO Users
+    VALUES ('Toby', 'Dean', 'toby@noom.com', '$2a$10$EOx5JueXvEFefFQQm63YC.v2SwPOyZMKqcPcXY9HAW253JijH3/IO', 'Maxing out mastermindz', 'United States', '2022-06-04', 'University Student', 'student');
+    SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO Users
+    VALUES ('Sarah', 'Lee', 'sarah@noom.com', '$2a$10$EOx5JueXvEFefFQQm63YC.v2SwPOyZMKqcPcXY9HAW253JijH3/IO', 'Hi there stranger! Im Sarah. A idiot who likes doggos and fun', 'Singapore', '2024-06-04', 'Web Developer', 'student');
+    SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO Users
+    VALUES ('George', 'Wilson', 'george@noom.com', '$2a$10$EOx5JueXvEFefFQQm63YC.v2SwPOyZMKqcPcXY9HAW253JijH3/IO', '01/04/2024. Published over 5 courses on mastermindz', 'United Kingdom', '2023-05-20', 'Full Stack Engineer', 'lecturer');
+    SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO User_Completed_Courses VALUES (1,1,'2022-06-08');
+    INSERT INTO User_Completed_Courses VALUES (1,2,'2022-07-11');
+    INSERT INTO User_Completed_Courses VALUES (1,3,'2023-01-09');
+    INSERT INTO User_Completed_Courses VALUES (1,4,'2023-05-12');
+    INSERT INTO User_Completed_Courses VALUES (1,5,'2023-05-16');
+    INSERT INTO User_Completed_Courses VALUES (1,6,'2023-08-23');
+    INSERT INTO User_Completed_Courses VALUES (1,7,'2023-10-04');
+    INSERT INTO User_Completed_Courses VALUES (1,8,'2023-10-08');
+
+    INSERT INTO User_Completed_Courses VALUES (2,3,'2024-07-01');
+	INSERT INTO User_Completed_Courses VALUES (2,5,'2024-07-03');
+
+    INSERT INTO Results VALUES (1,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (2,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (3,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (4,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO Results VALUES (1,2,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (3,2,10,5,1,10,50,'F'); SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO Results VALUES (2,3,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (3,3,30,5,3,10,50,'B'); SELECT SCOPE_IDENTITY() AS id;
+  `)
+  
+  //insert profile imgs
+  const profileImgs = ["profile-img-seed-1.png","profile-img-seed-2.jpg","profile-img-seed-3.jpg"]
+  for (let i = 0; i < profileImgs.length; i++){
+    const imgBase64 = fs.readFileSync(`../src/public/assets/profile/${profileImgs[i]}`, {encoding: 'base64'})
+    await connection.request()
+    .input("user_id", i+1)
+    .input("img", imgBase64)
+    .query("INSERT INTO Profile_Pictures (user_id,img) VALUES (@user_id, @img); SELECT SCOPE_IDENTITY() AS id;")
+  }
+
+  
+}
+
 // Load the SQL and run the seed process
 async function run() {
   const connection = await sql.connect(dbConfig);
@@ -960,6 +1015,10 @@ async function run() {
     // Insert quiz data
     await insertQuizzes(connection);
     console.log("Quizzes inserted");
+
+    // Insert user data
+    await insertUsers(connection);
+    console.log("Users inserted");
 
     connection.close();
     console.log("Seeding completed");

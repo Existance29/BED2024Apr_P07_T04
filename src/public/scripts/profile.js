@@ -53,10 +53,12 @@ async function loadProfile(){
     //handle different responses
     if (response.status == 404){
         //user not found
-        const content = document.getElementById("main")
+        const content = document.getElementById("loading-main")
         content.innerHTML = `<h2 style = "color:white; font-size: 2vw">404 User Not Found</h2>`
         content.innerHTML += `<div style = "color:white; font-size: 1.2vw; margin-top:2vw">We couldn't find this user. Maybe the user has been deleted, or possibly never existed</div>`
         content.style.minHeight = "100vh"
+        loadContent()
+        return
 
     }else if (response.status = 500){
         //error
