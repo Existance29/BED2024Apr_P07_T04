@@ -12,7 +12,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 //routes
-app.post("/register",validateSchema.validateRegistration, userController.registerUser, userController.loginUser)
+app.post("/register",validateSchema.validateRegistration, userController.registerUser)
+app.post("/login", validateSchema.validateLogin, userController.loginUser)
 
 app.listen(port, async () => {
   try {
