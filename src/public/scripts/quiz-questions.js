@@ -12,16 +12,8 @@ let timerInterval;
 let maxDuration; // Maximum duration in seconds
 let alertShown = false; // Flag to track if the 15 seconds alert has been shown
 
-function getUserID(){
-    if (sessionStorage.userid != null){
-      return sessionStorage.userid
-  
-    } else if (localStorage.userid != null){
-      return localStorage.userid
-    } 
-  
-    return null
-  }
+//to jung sek: I removed the getUserID function, its not required.
+//as long as your html includes common.js, this file can access the functions in it
 
 function startQuiz() {
     startTime = new Date();

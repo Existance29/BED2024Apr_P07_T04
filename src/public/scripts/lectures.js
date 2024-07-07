@@ -124,6 +124,8 @@ async function loadCourseAndLectureDetails() {
     //indicate the sublectures that have been viewed
     const viewedSubLectures = await (await get(`/users/courses/sublectures/${userID}/${courseID}`)).json()
     viewedSubLectures.forEach((x) => viewSubLecture(x))
+    //finished loading, show the content
+    loadContent()
     // Load the initial video
     if (subLectureID) {
         loadSubLectureVideo(subLectureID, lectureID, courseID);
