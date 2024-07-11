@@ -18,7 +18,7 @@ const generateAccessToken = (user) => {
 }
 
 const getAllUsers = async (req, res) => {
-  // #swagger.description = 'Returns a list of all users information'
+  // #swagger.description = 'Get a list of all users information'
   /* #swagger.responses[200] = {
             description: 'Success, returns a list of user objects.',
             schema: {
@@ -42,7 +42,12 @@ const getAllUsers = async (req, res) => {
 }
 
 const getUserById = async (req, res) => {
-  // #swagger.description = 'Return the information of the user as specified in the id parameter'
+  // #swagger.description = 'Get the information of the user as specified in the id parameter'
+  /*  #swagger.parameters['id'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the user',
+  } */
   /* #swagger.responses[200] = {
             description: 'Success, returns a user object',
             schema: {
@@ -70,7 +75,26 @@ const getUserById = async (req, res) => {
 }
 
 const getPrivateUserById = async (req, res) => {
-  const id = parseInt(req.userId);
+  // #swagger.description = 'Retrieve a user\'s information, but contains more sensetive data (such as email). User id obtained from jwt'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
+  /* #swagger.responses[200] = {
+            description: 'Success, returns a list of user objects.',
+            schema: {
+                id: 1,
+                first_name: 'John',
+                last_name: 'Doe',
+                about_me: 'Hi! My name is John Doe',
+                country: 'United States',
+                join_date: "2022-06-04T00:00:00.000Z",
+                job_title: 'UI/UX Designer',
+                role: 'student'
+            }
+    } */
+  //update the data found in the user table
+  const id = parseInt(req.user.userId);
   try {
     const user = await User.getPrivateUserById(id)
     if (!user) {
@@ -98,6 +122,20 @@ const getCompleteUserByID = async (req, res) => {
 }
 
 const getProfilePictureByID = async (req, res) => {
+  // #swagger.description = 'Get the base64 encoded image of the profile picture of the user as specified in the id parameter'
+  /*  #swagger.parameters['id'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the user',
+  } */
+  /* #swagger.responses[200] = {
+            description: 'Success, returns the id of the profile picture, the user\'s id and the base64 encoded picture',
+            schema: {
+                pic_id: 1,
+                user_id: 'John',
+                "img": "base64-string-here"
+            }
+    } */
   const id = parseInt(req.params.id);
   try {
     const pic = await User.getProfilePic(id)
@@ -167,7 +205,7 @@ const createUser = async (req, res) => {
 
 const updateProfilePic = async (req, res) => {
   const file = req.file; //file obj from form data
-  const id = parseInt(req.userId);
+  const id = parseInt(req.user.userId);
   //verify that a file has been added
   if (!file) {
       return res.status(400).send("No file uploaded");
@@ -202,7 +240,7 @@ const updateUser = async (req, res) => {
     } */
   //update the data found in the user table
   const data = req.body
-  const id = req.userId
+  const id = req.user.userId
   try {
     const updatedUser = await User.updateUser(id,data)
     res.status(201).json(updatedUser);
@@ -215,7 +253,7 @@ const updateUser = async (req, res) => {
 const updatePassword = async (req, res) => {
   //update the user's password
   try {
-    const updatedUser = await User.updatePassword(req.userId,hashPassword(req.body.new_password))
+    const updatedUser = await User.updatePassword(req.user.userId,hashPassword(req.body.new_password))
     res.status(201).json(updatedUser);
   } catch (error) {
     console.error(error);
@@ -224,6 +262,21 @@ const updatePassword = async (req, res) => {
 }
 
 const getViewedSubLecturesByCourse = async (req,res) => {
+  // #swagger.description = 'Retriev all viewed sublectures by a user under a course'
+
+  /*  #swagger.parameters['uid'] = {
+            in: 'path',
+            type: "int",
+            description: 'The id of the user',
+    } */
+  /*  #swagger.parameters['cid'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the course',
+  } */
+  /* #swagger.responses[201] = {
+            description: 'Success, sublecture is marked as viewed.',
+    } */
   //retrieved all viewed sublectures by a user under a course
   try {
     const uid = parseInt(req.params.uid)
@@ -231,8 +284,7 @@ const getViewedSubLecturesByCourse = async (req,res) => {
     const user = await User.getUserById(uid)
     //check if user exists
     if (!user) return res.status(404).send("User not found")
-    const result = User.getViewedSubLecturesByCourse(uid,cid)
-    res.status(201).json(await User.getViewedSubLecturesByCourse(uid,cid))
+    res.json(await User.getViewedSubLecturesByCourse(uid,cid))
   } catch (error) {
     console.error(error);
     res.status(500).send("Error checking if viewed sub lecture")
@@ -248,7 +300,7 @@ const addSubLecture = async (req,res) => {
 
   /*  #swagger.parameters['lid'] = {
             in: 'path',
-            type: "integer",
+            type: "int",
             description: 'The id of the sublecture',
     } */
   /* #swagger.responses[201] = {
@@ -257,7 +309,7 @@ const addSubLecture = async (req,res) => {
   
   
   try {
-    const uid = req.userId
+    const uid = req.user.userId
     const lid = parseInt(req.params.lid)
     const user = await User.getUserById(uid)
     //check if user exists
@@ -276,6 +328,14 @@ const addSubLecture = async (req,res) => {
 }
 
 const verifyUserToken = async (req, res) => {
+  // #swagger.description = 'Verify a user jwt'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
+  /* #swagger.responses[200] = {
+            description: 'Success, token is valid',
+    } */
   res.status(200).send("token is valid")
 }
 
