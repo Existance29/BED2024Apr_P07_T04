@@ -487,18 +487,91 @@
     },
     "/users/complete/{id}": {
       "get": {
-        "description": "",
+        "description": "Retrieve a user\\'s profile information (regular info, profile pic, overall quiz data, completed courses). User id obtained from parameter",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "int",
+            "description": "The id of the user"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success, returns user data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "first_name": {
+                  "type": "string",
+                  "example": "Toby"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Dean"
+                },
+                "about_me": {
+                  "type": "string",
+                  "example": "Maxing out mastermindz"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "United States"
+                },
+                "join_date": {
+                  "type": "string",
+                  "example": "2022-06-04T00:00:00.000Z"
+                },
+                "job_title": {
+                  "type": "string",
+                  "example": "University Student"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "student"
+                },
+                "pic_id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "img": {
+                  "type": "string",
+                  "example": "base64-string"
+                },
+                "quiz_accuracy": {
+                  "type": "number",
+                  "example": 1
+                },
+                "questions_completed": {
+                  "type": "number",
+                  "example": 20
+                },
+                "completed_courses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "course_id": {
+                        "type": "number",
+                        "example": 8
+                      },
+                      "date_completed": {
+                        "type": "string",
+                        "example": "2023-10-08T00:00:00.000Z"
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "404": {
             "description": "Not Found"
@@ -511,24 +584,26 @@
     },
     "/users/courses/sublectures/{uid}/{cid}": {
       "get": {
-        "description": "",
+        "description": "Get all viewed sublectures by a user under a course",
         "parameters": [
           {
             "name": "uid",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "int",
+            "description": "The id of the user"
           },
           {
             "name": "cid",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "int",
+            "description": "The id of the course"
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "Success, returns a list of sublecture ids"
           },
           "404": {
             "description": "Not Found"
