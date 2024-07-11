@@ -51,7 +51,7 @@ li{
 
 /*keyframe animation to reveal right to left. Its associated to a class so it can be trigger via js*/
 #nav-search-bar.active {
-    animation: reveal 0.25s;
+    animation: reveal 0.2s;
     animation-timing-function: ease-in-out;
 }
 
