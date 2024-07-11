@@ -3,6 +3,11 @@
 guardLoginPage()
 const userID = getUserID()
 
+const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
+const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+
+console.log('Access Token:', token); // Debugging log
+console.log('Role:', role); // Debugging log
 //change the font color of the sublecture description to gray
 function viewSubLecture(id){
     document.getElementById(`desc-${id}`).style.color = "#7F7F7F"
@@ -157,7 +162,12 @@ async function loadLectureVideo(lectureID, courseID) {
 
 // Function to load sub-lecture video
 async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
-    const viewSubLectureResponse = await post(`./users/sublecture/${subLectureID}`) //add the viewed sublecture to the database
+    const viewSubLectureResponse = await post(`./users/sublecture/${subLectureID}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }); //add the viewed sublecture to the database
     const subLecture = await fetchLectureDetails(lectureID, subLectureID);
     const videoData = normalizeVideoProperty(subLecture);
 
