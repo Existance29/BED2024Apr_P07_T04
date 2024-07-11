@@ -122,6 +122,17 @@ const isPasswordCorrect = async (id,password,helper) => {
 }
 
 const validateNewPassword = async (req,res,next) => {
+
+  /*  #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Sample schema to update user password',
+            schema: {
+                $current_password: 'password123',
+                $new_password: 'moreSecurePass11a%^',
+                $repeat_new_password: 'thisPassDoesntMatch',
+            }
+    } */
+
   const schema = Joi.object({
     current_password: Joi.string().required().external((value,helper) => isPasswordCorrect(req.params.id,value,helper)), //make sure current password is correct
     new_password: Joi.string().min(5).max(100).required(), //ensure new password matches the basic password req (min 5 chars)

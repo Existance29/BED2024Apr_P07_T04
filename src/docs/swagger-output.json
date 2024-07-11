@@ -140,7 +140,7 @@
         }
       },
       "put": {
-        "description": "Update a user\\'s data. User id is obtained from jwt",
+        "description": "Update a user\\'s account data. User id is obtained from jwt",
         "parameters": [
           {
             "name": "body",
@@ -616,7 +616,7 @@
     },
     "/users/pic": {
       "put": {
-        "description": "",
+        "description": "Update a user\\'s profile picture. User id is obtained from jwt",
         "parameters": [
           {
             "name": "authorization",
@@ -648,24 +648,40 @@
     },
     "/users/password": {
       "put": {
-        "description": "",
+        "description": "Update a user\\'s account data. User id is obtained from jwt",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
+            "description": "Sample schema to update user password",
             "schema": {
               "type": "object",
               "properties": {
+                "current_password": {
+                  "type": "string",
+                  "example": "password123"
+                },
                 "new_password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "moreSecurePass11a%^"
+                },
+                "repeat_new_password": {
+                  "type": "string",
+                  "example": "thisPassDoesntMatch"
                 }
-              }
+              },
+              "required": [
+                "current_password",
+                "new_password",
+                "repeat_new_password"
+              ]
             }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
           }
         ],
         "responses": {

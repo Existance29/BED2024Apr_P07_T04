@@ -238,6 +238,9 @@ const createUser = async (req, res) => {
 }
 
 const updateProfilePic = async (req, res) => {
+  // #swagger.description = 'Update a user\'s profile picture. User id is obtained from jwt'
+
+
   const file = req.file; //file obj from form data
   const id = parseInt(req.user.userId);
   //verify that a file has been added
@@ -253,7 +256,7 @@ const updateProfilePic = async (req, res) => {
       }
 
       const imageBuffer = fs.readFileSync(file.path, { encoding: 'base64' }); //read the file and convert it to base64
-
+      //add it to the database
       await User.updateProfilePic(id, imageBuffer);
 
       // Clean up uploaded file
@@ -267,7 +270,7 @@ const updateProfilePic = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  // #swagger.description = 'Update a user\'s data. User id is obtained from jwt'
+  // #swagger.description = 'Update a user\'s account data. User id is obtained from jwt'
   /*  #swagger.parameters['authorization'] = {
             in: 'header',
             description: 'Format: \'Bearer (jwt)\'',
@@ -285,6 +288,11 @@ const updateUser = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
+  // #swagger.description = 'Update a user\'s account data. User id is obtained from jwt'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
   //update the user's password
   try {
     const updatedUser = await User.updatePassword(req.user.userId,hashPassword(req.body.new_password))
