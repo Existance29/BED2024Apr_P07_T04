@@ -1,8 +1,13 @@
 {
   "swagger": "2.0",
   "info": {
+<<<<<<< HEAD
     "title": "My API",
     "description": "Description of your API",
+=======
+    "title": "Polytechnic Library API",
+    "description": "API for the polytechnic's library system",
+>>>>>>> c02ef7e5f23e1d3848eed0ef8052aa7b947b545f
     "version": "1.0.0"
   },
   "host": "localhost:3000",
@@ -79,6 +84,61 @@
           }
         }
       }
+<<<<<<< HEAD
+=======
+    },
+    "/books/{bookId}/availability": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "availability": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/books": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+>>>>>>> c02ef7e5f23e1d3848eed0ef8052aa7b947b545f
     }
   }
 }
