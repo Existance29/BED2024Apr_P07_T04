@@ -11,13 +11,12 @@ $(".footer-placeholder").load("./commonHTML/footer.html")
 //load the header for course-view pages
 $(".course-header-placeholder").load("./commonHTML/course-header.html")
 
-//get the access token
-var accessToken = null
-if (localStorage.accessToken){
-  accessToken = localStorage.accessToken
-}else if (sessionStorage.accessToken){
-  accessToken = sessionStorage.accessToken
-}
+// Get the access token and role
+const accessToken = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+const userRole =  localStorage.getItem("role") || sessionStorage.getItem("role");
+
+
+
 //console.log(accessToken)
 //returns a string with title-casing
 function title(str) {
@@ -111,6 +110,7 @@ function getUserID(){
   if (!accessToken) return null
   return JSON.parse(atob(accessToken.split('.')[1])).userId
 }
+
 
 //to be called when content is done loading
 //shows the content and hides the loading animation

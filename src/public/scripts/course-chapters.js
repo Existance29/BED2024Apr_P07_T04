@@ -1,7 +1,17 @@
+guardLoginPage();
+const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
+const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+
+
 // Fetch course details including lectures
 async function fetchCourseDetailsWithLectures(courseID) {
     try {
-        const response = await fetch(`/courses/${courseID}/lectures/without-video`);
+        const response = await fetch(`/courses/${courseID}/lectures/without-video`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) throw new Error('Failed to fetch course details with lectures');
         const courseWithLectures = await response.json();
         console.log('Course with Lectures:', courseWithLectures);  // Log for debugging
@@ -15,7 +25,12 @@ async function fetchCourseDetailsWithLectures(courseID) {
 // Fetch basic course details without lectures
 async function fetchBasicCourseDetails(courseID) {
     try {
-        const response = await fetch(`/courses/${courseID}`);
+        const response = await fetch(`/courses/${courseID}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         if (!response.ok) throw new Error('Failed to fetch basic course details');
         const course = await response.json();
         console.log('Basic Course Details:', course);  // Log for debugging
