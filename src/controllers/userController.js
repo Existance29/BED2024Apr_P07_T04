@@ -18,6 +18,20 @@ const generateAccessToken = (user) => {
 }
 
 const getAllUsers = async (req, res) => {
+  // #swagger.description = 'Returns a list of all users information'
+  /* #swagger.responses[200] = {
+            description: 'Success, returns a list of user objects.',
+            schema: {
+                id: 1,
+                first_name: 'John',
+                last_name: 'Doe',
+                about_me: 'Hi! My name is John Doe',
+                country: 'United States',
+                join_date: "2022-06-04T00:00:00.000Z",
+                job_title: 'UI/UX Designer',
+                role: 'student'
+            }
+    } */
   try {
     const user = await User.getAllUsers()
     res.json(user)
@@ -28,6 +42,20 @@ const getAllUsers = async (req, res) => {
 }
 
 const getUserById = async (req, res) => {
+  // #swagger.description = 'Return the information of the user as specified in the id parameter'
+  /* #swagger.responses[200] = {
+            description: 'Success, returns a user object',
+            schema: {
+                id: 1,
+                first_name: 'John',
+                last_name: 'Doe',
+                about_me: 'Hi! My name is John Doe',
+                country: 'United States',
+                join_date: "2022-06-04T00:00:00.000Z",
+                job_title: 'UI/UX Designer',
+                role: 'student'
+            }
+    } */
   const id = parseInt(req.params.id);
   try {
     const user = await User.getUserById(id)
@@ -84,6 +112,17 @@ const getProfilePictureByID = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
+  // #swagger.description = 'Verify that a user\'s login credentials are correct and generate a jwt'
+  /* #swagger.responses[200] = {
+            description: 'User successfully logged in, returns the user\'s jsonwebtoken.',
+            schema: {
+                accessToken: 'jwt here'
+            }
+    } */
+  /* #swagger.responses[404] = {
+            description: 'Incorrect login credentials',
+    } */
+
   const email = req.body.email
   const password = req.body.password
   try {
@@ -106,6 +145,13 @@ const loginUser = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
+  // #swagger.description = 'Create a new user on registration'
+  /* #swagger.responses[201] = {
+            description: 'User successfully created, returns the user\'s jsonwebtoken.',
+            schema: {
+                accessToken: 'jwt here'
+            }
+    } */
   const newUser = req.body;
   try {
     //hash the password and replace the password field with the new hashed password
@@ -149,6 +195,11 @@ const updateProfilePic = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+  // #swagger.description = 'Update a user\'s data. User id is obtained from jwt'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
   //update the data found in the user table
   const data = req.body
   const id = req.userId
@@ -189,6 +240,22 @@ const getViewedSubLecturesByCourse = async (req,res) => {
 }
 
 const addSubLecture = async (req,res) => {
+  // #swagger.description = 'Add a sublecture as viewed by the user. User id is obtained from jwt token'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
+
+  /*  #swagger.parameters['lid'] = {
+            in: 'path',
+            type: "integer",
+            description: 'The id of the sublecture',
+    } */
+  /* #swagger.responses[201] = {
+            description: 'Success, sublecture is marked as viewed.',
+    } */
+  
+  
   try {
     const uid = req.userId
     const lid = parseInt(req.params.lid)
@@ -209,7 +276,7 @@ const addSubLecture = async (req,res) => {
 }
 
 const verifyUserToken = async (req, res) => {
-  res.status(201).send("token is valid")
+  res.status(200).send("token is valid")
 }
 
 module.exports = {
