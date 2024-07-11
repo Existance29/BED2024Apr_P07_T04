@@ -135,7 +135,6 @@ CREATE TABLE Comments (
 );
 
 
-
 CREATE TABLE User_Sub_Lectures (
   user_id INT NOT NULL,
   sub_lecture_id INT NOT NULL,
