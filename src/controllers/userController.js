@@ -378,6 +378,13 @@ const verifyUserToken = async (req, res) => {
   /* #swagger.responses[200] = {
             description: 'Success, token is valid',
     } */
+  /* #swagger.responses[401] = {
+            description: 'Token is invalid',
+    } */
+  
+  /* #swagger.responses[403] = {
+            description: 'Token is invalid',
+    } */
   res.status(200).send("token is valid")
 }
 

@@ -367,10 +367,10 @@
             "description": "Success, token is valid"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token is invalid"
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token is invalid"
           }
         }
       }
