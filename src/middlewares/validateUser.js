@@ -48,6 +48,22 @@ const validateSchema = async (req,res,schema) =>{
 //validate the user input when creating account
 const validateUser = async (req, res, next) => {
   //create schema to validate user object
+
+  /*  #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Add new user.',
+            schema: {
+                $first_name: 'John',
+                $last_name: 'Doe',
+                $email: 'JohnDoe@hotmail.com',
+                $password: 'password123',
+                about_me: '',
+                $country: 'United States',
+                $job_title: 'UI/UX Designer',
+                $role: 'student'
+            }
+    } */
+
   const schema = Joi.object({
     first_name: Joi.string().min(1).max(40).required(), //no blanks, max 40 chars
     last_name: Joi.string().min(1).max(40).required(), //no blanks, max 40 chars

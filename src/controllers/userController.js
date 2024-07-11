@@ -18,6 +18,20 @@ const generateAccessToken = (user) => {
 }
 
 const getAllUsers = async (req, res) => {
+  // #swagger.description = 'Returns a list of all users/' object containing their information'
+  /* #swagger.responses[201] = {
+            description: 'Sample of a user object',
+            schema: {
+                id: 1,
+                first_name: 'John',
+                last_name: 'Doe',
+                about_me: 'Hi! My name is John Doe',
+                country: 'United States',
+                join_date: "2022-06-04T00:00:00.000Z",
+                job_title: 'UI/UX Designer',
+                role: 'student'
+            }
+    } */
   try {
     const user = await User.getAllUsers()
     res.json(user)
@@ -106,6 +120,13 @@ const loginUser = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
+  // #swagger.description = 'Create a new user on registration'
+  /* #swagger.responses[201] = {
+            description: 'Returns the user\'s jsonwebtoken.',
+            schema: {
+                accessToken: 'jwt here'
+            }
+    } */
   const newUser = req.body;
   try {
     //hash the password and replace the password field with the new hashed password

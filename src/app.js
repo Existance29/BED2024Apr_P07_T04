@@ -8,6 +8,11 @@ const bodyParser = require("body-parser")
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./docs/swagger-output.json"); // Import generated spec
+
+// Serve the Swagger UI at a specific route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Ensure upload directory exists
 const uploadDir = path.join(__dirname, './uploads');
