@@ -8,7 +8,12 @@ const validateSchema = require("./middlewares/validateSchema")
 const userController = require("./controllers/userController")
 const bookController = require('./controllers/bookController');
 const verifyJWT = require('./middlewares/authMiddleware').verifyJWT; 
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger-output.json"); // Import generated spec
 
+
+// Serve the Swagger UI at a specific route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 //use parse middlewares
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
