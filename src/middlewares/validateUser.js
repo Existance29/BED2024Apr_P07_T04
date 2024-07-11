@@ -51,7 +51,7 @@ const validateUser = async (req, res, next) => {
 
   /*  #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Add new user.',
+            description: 'Sample schema to add new user',
             schema: {
                 $first_name: 'John',
                 $last_name: 'Doe',
@@ -80,6 +80,21 @@ const validateUser = async (req, res, next) => {
 
 //validate the user's update data. Similar to validateUser, but dont validate password and also slightly different unqiue email validation
 const validateUpdate = async (req,res,next) => {
+  
+    /*  #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Sample schema to update user',
+            schema: {
+                first_name: 'John',
+                last_name: 'Doe',
+                email: 'John@gmail.com',
+                about_me: 'Maxing out mastermindz',
+                country: 'United States',
+                job_title: 'UI/UX Designer'
+            }
+    } */
+
+
   const schema = Joi.object({
     first_name: Joi.string().min(1).max(40).required(),
     last_name: Joi.string().min(1).max(40).required(),

@@ -18,7 +18,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "Add new user.",
+            "description": "Sample schema to add new user",
             "schema": {
               "type": "object",
               "properties": {
@@ -69,7 +69,7 @@
         ],
         "responses": {
           "201": {
-            "description": "Returns the user's jsonwebtoken.",
+            "description": "User successfully created, returns the user's jsonwebtoken.",
             "schema": {
               "type": "object",
               "properties": {
@@ -89,19 +89,44 @@
         }
       },
       "get": {
-        "description": "Returns a list of all users/",
+        "description": "Returns a list of all users information",
         "responses": {
           "200": {
-            "description": "OK"
-          },
-          "201": {
-            "description": "Returns the user's jsonwebtoken.",
+            "description": "Success, returns a list of user objects.",
             "schema": {
               "type": "object",
               "properties": {
-                "accessToken": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "first_name": {
                   "type": "string",
-                  "example": "jwt here"
+                  "example": "John"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Doe"
+                },
+                "about_me": {
+                  "type": "string",
+                  "example": "Hi! My name is John Doe"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "United States"
+                },
+                "join_date": {
+                  "type": "string",
+                  "example": "2022-06-04T00:00:00.000Z"
+                },
+                "job_title": {
+                  "type": "string",
+                  "example": "UI/UX Designer"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "student"
                 }
               },
               "xml": {
@@ -109,33 +134,53 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
           }
         }
       },
       "put": {
-        "description": "",
+        "description": "Update a user\\'s data. User id is obtained from jwt",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
+            "description": "Sample schema to update user",
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "example": "any"
+                "first_name": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "John@gmail.com"
+                },
+                "about_me": {
+                  "type": "string",
+                  "example": "Maxing out mastermindz"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "United States"
+                },
+                "job_title": {
+                  "type": "string",
+                  "example": "UI/UX Designer"
                 }
               }
             }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
           }
         ],
         "responses": {
@@ -156,23 +201,25 @@
     },
     "/users/sublecture/{lid}": {
       "post": {
-        "description": "",
+        "description": "Add a sublecture as viewed by the user. User id is obtained from jwt token",
         "parameters": [
           {
             "name": "lid",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "The id of the sublecture"
           },
           {
             "name": "authorization",
             "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
             "type": "string"
           }
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Success, sublecture is marked as viewed."
           },
           "401": {
             "description": "Unauthorized"
@@ -191,7 +238,7 @@
     },
     "/users/login": {
       "post": {
-        "description": "",
+        "description": "Verify that a user\\'s login credentials are correct and generate a jwt",
         "parameters": [
           {
             "name": "body",
@@ -211,10 +258,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "User successfully logged in, returns the user's jsonwebtoken.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "accessToken": {
+                  "type": "string",
+                  "example": "jwt here"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Incorrect login credentials"
           },
           "500": {
             "description": "Internal Server Error"
@@ -262,8 +321,8 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "OK"
           },
           "401": {
             "description": "Unauthorized"
@@ -276,7 +335,7 @@
     },
     "/users/{id}": {
       "get": {
-        "description": "",
+        "description": "Return the information of the user as specified in the id parameter",
         "parameters": [
           {
             "name": "id",
@@ -287,7 +346,47 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success, returns a user object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "first_name": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Doe"
+                },
+                "about_me": {
+                  "type": "string",
+                  "example": "Hi! My name is John Doe"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "United States"
+                },
+                "join_date": {
+                  "type": "string",
+                  "example": "2022-06-04T00:00:00.000Z"
+                },
+                "job_title": {
+                  "type": "string",
+                  "example": "UI/UX Designer"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "student"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "404": {
             "description": "Not Found"

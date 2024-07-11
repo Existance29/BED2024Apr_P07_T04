@@ -39,6 +39,7 @@ app.use(staticMiddleware)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+//for property inheritance swagger
 //setup routes
 route(app, upload)
 
