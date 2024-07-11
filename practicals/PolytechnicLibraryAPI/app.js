@@ -6,10 +6,13 @@ const sql = require("mssql")
 const bodyParser = require("body-parser")
 const validateSchema = require("./middlewares/validateSchema")
 const userController = require("./controllers/userController")
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger-output.json"); // Import generated spec
 
 //use parse middlewares
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //routes
 app.post("/register",validateSchema.validateRegistration, userController.registerUser)
