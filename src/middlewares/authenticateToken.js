@@ -47,7 +47,8 @@ const authenticateToken = (req,res,next) => {
             }
         );
 
-        if (!authorizedRole) {
+        console.log(authorizedRole)
+        if (authorizedRole === false) {
             console.log('Role not authorized for this endpoint'); 
             return res.status(403).json({ message: 'Forbidden' });
         }
