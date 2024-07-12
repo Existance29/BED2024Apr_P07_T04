@@ -183,10 +183,10 @@ async function loadFilters() {
     categoryDiv.innerHTML += out;
 }
 
-function topicOnLoad() {
+async function topicOnLoad() {
     console.log('Role inside topicOnLoad:', role); // Debugging log
     const userRole = role;
-    const uploadButtonContainer = document.getElementById('uploadButtonContainer');
+    const uploadButtonContainer = document.getElementById('upload-button');
     const editButton = document.querySelector('img[onclick="toggleEditMode()"]');
 
     if (userRole !== 'lecturer') {
@@ -194,23 +194,22 @@ function topicOnLoad() {
         if (editButton) editButton.style.display = 'none';
     }
 
-    loadCourses(); // Load courses
-    loadFilters();
+    await loadCourses(); // Load courses
+    await loadFilters();
 }
 
 // Filter systems
 function search() {
     // Get all checkboxes
     // Store the enabled checkbox's ids and use those to filter
-    categoryFilters = [];
-    for (const ele of document.getElementsByClassName("categoryCheckbox")) {
-        if (ele.checked) categoryFilters.push(ele.id);
-    }
+    const categoryFilters = Array.from(document.getElementsByClassName("categoryCheckbox"))
+        .filter(ele => ele.checked)
+        .map(ele => ele.id);
 
-    ratingFilters = [];
-    for (const ele of document.getElementsByClassName("ratingCheckbox")) {
-        if (ele.checked) ratingFilters.push(ele.id);
-    }
+    const ratingFilters = Array.from(document.getElementsByClassName("ratingCheckbox"))
+        .filter(ele => ele.checked)
+        .map(ele => ele.id);
+
     // Get input and convert to lowercase
     const input = document.getElementById("search").value.toLowerCase();
     // Get the system elements and iterate through each one, checking if they should be shown

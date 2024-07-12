@@ -1,4 +1,8 @@
 document.getElementById('lectureUploadForm').addEventListener('submit', handleLectureSubmit);
+const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
+const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+const params = new URLSearchParams(window.location.search);
+const courseID = params.get('courseID');
 
 async function handleLectureSubmit(event) {
     event.preventDefault();
@@ -14,7 +18,10 @@ async function handleLectureSubmit(event) {
     try {
         const lectureResponse = await fetch('/lectures', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
 
         const responseText = await lectureResponse.text();
@@ -61,8 +68,12 @@ async function handleSubLectureSubmit(event) {
     try {
         const subLectureResponse = await fetch(`/lectures/${lectureID}/sublectures`, {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
+
 
         const responseText = await subLectureResponse.text();
         console.log('Raw response from server:', responseText);
@@ -78,7 +89,7 @@ async function handleSubLectureSubmit(event) {
         console.log('Sub-lecture response from server:', subLectureResult);
 
         alert('Sub-lecture uploaded successfully!');
-        goCourse(subLectureResult.courseID); // Redirect to the course chapters page
+        goCourse(courseID); // Redirect to the course chapters page
     } catch (error) {
         console.error('Error uploading sub-lecture:', error);
         alert('Failed to upload sub-lecture: ' + error.message);
