@@ -18,6 +18,20 @@ const generateAccessToken = (user) => {
 }
 
 const getAllUsers = async (req, res) => {
+  // #swagger.description = 'Get a list of all users information'
+  /* #swagger.responses[200] = {
+            description: 'Success, returns a list of user objects.',
+            schema: {
+                id: 1,
+                first_name: 'John',
+                last_name: 'Doe',
+                about_me: 'Hi! My name is John Doe',
+                country: 'United States',
+                join_date: "2022-06-04T00:00:00.000Z",
+                job_title: 'UI/UX Designer',
+                role: 'student'
+            }
+    } */
   try {
     const user = await User.getAllUsers()
     res.json(user)
@@ -28,6 +42,25 @@ const getAllUsers = async (req, res) => {
 }
 
 const getUserById = async (req, res) => {
+  // #swagger.description = 'Get the information of the user as specified in the id parameter'
+  /*  #swagger.parameters['id'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the user',
+  } */
+  /* #swagger.responses[200] = {
+            description: 'Success, returns a user object',
+            schema: {
+                id: 1,
+                first_name: 'John',
+                last_name: 'Doe',
+                about_me: 'Hi! My name is John Doe',
+                country: 'United States',
+                join_date: "2022-06-04T00:00:00.000Z",
+                job_title: 'UI/UX Designer',
+                role: 'student'
+            }
+    } */
   const id = parseInt(req.params.id);
   try {
     const user = await User.getUserById(id)
@@ -42,7 +75,26 @@ const getUserById = async (req, res) => {
 }
 
 const getPrivateUserById = async (req, res) => {
-  const id = parseInt(req.userId);
+  // #swagger.description = 'Retrieve a user\'s information, but contains more sensetive data (such as email). User id obtained from jwt'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
+  /* #swagger.responses[200] = {
+            description: 'Success, returns a list of user objects.',
+            schema: {
+                id: 1,
+                first_name: 'John',
+                last_name: 'Doe',
+                about_me: 'Hi! My name is John Doe',
+                country: 'United States',
+                join_date: "2022-06-04T00:00:00.000Z",
+                job_title: 'UI/UX Designer',
+                role: 'student'
+            }
+    } */
+  //update the data found in the user table
+  const id = parseInt(req.user.userId);
   try {
     const user = await User.getPrivateUserById(id)
     if (!user) {
@@ -70,6 +122,20 @@ const getCompleteUserByID = async (req, res) => {
 }
 
 const getProfilePictureByID = async (req, res) => {
+  // #swagger.description = 'Get the base64 encoded image of the profile picture of the user as specified in the id parameter'
+  /*  #swagger.parameters['id'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the user',
+  } */
+  /* #swagger.responses[200] = {
+            description: 'Success, returns the id of the profile picture, the user\'s id and the base64 encoded picture',
+            schema: {
+                pic_id: 1,
+                user_id: 'John',
+                "img": "base64-string-here"
+            }
+    } */
   const id = parseInt(req.params.id);
   try {
     const pic = await User.getProfilePic(id)
@@ -84,6 +150,17 @@ const getProfilePictureByID = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
+  // #swagger.description = 'Verify that a user\'s login credentials are correct and generate a jwt'
+  /* #swagger.responses[200] = {
+            description: 'User successfully logged in, returns the user\'s jsonwebtoken.',
+            schema: {
+                accessToken: 'jwt here'
+            }
+    } */
+  /* #swagger.responses[404] = {
+            description: 'Incorrect login credentials',
+    } */
+
   const email = req.body.email
   const password = req.body.password
   try {
@@ -106,6 +183,13 @@ const loginUser = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
+  // #swagger.description = 'Create a new user on registration'
+  /* #swagger.responses[201] = {
+            description: 'User successfully created, returns the user\'s jsonwebtoken.',
+            schema: {
+                accessToken: 'jwt here'
+            }
+    } */
   const newUser = req.body;
   try {
     //hash the password and replace the password field with the new hashed password
@@ -121,7 +205,7 @@ const createUser = async (req, res) => {
 
 const updateProfilePic = async (req, res) => {
   const file = req.file; //file obj from form data
-  const id = parseInt(req.userId);
+  const id = parseInt(req.user.userId);
   //verify that a file has been added
   if (!file) {
       return res.status(400).send("No file uploaded");
@@ -149,9 +233,14 @@ const updateProfilePic = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+  // #swagger.description = 'Update a user\'s data. User id is obtained from jwt'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
   //update the data found in the user table
   const data = req.body
-  const id = req.userId
+  const id = req.user.userId
   try {
     const updatedUser = await User.updateUser(id,data)
     res.status(201).json(updatedUser);
@@ -164,7 +253,7 @@ const updateUser = async (req, res) => {
 const updatePassword = async (req, res) => {
   //update the user's password
   try {
-    const updatedUser = await User.updatePassword(req.userId,hashPassword(req.body.new_password))
+    const updatedUser = await User.updatePassword(req.user.userId,hashPassword(req.body.new_password))
     res.status(201).json(updatedUser);
   } catch (error) {
     console.error(error);
@@ -173,6 +262,21 @@ const updatePassword = async (req, res) => {
 }
 
 const getViewedSubLecturesByCourse = async (req,res) => {
+  // #swagger.description = 'Retriev all viewed sublectures by a user under a course'
+
+  /*  #swagger.parameters['uid'] = {
+            in: 'path',
+            type: "int",
+            description: 'The id of the user',
+    } */
+  /*  #swagger.parameters['cid'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the course',
+  } */
+  /* #swagger.responses[201] = {
+            description: 'Success, sublecture is marked as viewed.',
+    } */
   //retrieved all viewed sublectures by a user under a course
   try {
     const uid = parseInt(req.params.uid)
@@ -180,37 +284,43 @@ const getViewedSubLecturesByCourse = async (req,res) => {
     const user = await User.getUserById(uid)
     //check if user exists
     if (!user) return res.status(404).send("User not found")
-    const result = User.getViewedSubLecturesByCourse(uid,cid)
-    res.status(201).json(await User.getViewedSubLecturesByCourse(uid,cid))
+    res.json(await User.getViewedSubLecturesByCourse(uid,cid))
   } catch (error) {
     console.error(error);
     res.status(500).send("Error checking if viewed sub lecture")
   }
 }
 
-const addSubLecture = async (req, res) => {
+const addSubLecture = async (req,res) => {
+  // #swagger.description = 'Add a sublecture as viewed by the user. User id is obtained from jwt token'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
+
+  /*  #swagger.parameters['lid'] = {
+            in: 'path',
+            type: "int",
+            description: 'The id of the sublecture',
+    } */
+  /* #swagger.responses[201] = {
+            description: 'Success, sublecture is marked as viewed.',
+    } */
+  
+  
   try {
-    const uid = req.user.userId;
-    const lid = parseInt(req.params.lid);
-
-    console.log(`addSubLecture called with userId: ${uid} and subLectureId: ${lid}`); // Debug log
-
-    const user = await User.getUserById(uid);
-
-    if (!user) {
-      console.log(`User not found with ID: ${uid}`); // Debug log
-      return res.status(404).send("User not found");
-    }
-
-    if (await User.hasViewedSubLecture(uid, lid)) {
-      console.log(`User already viewed sub-lecture with ID: ${lid}`); // Debug log
-      return res.status(200).send("User already viewed sub-lecture");
-    }
-
-    await User.addSubLecture(uid, lid);
-
-    console.log(`Sub-lecture with ID: ${lid} successfully added for user with ID: ${uid}`); // Debug log
-    res.status(201).send("Success");
+    const uid = req.user.userId
+    const lid = parseInt(req.params.lid)
+    const user = await User.getUserById(uid)
+    //check if user exists
+    if (!user) return res.status(404).send("User not found")
+    //check if user already viewed lecture
+    //we do not want duplicates of a table entry
+    //still return status 201 anyways, its still a success
+    if (await User.hasViewedSubLecture(uid, lid)) return res.status(201).send("user already viewed sub lecture")
+    //user has not viewed lecture, add it
+    User.addSubLecture(uid,lid)
+    res.status(201).send("success");
   } catch (error) {
     console.error("Error adding viewed sub-lecture:", error);
     res.status(500).send("Error adding viewed sub-lecture");
@@ -219,7 +329,15 @@ const addSubLecture = async (req, res) => {
 
 
 const verifyUserToken = async (req, res) => {
-  res.status(201).send("token is valid")
+  // #swagger.description = 'Verify a user jwt'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
+  /* #swagger.responses[200] = {
+            description: 'Success, token is valid',
+    } */
+  res.status(200).send("token is valid")
 }
 
 module.exports = {

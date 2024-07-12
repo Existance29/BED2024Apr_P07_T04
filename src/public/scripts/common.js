@@ -86,7 +86,7 @@ async function isLoggedIn(){
   if (accessToken === null) return false
   //make sure the jwt is valid
   const response = await get("/users/verifyjwt")
-  return (response.status == 201)
+  return (response.status == 200)
 }
 
 //ensures the user is logged in before accessing the page, else they get redirected to login page
