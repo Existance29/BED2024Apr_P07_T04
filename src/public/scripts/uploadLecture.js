@@ -1,6 +1,8 @@
 document.getElementById('lectureUploadForm').addEventListener('submit', handleLectureSubmit);
 const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
 const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+const params = new URLSearchParams(window.location.search);
+const courseID = params.get('courseID');
 
 async function handleLectureSubmit(event) {
     event.preventDefault();
@@ -87,7 +89,7 @@ async function handleSubLectureSubmit(event) {
         console.log('Sub-lecture response from server:', subLectureResult);
 
         alert('Sub-lecture uploaded successfully!');
-        goCourse(subLectureResult.courseID); // Redirect to the course chapters page
+        goCourse(courseID); // Redirect to the course chapters page
     } catch (error) {
         console.error('Error uploading sub-lecture:', error);
         alert('Failed to upload sub-lecture: ' + error.message);

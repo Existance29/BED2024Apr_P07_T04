@@ -216,4 +216,18 @@ async function deleteSubLecture(lectureID, subLectureID) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', loadCourseDetails);
+// Function to hide buttons if the user is not a lecturer
+function hideButtonsIfNotLecturer() {
+    const uploadButtonContainer = document.getElementById('upload-button');
+    const editButton = document.querySelector('img[onclick="toggleEditMode()"]');
+
+    if (role !== 'lecturer') {
+        if (uploadButtonContainer) uploadButtonContainer.style.display = 'none';
+        if (editButton) editButton.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    hideButtonsIfNotLecturer();
+    loadCourseDetails();
+});

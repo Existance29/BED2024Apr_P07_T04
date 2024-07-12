@@ -511,24 +511,29 @@
     },
     "/users/courses/sublectures/{uid}/{cid}": {
       "get": {
-        "description": "",
+        "description": "Retriev all viewed sublectures by a user under a course",
         "parameters": [
           {
             "name": "uid",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "int",
+            "description": "The id of the user"
           },
           {
             "name": "cid",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "int",
+            "description": "The id of the course"
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
           "201": {
-            "description": "Created"
+            "description": "Success, sublecture is marked as viewed."
           },
           "404": {
             "description": "Not Found"
