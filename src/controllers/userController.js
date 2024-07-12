@@ -188,25 +188,35 @@ const getViewedSubLecturesByCourse = async (req,res) => {
   }
 }
 
-const addSubLecture = async (req,res) => {
+const addSubLecture = async (req, res) => {
   try {
-    const uid = req.userId
-    const lid = parseInt(req.params.lid)
-    const user = await User.getUserById(uid)
-    //check if user exists
-    if (!user) return res.status(404).send("User not found")
-    //check if user already viewed lecture
-    //we do not want duplicates of a table entry
-    //still return status 201 anyways, its still a success
-    if (await User.hasViewedSubLecture(uid, lid)) return res.status(201).send("user already viewed sub lecture")
-    //user has not viewed lecture, add it
-    User.addSubLecture(uid,lid)
-    res.status(201).send("success");
+    const uid = req.user.userId;
+    const lid = parseInt(req.params.lid);
+
+    console.log(`addSubLecture called with userId: ${uid} and subLectureId: ${lid}`); // Debug log
+
+    const user = await User.getUserById(uid);
+
+    if (!user) {
+      console.log(`User not found with ID: ${uid}`); // Debug log
+      return res.status(404).send("User not found");
+    }
+
+    if (await User.hasViewedSubLecture(uid, lid)) {
+      console.log(`User already viewed sub-lecture with ID: ${lid}`); // Debug log
+      return res.status(200).send("User already viewed sub-lecture");
+    }
+
+    await User.addSubLecture(uid, lid);
+
+    console.log(`Sub-lecture with ID: ${lid} successfully added for user with ID: ${uid}`); // Debug log
+    res.status(201).send("Success");
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error adding viewed sub lecture")
+    console.error("Error adding viewed sub-lecture:", error);
+    res.status(500).send("Error adding viewed sub-lecture");
   }
 }
+
 
 const verifyUserToken = async (req, res) => {
   res.status(201).send("token is valid")

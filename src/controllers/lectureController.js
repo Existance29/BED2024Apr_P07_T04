@@ -108,9 +108,9 @@ const updateLecture = async (req, res) => {
 };
 
 const deleteLecture = async (req, res) => {
-    const id = parseInt(req.params.id);
+    const lectureID = parseInt(req.params.id);
     try {
-        const success = await Lecture.deleteLecture(id);
+        const success = await Lecture.deleteLecture(lectureID);
         if (!success) {
             return res.status(404).send("Lecture not found");
         }
@@ -118,6 +118,20 @@ const deleteLecture = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send("Error deleting lecture");
+    }
+};
+const deleteSubLecture = async (req, res) => {
+    const lectureID = parseInt(req.params.lectureID);
+    const subLectureID = parseInt(req.params.subLectureID);
+    try {
+        const success = await Lecture.deleteSubLecture(lectureID, subLectureID);
+        if (!success) {
+            return res.status(404).send("Sub-lecture not found");
+        }
+        res.status(204).send();
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error deleting sub-lecture");
     }
 };
 
@@ -176,6 +190,7 @@ module.exports = {
     getLectureById,
     updateLecture,
     deleteLecture,
+    deleteSubLecture,
     searchLectures,
     getCourseWithLecture,
     getSubLectureById,

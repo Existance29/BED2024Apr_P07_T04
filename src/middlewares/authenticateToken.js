@@ -12,21 +12,20 @@ const authenticateToken = (req,res,next) => {
 
 
         const authorizedRoles = {
+            'POST /users/sublecture/:lid': ['student', 'lecturer'],
+
             'GET /users/private': ['student', 'lecturer'],
             'GET /users/verifyjwt': ['student', 'lecturer'],
 
             'POST /courses': ['lecturer'],
-            'GET /courses/:id': ['student', 'lecturer'],
-            'GET /courses/without-video': ['student'],
+            
             'DELETE /courses/:id': ['lecturer'],
-
+            'DELETE /lectures/:id': ['lecturer'],
+            'DELETE /lectures/:lectureID/sublectures/:subLectureID': ['lecturer'],
 
             'POST /lectures': ['lecturer'],
             'POST /lectures/:lectureID/sublectures': ['lecturer'],
-            'GET /lectures/course-with-lecture': ['student', 'lecturer'],
-            'GET /lectures/:id': ['student', 'lecturer'],
-
-            'GET /courses/:courseID/lectures/without-video': ['student', 'lecturer'],
+            
 
         };
         

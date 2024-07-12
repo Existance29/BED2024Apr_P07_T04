@@ -1,4 +1,6 @@
 document.getElementById('lectureUploadForm').addEventListener('submit', handleLectureSubmit);
+const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
+const role = sessionStorage.getItem("role") || localStorage.getItem("role");
 
 async function handleLectureSubmit(event) {
     event.preventDefault();
@@ -14,7 +16,10 @@ async function handleLectureSubmit(event) {
     try {
         const lectureResponse = await fetch('/lectures', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
 
         const responseText = await lectureResponse.text();
@@ -61,8 +66,12 @@ async function handleSubLectureSubmit(event) {
     try {
         const subLectureResponse = await fetch(`/lectures/${lectureID}/sublectures`, {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
+
 
         const responseText = await subLectureResponse.text();
         console.log('Raw response from server:', responseText);
