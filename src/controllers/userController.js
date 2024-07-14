@@ -181,10 +181,18 @@ const getProfilePictureByID = async (req, res) => {
             description: 'Success, returns the id of the profile picture, the user\'s id and the base64 encoded picture',
             schema: {
                 pic_id: 1,
-                user_id: 'John',
+                user_id: 1,
                 "img": "base64-string-here"
             }
-    } */
+    } 
+      #swagger.responses[404] = {
+        description: 'User not found'
+        }
+    #swagger.responses[500] = {
+          description: 'Internal server error'
+          }        
+    
+    */
   const id = parseInt(req.params.id);
   await getProfilePicture(req,res,id)
 
@@ -200,10 +208,17 @@ const getProfilePictureByJWT = async (req, res) => {
             description: 'Success, returns the id of the profile picture, the user\'s id and the base64 encoded picture',
             schema: {
                 pic_id: 1,
-                user_id: 'John',
+                user_id: 1,
                 "img": "base64-string-here"
             }
-    } */
+    } 
+    #swagger.responses[404] = {
+          description: 'User not found'
+    }
+    #swagger.responses[500] = {
+          description: 'Internal server error'
+    }        
+    */
   const id = parseInt(req.user.userId);
   await getProfilePicture(req,res,id)
 }
@@ -266,8 +281,17 @@ const createUser = async (req, res) => {
 
 const updateProfilePic = async (req, res) => {
   // #swagger.description = 'Update a user\'s profile picture. User id is obtained from jwt'
-
-
+  /* #swagger.responses[400] = {
+            description: 'No file uploaded'
+    } */
+  /*
+        #swagger.consumes = ['multipart/form-data']  
+        #swagger.parameters['pic'] = {
+            in: 'formData',
+            type: 'file',
+            required: 'true',
+            description: 'The file object of the profile picture to update',
+    } */
   const file = req.file; //file obj from form data
   const id = parseInt(req.user.userId);
   //verify that a file has been added
