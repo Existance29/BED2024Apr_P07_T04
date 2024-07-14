@@ -69,13 +69,17 @@
         ],
         "responses": {
           "201": {
-            "description": "User successfully created, returns the user's jsonwebtoken.",
+            "description": "User successfully created, returns the user's jsonwebtoken and role.",
             "schema": {
               "type": "object",
               "properties": {
                 "accessToken": {
                   "type": "string",
                   "example": "jwt here"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "role"
                 }
               },
               "xml": {
@@ -258,13 +262,17 @@
         ],
         "responses": {
           "200": {
-            "description": "User successfully logged in, returns the user's jsonwebtoken.",
+            "description": "User successfully logged in, returns the user's jsonwebtoken and role.",
             "schema": {
               "type": "object",
               "properties": {
                 "accessToken": {
                   "type": "string",
                   "example": "jwt here"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "role"
                 }
               },
               "xml": {
@@ -353,7 +361,7 @@
     },
     "/users/verifyjwt": {
       "get": {
-        "description": "Verify a user jwt",
+        "description": "Verify a user jwt. Returns the decoded payload if successful",
         "parameters": [
           {
             "name": "authorization",
@@ -364,62 +372,13 @@
         ],
         "responses": {
           "200": {
-            "description": "Success, token is valid"
-          },
-          "401": {
-            "description": "Token is invalid"
-          },
-          "403": {
-            "description": "Token is invalid"
-          }
-        }
-      }
-    },
-    "/users/{id}": {
-      "get": {
-        "description": "Get the information of the user as specified in the id parameter",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "int",
-            "description": "The id of the user"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success, returns a user object",
+            "description": "Success, token is valid. Returns the payload",
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
+                "userId": {
                   "type": "number",
                   "example": 1
-                },
-                "first_name": {
-                  "type": "string",
-                  "example": "John"
-                },
-                "last_name": {
-                  "type": "string",
-                  "example": "Doe"
-                },
-                "about_me": {
-                  "type": "string",
-                  "example": "Hi! My name is John Doe"
-                },
-                "country": {
-                  "type": "string",
-                  "example": "United States"
-                },
-                "join_date": {
-                  "type": "string",
-                  "example": "2022-06-04T00:00:00.000Z"
-                },
-                "job_title": {
-                  "type": "string",
-                  "example": "UI/UX Designer"
                 },
                 "role": {
                   "type": "string",
@@ -430,6 +389,80 @@
                 "name": "main"
               }
             }
+          },
+          "401": {
+            "description": "Token is invalid"
+          },
+          "403": {
+            "description": "Token is invalid"
+          }
+        }
+      }
+    },
+    "/users/pic": {
+      "get": {
+        "description": "Get the base64 encoded image of the profile picture of the user based on the jwt",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns the id of the profile picture, the user's id and the base64 encoded picture",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pic_id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "user_id": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "img": {
+                  "type": "string",
+                  "example": "base64-string-here"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "put": {
+        "description": "Update a user\\'s profile picture. User id is obtained from jwt",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -475,12 +508,6 @@
                 "name": "main"
               }
             }
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
@@ -582,28 +609,33 @@
         }
       }
     },
-    "/users/courses/sublectures/{uid}/{cid}": {
+    "/users/courses/sublectures/{cid}": {
       "get": {
-        "description": "Get all viewed sublectures by a user under a course",
+        "description": "Get all viewed sublectures by a user under a course. User is obtained from jwt",
         "parameters": [
-          {
-            "name": "uid",
-            "in": "path",
-            "required": true,
-            "type": "int",
-            "description": "The id of the user"
-          },
           {
             "name": "cid",
             "in": "path",
             "required": true,
             "type": "int",
             "description": "The id of the course"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "Success, returns a list of sublecture ids"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -614,28 +646,61 @@
         }
       }
     },
-    "/users/pic": {
-      "put": {
-        "description": "Update a user\\'s profile picture. User id is obtained from jwt",
+    "/users/{id}": {
+      "get": {
+        "description": "Get the information of the user as specified in the id parameter",
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the user"
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
+          "200": {
+            "description": "Success, returns a user object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "first_name": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Doe"
+                },
+                "about_me": {
+                  "type": "string",
+                  "example": "Hi! My name is John Doe"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "United States"
+                },
+                "join_date": {
+                  "type": "string",
+                  "example": "2022-06-04T00:00:00.000Z"
+                },
+                "job_title": {
+                  "type": "string",
+                  "example": "UI/UX Designer"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "student"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "404": {
             "description": "Not Found"

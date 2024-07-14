@@ -14,7 +14,7 @@ const hashPassword = (password) => {
 const generateAccessToken = (user) => {
   //make a jsonwetoken containing the user's id and role
   const accessToken = jwt.sign({userId: user.id, role: user.role}, process.env.ACCESS_TOKEN_SECRET)
-  return {accessToken: accessToken}
+  return {accessToken: accessToken, role: user.role}
 }
 
 const getAllUsers = async (req, res) => {
@@ -155,6 +155,21 @@ const getCompleteUserByID = async (req, res) => {
   }
 }
 
+//to be used by getProfilePictureByID and getProfilePictureByJWT
+//accepts a id parameter which is used to get the profile picture
+const getProfilePicture = async (req,res,id) => {
+  try {
+    const pic = await User.getProfilePic(id)
+    if (!pic) {
+      return res.status(404).send("User not found")
+    }
+    res.json(pic);
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Error retrieving profile picture of user")
+  }
+}
+
 const getProfilePictureByID = async (req, res) => {
   // #swagger.description = 'Get the base64 encoded image of the profile picture of the user as specified in the id parameter'
   /*  #swagger.parameters['id'] = {
@@ -171,24 +186,35 @@ const getProfilePictureByID = async (req, res) => {
             }
     } */
   const id = parseInt(req.params.id);
-  try {
-    const pic = await User.getProfilePic(id)
-    if (!pic) {
-      return res.status(404).send("User not found")
-    }
-    res.json(pic);
-  } catch (error) {
-    console.error(error)
-    res.status(500).send("Error retrieving profile picture of user")
-  }
+  await getProfilePicture(req,res,id)
+
+}
+
+const getProfilePictureByJWT = async (req, res) => {
+  // #swagger.description = 'Get the base64 encoded image of the profile picture of the user based on the jwt'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
+  /* #swagger.responses[200] = {
+            description: 'Success, returns the id of the profile picture, the user\'s id and the base64 encoded picture',
+            schema: {
+                pic_id: 1,
+                user_id: 'John',
+                "img": "base64-string-here"
+            }
+    } */
+  const id = parseInt(req.user.userId);
+  await getProfilePicture(req,res,id)
 }
 
 const loginUser = async (req, res) => {
   // #swagger.description = 'Verify that a user\'s login credentials are correct and generate a jwt'
   /* #swagger.responses[200] = {
-            description: 'User successfully logged in, returns the user\'s jsonwebtoken.',
+            description: 'User successfully logged in, returns the user\'s jsonwebtoken and role.',
             schema: {
-                accessToken: 'jwt here'
+                accessToken: 'jwt here',
+                role: 'role'
             }
     } */
   /* #swagger.responses[404] = {
@@ -219,9 +245,10 @@ const loginUser = async (req, res) => {
 const createUser = async (req, res) => {
   // #swagger.description = 'Create a new user on registration'
   /* #swagger.responses[201] = {
-            description: 'User successfully created, returns the user\'s jsonwebtoken.',
+            description: 'User successfully created, returns the user\'s jsonwebtoken and role.',
             schema: {
-                accessToken: 'jwt here'
+                accessToken: 'jwt here',
+                role: 'role'
             }
     } */
   const newUser = req.body;
@@ -304,13 +331,13 @@ const updatePassword = async (req, res) => {
 }
 
 const getViewedSubLecturesByCourse = async (req,res) => {
-  // #swagger.description = 'Get all viewed sublectures by a user under a course'
-
-  /*  #swagger.parameters['uid'] = {
-            in: 'path',
-            type: "int",
-            description: 'The id of the user',
+  // #swagger.description = 'Get all viewed sublectures by a user under a course. User is obtained from jwt'
+  
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
     } */
+
   /*  #swagger.parameters['cid'] = {
           in: 'path',
           type: "int",
@@ -321,7 +348,7 @@ const getViewedSubLecturesByCourse = async (req,res) => {
     } */
   //retrieve all viewed sublectures by a user under a course
   try {
-    const uid = parseInt(req.params.uid)
+    const uid = req.user.userId
     const cid = parseInt(req.params.cid)
     const user = await User.getUserById(uid)
     //check if user exists
@@ -370,23 +397,28 @@ const addSubLecture = async (req,res) => {
 }
 
 
-const verifyUserToken = async (req, res) => {
-  // #swagger.description = 'Verify a user jwt'
+const decodeJWT = async (req, res) => {
+  // #swagger.description = 'Decode the jwt. Returns the decoded payload if successful'
   /*  #swagger.parameters['authorization'] = {
             in: 'header',
             description: 'Format: \'Bearer (jwt)\'',
     } */
   /* #swagger.responses[200] = {
-            description: 'Success, token is valid',
+            description: 'Success, token is valid. Returns the payload',
+            schema: {
+                userId: 1,
+                role: 'student'
+            }
     } */
   /* #swagger.responses[401] = {
-            description: 'Token is invalid',
+            description: 'Token is not provided',
     } */
   
   /* #swagger.responses[403] = {
             description: 'Token is invalid',
     } */
-  res.status(200).send("token is valid")
+  console.log(req.user)
+  res.status(200).json(req.user)
 }
 
 module.exports = {
@@ -400,8 +432,9 @@ module.exports = {
     updateUser,
     updatePassword,
     getProfilePictureByID,
+    getProfilePictureByJWT,
     hashPassword,
     addSubLecture,
     getViewedSubLecturesByCourse,
-    verifyUserToken
-};
+    decodeJWT
+}

@@ -60,6 +60,7 @@ async function signUp(){
     //valid input
     //save the jwt token to session storage
     sessionStorage.accessToken = body.accessToken
+    sessionStorage.role = body.role
     //redirect user to courses
     window.location.href = "../courses.html"
     

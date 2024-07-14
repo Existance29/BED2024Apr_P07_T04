@@ -27,8 +27,7 @@ async function login(){
     
     const token = await response.json();
     const accessToken = token.accessToken;
-    const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
-    const role = decodedToken.role;
+    const role = token.role
   
     // Store the token and role in session storage
     sessionStorage.setItem('accessToken', accessToken);

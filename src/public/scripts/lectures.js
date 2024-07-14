@@ -1,7 +1,6 @@
 //Check if user is logged in before loading content
 //if user is not logged in, redirect them to login screen
 guardLoginPage();
-const userID = getUserID();
 
 const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
 const role = sessionStorage.getItem("role") || localStorage.getItem("role");
@@ -130,7 +129,7 @@ async function loadCourseAndLectureDetails() {
     }
 
     //indicate the sublectures that have been viewed
-    const viewedSubLectures = await (await get(`/users/courses/sublectures/${userID}/${courseID}`)).json();
+    const viewedSubLectures = await (await get(`/users/courses/sublectures/${courseID}`)).json();
     viewedSubLectures.forEach((x) => viewSubLecture(x));
 
     //finished loading, show the content

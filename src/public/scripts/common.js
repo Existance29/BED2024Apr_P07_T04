@@ -85,7 +85,7 @@ async function put(url, jsondata){
 async function isLoggedIn(){
   if (accessToken === null) return false
   //make sure the jwt is valid
-  const response = await get("/users/verifyjwt")
+  const response = await get("/users/decodejwt")
   return (response.status == 200)
 }
 
@@ -108,7 +108,7 @@ function getUserID(){
 
   //ensure that accessToken exists
   if (!accessToken) return null
-  return JSON.parse(atob(accessToken.split('.')[1])).userId
+  return  
 }
 
 
