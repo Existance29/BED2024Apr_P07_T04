@@ -120,6 +120,7 @@ const deleteLecture = async (req, res) => {
         res.status(500).send("Error deleting lecture");
     }
 };
+
 const deleteSubLecture = async (req, res) => {
     const lectureID = parseInt(req.params.lectureID);
     const subLectureID = parseInt(req.params.subLectureID);

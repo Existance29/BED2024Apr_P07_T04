@@ -138,7 +138,6 @@ async function loadCourseDetails() {
     });
 }
 
-
 // Update course details (title, description, video)
 function updateCourseDetails(course) {
     document.getElementById('title').innerText = course.title;
@@ -189,6 +188,7 @@ async function deleteLecture(lectureID) {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
             if (response.ok) {
                 console.log('Lecture deleted successfully');
                 loadCourseDetails();  // Reload the course details
@@ -213,6 +213,7 @@ async function deleteSubLecture(lectureID, subLectureID) {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
             if (response.ok) {
                 console.log('Sub-lecture deleted successfully');
                 loadCourseDetails();  // Reload the course details
