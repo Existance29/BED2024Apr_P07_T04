@@ -3,9 +3,9 @@
 guardLoginPage();
 const userID = getUserID();
 
+const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
 const role = sessionStorage.getItem("role") || localStorage.getItem("role");
 
-console.log('Access Token:', token); // Debugging log
 console.log('Role:', role); // Debugging log
 
 // Change the font color of the sublecture description to gray
