@@ -124,14 +124,55 @@ class Lecture {
 
     static async deleteLecture(lectureID) {
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `DELETE FROM Lectures WHERE LectureID = @lectureID`;
-        const request = connection.request();
-        request.input("lectureID", sql.Int, lectureID);
+        const transaction = new sql.Transaction(connection);
+    
+        try {
+            // Start a transaction
+            await transaction.begin();
+            const request = transaction.request();
+    
+            // Delete all sub-lectures associated with this lecture
+            await request.input("lectureID", sql.Int, lectureID);
+            await request.query(`DELETE FROM SubLectures WHERE LectureID = @lectureID`);
+    
+            // Delete all references in the CourseLectures table
+            await request.query(`DELETE FROM CourseLectures WHERE LectureID = @lectureID`);
+    
+            // Finally, delete the lecture itself
+            await request.query(`DELETE FROM Lectures WHERE LectureID = @lectureID`);
+            
+            // Commit the transaction
+            await transaction.commit();
+    
+            return true;
+        } catch (error) {
+            // If there's an error, rollback the transaction
+            if (transaction) {
+                await transaction.rollback();
+            }
+            throw error;
+        } finally {
+            connection.close();
+        }
+    }
 
-        const result = await request.query(sqlQuery);
+    static async deleteSubLecture(lectureID, subLectureID) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = 'DELETE FROM SubLectures WHERE LectureID = @lectureID AND SubLectureID = @subLectureID';
 
-        connection.close();
-        return result.rowsAffected > 0;
+        try {
+            const request = connection.request();
+            request.input("lectureID", sql.Int, lectureID);
+            request.input("subLectureID", sql.Int, subLectureID);
+
+            const result = await request.query(sqlQuery);
+
+            return result.rowsAffected > 0;
+        } catch (error) {
+            throw error;
+        } finally {
+            connection.close();
+        }
     }
 
     static async searchLectures(searchTerm) {

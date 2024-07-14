@@ -364,10 +364,11 @@ const addSubLecture = async (req,res) => {
     User.addSubLecture(uid,lid)
     res.status(201).send("success");
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error adding viewed sub lecture")
+    console.error("Error adding viewed sub-lecture:", error);
+    res.status(500).send("Error adding viewed sub-lecture");
   }
 }
+
 
 const verifyUserToken = async (req, res) => {
   // #swagger.description = 'Verify a user jwt'

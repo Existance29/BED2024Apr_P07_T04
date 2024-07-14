@@ -127,14 +127,45 @@ class Course {
 
     static async deleteCourse(courseID) {
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `DELETE FROM Courses WHERE CourseID = @courseID`;
-        const request = connection.request();
-        request.input("courseID", sql.Int, courseID);  // Changed this line to explicitly set the type
-        const result = await request.query(sqlQuery);
-
-        connection.close();
-
-        return result.rowsAffected > 0;
+        const transaction = new sql.Transaction(connection);
+    
+        try {
+            // Start a transaction
+            await transaction.begin();
+            const request = transaction.request();
+    
+            // Delete all sub-lectures associated with the course
+            await request.input("courseID", sql.Int, courseID);
+            await request.query(`
+                DELETE FROM SubLectures
+                WHERE LectureID IN (SELECT LectureID FROM CourseLectures WHERE CourseID = @courseID)
+            `);
+    
+            // Delete all references in the CourseLectures table
+            await request.query(`DELETE FROM CourseLectures WHERE CourseID = @courseID`);
+    
+            // Delete all lectures associated with the course
+            await request.query(`
+                DELETE FROM Lectures
+                WHERE LectureID IN (SELECT LectureID FROM CourseLectures WHERE CourseID = @courseID)
+            `);
+    
+            // Finally, delete the course itself
+            await request.query(`DELETE FROM Courses WHERE CourseID = @courseID`);
+    
+            // Commit the transaction
+            await transaction.commit();
+    
+            return true;
+        } catch (error) {
+            // If there's an error, rollback the transaction
+            if (transaction) {
+                await transaction.rollback();
+            }
+            throw error;
+        } finally {
+            connection.close();
+        }
     }
 
     static async searchCourses(searchTerm) {

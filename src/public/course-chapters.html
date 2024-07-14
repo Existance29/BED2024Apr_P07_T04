@@ -22,7 +22,30 @@
         align-items: center;
         justify-content: center;
         font-weight: bold;
-        margin-left: 73.4vw;
+        margin-bottom: 2vw;
+    }
+
+    .edit-delete-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .edit-btn, .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .chapter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2vw;
+    }
+
+    .chapter {
+        background: #FFFFFF;
+        padding: 1vw 2vw;
+        border-radius: 12px;
         margin-bottom: 2vw;
     }
 </style>
@@ -37,16 +60,17 @@
             <div class="d-flex justify-content-between align-items-center" style="color: white; margin-bottom: 5vw;">
                 <h1 id="title">Course Title</h1>
                 <p id="header-desc">Course Description</p>
+                <div class="d-flex" style="gap: 1vw;">
+                    <button class="btn upload-button" id="upload-button" onclick="redirectToUploadLecture()">Upload</button>
+                    <img src="assets/lectures/edit-button.png" style="cursor: pointer; width: 2vw; height: 2vw;" onclick="toggleEditMode()">
+                </div>
             </div>
-            <button class="btn upload-button" onclick="redirectToUploadLecture()">
-                Upload
-            </button>
             <!-- Banner -->
             <video id="course-video" width="100%" controls style="margin-bottom: 6vw;">
                 Your browser does not support the video tag.
             </video>
             <!-- Chapters -->
-            <div id="chapter-grid">
+            <div id="chapter-grid" class="chapter-grid">
                 <!-- Lectures will be loaded here -->
             </div>
         </div>
