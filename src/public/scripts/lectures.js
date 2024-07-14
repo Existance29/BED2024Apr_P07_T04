@@ -1,16 +1,17 @@
 //Check if user is logged in before loading content
 //if user is not logged in, redirect them to login screen
-guardLoginPage()
-const userID = getUserID()
+guardLoginPage();
+const userID = getUserID();
 
 const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
 const role = sessionStorage.getItem("role") || localStorage.getItem("role");
 
 console.log('Access Token:', token); // Debugging log
 console.log('Role:', role); // Debugging log
-//change the font color of the sublecture description to gray
+
+// Change the font color of the sublecture description to gray
 function viewSubLecture(id){
-    document.getElementById(`desc-${id}`).style.color = "#7F7F7F"
+    document.getElementById(`desc-${id}`).style.color = "#7F7F7F";
 }
 
 // Fetch course details including lectures
@@ -88,6 +89,9 @@ async function loadCourseAndLectureDetails() {
 
     // Check if course.lectures is an array
     if (Array.isArray(course.lectures)) {
+        // Sort lectures by lectureID
+        course.lectures.sort((a, b) => a.lectureID - b.lectureID);
+
         // Update lectures list
         const lecturesList = document.getElementById('lectures-list');
         lecturesList.innerHTML = ''; // Clear existing content
@@ -95,13 +99,13 @@ async function loadCourseAndLectureDetails() {
         course.lectures.forEach((lec, index) => {
             let subLectureHTML = '';
             if (lec.subLectures && lec.subLectures.length > 0) {
-                // Sort subLectures by a predefined order column
-                lec.subLectures.sort((a, b) => a.order - b.order);
+                // Sort subLectures by subLectureID
+                lec.subLectures.sort((a, b) => a.subLectureID - b.subLectureID);
                 subLectureHTML = lec.subLectures.map((subLecture) => `
                     <div class="subchapter-container" style="margin-top: 1vw;">
                         <div class="subchapter ${subLecture.subLectureID === subLectureID ? 'active-sub' : ''}" data-sub-lecture-id="${subLecture.subLectureID}" data-lecture-id="${lec.lectureID}">
                             <div style="width: 70%;">
-                                <div style="font-size: 0.9vw; color: #333333; font-weight: 500;" id = "desc-${subLecture.subLectureID}">${subLecture.description}</div>
+                                <div style="font-size: 0.9vw; color: #333333; font-weight: 500;" id="desc-${subLecture.subLectureID}">${subLecture.description}</div>
                             </div>
                             <div class="d-flex align-items-center time-container">
                                 <img src="./assets/lectures/time-icon-2.png" style="height: 0.85vw; margin-right: 0.3vw;">
@@ -127,10 +131,12 @@ async function loadCourseAndLectureDetails() {
     }
 
     //indicate the sublectures that have been viewed
-    const viewedSubLectures = await (await get(`/users/courses/sublectures/${userID}/${courseID}`)).json()
-    viewedSubLectures.forEach((x) => viewSubLecture(x))
+    const viewedSubLectures = await (await get(`/users/courses/sublectures/${userID}/${courseID}`)).json();
+    viewedSubLectures.forEach((x) => viewSubLecture(x));
+
     //finished loading, show the content
-    loadContent()
+    loadContent();
+
     // Load the initial video
     if (subLectureID) {
         loadSubLectureVideo(subLectureID, lectureID, courseID);
@@ -168,6 +174,7 @@ async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
             'Authorization': `Bearer ${token}`
         }
     }); //add the viewed sublecture to the database
+
     const subLecture = await fetchLectureDetails(lectureID, subLectureID);
     const videoData = normalizeVideoProperty(subLecture);
 
@@ -181,9 +188,9 @@ async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
     lectureVideoElement.src = videoSrc;
     lectureVideoElement.load();
 
-    //if updating the user's viwed sublecture database was successful, show view indicator
-    if (viewSubLectureResponse.status == 201){ 
-        viewSubLecture(subLectureID)
+    //if updating the user's viewed sublecture database was successful, show view indicator
+    if (viewSubLectureResponse.status == 201) { 
+        viewSubLecture(subLectureID);
     }
 
     // Highlight the selected sub-lecture

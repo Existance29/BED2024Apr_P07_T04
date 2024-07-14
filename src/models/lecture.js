@@ -212,13 +212,13 @@ class Lecture {
                 INNER JOIN Lectures l ON cl.LectureID = l.LectureID
                 LEFT JOIN SubLectures sl ON l.LectureID = sl.LectureID
                 WHERE c.CourseID = @courseID
-                ORDER BY c.Title, l.Name, sl.Name;
+                ORDER BY l.LectureID, sl.SubLectureID;
             `;
-
+    
             const request = connection.request();
             request.input("courseID", sql.Int, courseID);
             const result = await request.query(sqlQuery);
-
+    
             // Group courses, lectures, and sub-lectures
             const coursesWithLectures = {};
             for (const row of result.recordset) {
@@ -234,7 +234,7 @@ class Lecture {
                         lectures: {},
                     };
                 }
-
+    
                 const lectureID = row.LectureID;
                 if (!coursesWithLectures[courseID].lectures[lectureID]) {
                     coursesWithLectures[courseID].lectures[lectureID] = {
@@ -246,7 +246,7 @@ class Lecture {
                         subLectures: []
                     };
                 }
-
+    
                 if (row.SubLectureID) {
                     coursesWithLectures[courseID].lectures[lectureID].subLectures.push({
                         subLectureID: row.SubLectureID,
@@ -257,12 +257,12 @@ class Lecture {
                     });
                 }
             }
-
+    
             // Convert lectures object to array
             for (const courseID in coursesWithLectures) {
                 coursesWithLectures[courseID].lectures = Object.values(coursesWithLectures[courseID].lectures);
             }
-
+    
             return Object.values(coursesWithLectures);
         } catch (error) {
             throw new Error("Error fetching course with lectures");
@@ -270,6 +270,7 @@ class Lecture {
             await connection.close();
         }
     }
+    
 
     static async getCourseWithLectureWithoutVideo(courseID) {
         const connection = await sql.connect(dbConfig);
@@ -287,13 +288,13 @@ class Lecture {
                 INNER JOIN Lectures l ON cl.LectureID = l.LectureID
                 LEFT JOIN SubLectures sl ON l.LectureID = sl.LectureID
                 WHERE c.CourseID = @courseID
-                ORDER BY c.Title, l.Name, sl.Name;
+                ORDER BY l.LectureID, sl.SubLectureID;
             `;
-
+    
             const request = connection.request();
             request.input("courseID", sql.Int, courseID);
             const result = await request.query(sqlQuery);
-
+    
             // Group courses, lectures, and sub-lectures
             const coursesWithLectures = {};
             for (const row of result.recordset) {
@@ -309,7 +310,7 @@ class Lecture {
                         lectures: {},
                     };
                 }
-
+    
                 const lectureID = row.LectureID;
                 if (!coursesWithLectures[courseID].lectures[lectureID]) {
                     coursesWithLectures[courseID].lectures[lectureID] = {
@@ -321,7 +322,7 @@ class Lecture {
                         subLectures: []
                     };
                 }
-
+    
                 if (row.SubLectureID) {
                     coursesWithLectures[courseID].lectures[lectureID].subLectures.push({
                         subLectureID: row.SubLectureID,
@@ -331,19 +332,19 @@ class Lecture {
                     });
                 }
             }
-
+    
             // Convert lectures object to array
             for (const courseID in coursesWithLectures) {
                 coursesWithLectures[courseID].lectures = Object.values(coursesWithLectures[courseID].lectures);
             }
-
+    
             return Object.values(coursesWithLectures);
         } catch (error) {
             throw new Error("Error fetching course with lectures without video");
         } finally {
             await connection.close();
         }
-    }
+    }    
 
     static async getSubLectureById(lectureID, subLectureID) {
         const connection = await sql.connect(dbConfig);

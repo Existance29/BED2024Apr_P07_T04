@@ -76,7 +76,15 @@ async function loadCourseDetails() {
 
     updateCourseDetails(courseWithLectures);
 
-    const lectures = courseWithLectures.lectures;
+    // Ensure lectures are sorted by LectureID
+    const lectures = courseWithLectures.lectures.sort((a, b) => a.lectureID - b.lectureID);
+
+    // Ensure sub-lectures within each lecture are sorted by SubLectureID
+    lectures.forEach(lecture => {
+        if (lecture.subLectures && lecture.subLectures.length > 0) {
+            lecture.subLectures.sort((a, b) => a.subLectureID - b.subLectureID);
+        }
+    });
 
     // Display lectures and their sub-lectures
     const chapterGrid = document.getElementById('chapter-grid');
@@ -129,6 +137,7 @@ async function loadCourseDetails() {
         chapterGrid.innerHTML += lectureHTML;
     });
 }
+
 
 // Update course details (title, description, video)
 function updateCourseDetails(course) {
