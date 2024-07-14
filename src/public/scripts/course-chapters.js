@@ -3,7 +3,6 @@ const token = sessionStorage.getItem("accessToken") || localStorage.getItem("acc
 const role = sessionStorage.getItem("role") || localStorage.getItem("role");
 let editMode = false; // Initialize editMode to false
 
-console.log('Access Token:', token); // Debugging log
 console.log('Role:', role); // Debugging log
 
 // Function to toggle edit mode 
