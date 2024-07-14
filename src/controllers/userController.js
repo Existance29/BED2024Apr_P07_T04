@@ -108,6 +108,40 @@ const getPrivateUserById = async (req, res) => {
 }
 
 const getCompleteUserByID = async (req, res) => {
+  // #swagger.description = 'Retrieve a user\'s profile information (regular info, profile pic, overall quiz data, completed courses). User id obtained from parameter'
+  /*  #swagger.parameters['id'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the user',
+  } */
+  /* #swagger.responses[200] = {
+            description: 'Success, returns user data',
+            schema: {
+                    id: 1,
+                    first_name: "Toby",
+                    last_name: "Dean",
+                    about_me: "Maxing out mastermindz",
+                    country: "United States",
+                    join_date: "2022-06-04T00:00:00.000Z",
+                    job_title: "University Student",
+                    role: "student",
+                    pic_id: 1,
+                    img: "base64-string",
+                    quiz_accuracy: 1,
+                    questions_completed: 20,
+                    completed_courses: [
+                        {
+                            "course_id": 2,
+                            "date_completed": "2024-07-04T00:00:00.000Z"
+                        },
+                        {
+                            "course_id": 8,
+                            "date_completed": "2023-10-08T00:00:00.000Z"
+                        }
+                    ]
+  
+            }
+    } */
   const id = parseInt(req.params.id);
   try {
     const user = await User.getCompleteUserByID(id)
@@ -204,6 +238,9 @@ const createUser = async (req, res) => {
 }
 
 const updateProfilePic = async (req, res) => {
+  // #swagger.description = 'Update a user\'s profile picture. User id is obtained from jwt'
+
+
   const file = req.file; //file obj from form data
   const id = parseInt(req.user.userId);
   //verify that a file has been added
@@ -219,7 +256,7 @@ const updateProfilePic = async (req, res) => {
       }
 
       const imageBuffer = fs.readFileSync(file.path, { encoding: 'base64' }); //read the file and convert it to base64
-
+      //add it to the database
       await User.updateProfilePic(id, imageBuffer);
 
       // Clean up uploaded file
@@ -233,7 +270,7 @@ const updateProfilePic = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  // #swagger.description = 'Update a user\'s data. User id is obtained from jwt'
+  // #swagger.description = 'Update a user\'s account data. User id is obtained from jwt'
   /*  #swagger.parameters['authorization'] = {
             in: 'header',
             description: 'Format: \'Bearer (jwt)\'',
@@ -251,6 +288,11 @@ const updateUser = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
+  // #swagger.description = 'Update a user\'s account data. User id is obtained from jwt'
+  /*  #swagger.parameters['authorization'] = {
+            in: 'header',
+            description: 'Format: \'Bearer (jwt)\'',
+    } */
   //update the user's password
   try {
     const updatedUser = await User.updatePassword(req.user.userId,hashPassword(req.body.new_password))
@@ -262,7 +304,7 @@ const updatePassword = async (req, res) => {
 }
 
 const getViewedSubLecturesByCourse = async (req,res) => {
-  // #swagger.description = 'Retriev all viewed sublectures by a user under a course'
+  // #swagger.description = 'Get all viewed sublectures by a user under a course'
 
   /*  #swagger.parameters['uid'] = {
             in: 'path',
@@ -274,10 +316,10 @@ const getViewedSubLecturesByCourse = async (req,res) => {
           type: "int",
           description: 'The id of the course',
   } */
-  /* #swagger.responses[201] = {
-            description: 'Success, sublecture is marked as viewed.',
+  /* #swagger.responses[200] = {
+            description: 'Success, returns a list of sublecture ids',
     } */
-  //retrieved all viewed sublectures by a user under a course
+  //retrieve all viewed sublectures by a user under a course
   try {
     const uid = parseInt(req.params.uid)
     const cid = parseInt(req.params.cid)
@@ -336,6 +378,13 @@ const verifyUserToken = async (req, res) => {
     } */
   /* #swagger.responses[200] = {
             description: 'Success, token is valid',
+    } */
+  /* #swagger.responses[401] = {
+            description: 'Token is invalid',
+    } */
+  
+  /* #swagger.responses[403] = {
+            description: 'Token is invalid',
     } */
   res.status(200).send("token is valid")
 }
