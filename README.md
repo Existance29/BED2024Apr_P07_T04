@@ -31,3 +31,6 @@ The sql to seed the database can be found in src/database/seedScript.js <br />
 ``npm start`` (for nodemon) <br />
 or <br />
 ``node app.js``
+
+## Documentation
+The API Documentation can be found at /api-docs
