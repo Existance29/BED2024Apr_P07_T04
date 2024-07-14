@@ -31,7 +31,7 @@ const authenticateToken = (req,res,next) => {
         
         const userRole = user.role;
         const requestEndpoint = req.url.split('?')[0]; // Remove query parameters if present
-         const method = req.method;
+        const method = req.method;
 
         console.log('Request Endpoint:', requestEndpoint); // debugging log
         console.log('User Role:', userRole); // debugging log

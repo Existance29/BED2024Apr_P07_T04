@@ -33,7 +33,7 @@ async function login(){
     // Store the token and role in session storage
     sessionStorage.setItem('accessToken', accessToken);
     sessionStorage.setItem('role', role);
-  
+    
     // Store in local if remember me is enabled
     if (rememberInput.checked) {
       localStorage.setItem('accessToken', accessToken);

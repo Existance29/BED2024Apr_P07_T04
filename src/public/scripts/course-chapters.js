@@ -3,7 +3,6 @@ const token = sessionStorage.getItem("accessToken") || localStorage.getItem("acc
 const role = sessionStorage.getItem("role") || localStorage.getItem("role");
 let editMode = false; // Initialize editMode to false
 
-console.log('Access Token:', token); // Debugging log
 console.log('Role:', role); // Debugging log
 
 // Function to toggle edit mode 
@@ -76,7 +75,15 @@ async function loadCourseDetails() {
 
     updateCourseDetails(courseWithLectures);
 
-    const lectures = courseWithLectures.lectures;
+    // Ensure lectures are sorted by LectureID
+    const lectures = courseWithLectures.lectures.sort((a, b) => a.lectureID - b.lectureID);
+
+    // Ensure sub-lectures within each lecture are sorted by SubLectureID
+    lectures.forEach(lecture => {
+        if (lecture.subLectures && lecture.subLectures.length > 0) {
+            lecture.subLectures.sort((a, b) => a.subLectureID - b.subLectureID);
+        }
+    });
 
     // Display lectures and their sub-lectures
     const chapterGrid = document.getElementById('chapter-grid');
@@ -180,6 +187,7 @@ async function deleteLecture(lectureID) {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
             if (response.ok) {
                 console.log('Lecture deleted successfully');
                 loadCourseDetails();  // Reload the course details
@@ -204,6 +212,7 @@ async function deleteSubLecture(lectureID, subLectureID) {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
             if (response.ok) {
                 console.log('Sub-lecture deleted successfully');
                 loadCourseDetails();  // Reload the course details
