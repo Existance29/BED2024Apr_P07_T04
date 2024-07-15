@@ -12,6 +12,7 @@ const getAllComments = async (req, res) => {
 
 const createComment = async (req, res) => {
     const newComment = req.body;
+    console.log(newComment)
     try {
         const createdComment = await Comment.createComment(newComment);
         res.status(201).json(createdComment);
