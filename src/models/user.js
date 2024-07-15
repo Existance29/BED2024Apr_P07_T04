@@ -279,11 +279,10 @@ class User {
 
     static async searchUsers(q){
         //return the account data + profile picture
-        //check if name (first name + last name), about me, or job title matchezs
+        //check if name (first name + last name), or job title matches
         const query = `
             SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id 
             WHERE CONCAT(first_name, ' ', last_name) LIKE '%${q}%'
-            OR about_me LIKE '%${q}%'
             OR job_title LIKE '%${q}%'
             `
         //omit password and email for privacy reasons

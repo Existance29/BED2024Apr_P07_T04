@@ -176,7 +176,7 @@ const getProfilePicture = async (req,res,id) => {
 
 const searchUsers = async (req,res) => {
   // #swagger.tags = ['Users']
-  // #swagger.description = 'Retrieve a list of users that match the query by name, job title or about me'
+  // #swagger.description = 'Retrieve a list of users that match the query by name or job title'
   /*  #swagger.parameters['q'] = {
           in: 'query',
           type: "int",
