@@ -287,7 +287,7 @@ class User {
             `
         //omit password and email for privacy reasons
         //omit user_id since it is redundant
-        const result = (await this.exceptSelectQuery(["password","email","user_id"],query)).recordset[0]
+        const result = (await this.exceptSelectQuery(["password","email","user_id"],query)).recordset
         //no need to check if result is empty, returning an empty array is fine
         return result
 

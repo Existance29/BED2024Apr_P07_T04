@@ -2,11 +2,11 @@
 #search-filters .active{
     border-radius: 15px;
     background-color: #FFFFFF85;
-    padding: 0.45vw 1.2vw;
 }
 
 /*align the text in the filters to be centered*/
 #search-filters div{
+    padding: 0.45vw 1.2vw;
     display: flex;
     justify-content: center; /* Align horizontal */
     align-items: center; /* Align vertical */
