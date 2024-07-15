@@ -18,6 +18,17 @@ function switchCategory(element){
     document.getElementById(`${category}-results`).style.display = "block"
 }
 
+// Convert a buffer obj (binary data) to base64 string
+function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer.data);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+
 //get search ressults from users and courses
 //TODO: also get results from comments once if route is done
 async function getResults(){
@@ -46,13 +57,15 @@ async function getResults(){
     console.log(courseResults)
     let courseResultsHTML = ''
     courseResults.forEach(x => {
+        //calculate rating
+        const rating = Math.round(x.totalRate / x.ratings)
         courseResultsHTML +=`
             <div class="course-result">
                 <div class="d-flex align-content-center">
-                    <img class = "course-img" src="data:image/png;base64,${x.img}">
+                    <img class = "course-img" src="data:image/png;base64,${arrayBufferToBase64(x.thumbnail)}">
                     <div style="margin-left: 1.5vw;">
-                        <div class="poppins-medium" style="font-size: 1vw">Angular JS</div>
-                        <div class="poppins-regular" style="font-size: 0.95vw;">Learn the fastest way to build a modern dashboard for any platforms, browser, or device. </div>
+                        <div class="poppins-medium" style="font-size: 1vw">${x.title}</div>
+                        <div class="poppins-regular" style="font-size: 0.95vw;">${x.description}</div>
                         <div class="d-flex course-ratings" style="margin-top: 0.5vw; gap: 0.4vw;">
                             <img src="./assets/lectures/fill-star-icon.png">
                             <img src="./assets/lectures/fill-star-icon.png">

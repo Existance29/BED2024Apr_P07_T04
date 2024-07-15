@@ -18,15 +18,16 @@
     width: 90%;
     padding: 2vw 2vw;
     cursor: pointer;
+    margin-top: 1vw;
 }
 
 .course-img{
-    width: 7%;
+    width: 6.5%;
     object-fit: contain;
 }
 
 .course-ratings img{
-    width: 2.6%;
+    width: 1vw;
     object-fit: contain;
 }
 
