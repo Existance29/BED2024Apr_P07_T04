@@ -66,7 +66,7 @@ async function getResults(){
         const rating = Math.round(x.totalRate / x.ratings)
         //the way stars are display are just if-else statements
         courseResultsHTML +=`
-            <div class="course-result" onclick = "location.href = 'course-chapters.html?courseID=${x.course_id}'">
+            <div class="course-result" onclick = "location.href = 'course-chapters.html?courseID=${x.courseID}'">
                 <div class="d-flex align-content-center">
                     <img class = "course-img" src="data:image/png;base64,${arrayBufferToBase64(x.thumbnail)}">
                     <div style="margin-left: 1.5vw;">
