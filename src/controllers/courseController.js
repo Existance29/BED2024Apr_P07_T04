@@ -36,7 +36,7 @@ const createCourse = async (req, res) => {
     /* #swagger.responses[201] = {
                 description: 'Success, return the newly created course.',
                 schema: {
-                    courseID: 5,
+                    courseID: 9,
                     title: 'Xcode',
                     thumbnail: '<Buffer> object',
                     description: 'Learn how to use xcode with the swift programming language to develop IOS mobile apps',
@@ -120,7 +120,7 @@ const getAllCourses = async (req, res) => {
 
 const getAllCoursesWithoutVideo = async (req, res) => {
     // #swagger.tags = ['Courses']
-    // #swagger.description = 'Get a list of all courses without their video'
+    // #swagger.description = 'Get a list of all courses without their introductory video'
     /* #swagger.responses[200] = {
                 description: 'Success, returns a list of course objects without their video.',
                 schema: [{

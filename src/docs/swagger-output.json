@@ -908,7 +908,7 @@
               "properties": {
                 "courseID": {
                   "type": "number",
-                  "example": 5
+                  "example": 9
                 },
                 "title": {
                   "type": "string",
@@ -1034,7 +1034,7 @@
         "tags": [
           "Courses"
         ],
-        "description": "Get a list of all courses without their video",
+        "description": "Get a list of all courses without their introductory video",
         "responses": {
           "200": {
             "description": "Success, returns a list of course objects without their video.",
@@ -1329,19 +1329,13 @@
         "tags": [
           "Courses"
         ],
-        "description": "Search for courses.",
+        "description": "Search for courses. Possible matches include title, description, details, caption, category",
         "parameters": [
           {
             "name": "q",
             "in": "query",
             "type": "string",
             "description": "The search query"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "description": "Format: 'Bearer (jwt)'",
-            "type": "string"
           }
         ],
         "responses": {
@@ -1391,6 +1385,842 @@
                   "video": {
                     "type": "string",
                     "example": "<Buffer> object"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/lectures": {
+      "get": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Get a list of all lectures",
+        "responses": {
+          "200": {
+            "description": "Success, returns a array of all lecture objects.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "lectureID": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Introduction to Angular"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "An introduction to the Angular framework."
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "education"
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 30
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Create a new lecture. Limited to lecturers only.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample body schema to create a new lecture",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Introduction to swift"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Learn the basics of swift"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "education"
+                },
+                "duration": {
+                  "type": "number",
+                  "example": 60
+                },
+                "courseID": {
+                  "type": "number",
+                  "example": 9
+                }
+              },
+              "required": [
+                "name",
+                "description",
+                "category",
+                "duration",
+                "courseID"
+              ]
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success, return the newly created lecture.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "lectureID": {
+                  "type": "number",
+                  "example": 50
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Introduction to swift"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Learn the basics of swift"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "education"
+                },
+                "duration": {
+                  "type": "number",
+                  "example": 60
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Missing fields"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/lectures/search": {
+      "get": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Search for lectures. Possible matches include name and description",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string",
+            "description": "The search query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns an array of all lectures that match the query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "lectureID": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Introduction to Angular"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "An introduction to the Angular framework."
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "education"
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 30
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/lectures/{id}": {
+      "get": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Get the lecture by its id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the lecture"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the lecture object that matches the id",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "lectureID": {
+                  "type": "number",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Introduction to Angular"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "An introduction to the Angular framework."
+                },
+                "category": {
+                  "type": "string",
+                  "example": "education"
+                },
+                "duration": {
+                  "type": "number",
+                  "example": 30
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Update an exisiting lecture. Limited to lecturers only.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the lecture"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample body schema to update lecture",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Introduction to swift"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Learn the basics of swift"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "programming language"
+                },
+                "duration": {
+                  "type": "number",
+                  "example": 60
+                }
+              },
+              "required": [
+                "name",
+                "description",
+                "category",
+                "duration"
+              ]
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, return the newly updated lecture.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "lectureID": {
+                  "type": "number",
+                  "example": 50
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Introduction to swift"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Learn the basics of swift"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "programming language"
+                },
+                "duration": {
+                  "type": "number",
+                  "example": 60
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Missing fields"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Delete a lecture by its id. Limited to lecturers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the lecture"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success, lecture deleted."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/lectures/{lectureID}/sublectures/{subLectureID}": {
+      "get": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Get the sub-lecture under a lecture",
+        "parameters": [
+          {
+            "name": "lectureID",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the lecture"
+          },
+          {
+            "name": "subLectureID",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the sub-lecture"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the sub-lecture under the lecture",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "subLectureID": {
+                  "type": "number",
+                  "example": 1
+                },
+                "lectureID": {
+                  "type": "number",
+                  "example": 1
+                },
+                "Name": {
+                  "type": "string",
+                  "example": "Angular Basics"
+                },
+                "Description": {
+                  "type": "string",
+                  "example": "Learn the basics of angular"
+                },
+                "Duration": {
+                  "type": "number",
+                  "example": 10
+                },
+                "Video": {
+                  "type": "string",
+                  "example": "<Buffer> object"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Delete a sub-lecture under a lecture. Limited to lecturers",
+        "parameters": [
+          {
+            "name": "lectureID",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the lecture"
+          },
+          {
+            "name": "subLectureID",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the sub-lecture"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success, lecture deleted."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/lectures/{lectureID}/sublectures": {
+      "post": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Create a new sub-lecture under a lecture. Limited to lecturers only.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "lectureID",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the lecture"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample body schema to create a new sub-lecture",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Swift basics"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Learn about variables, conditionals, functions and loops"
+                },
+                "duration": {
+                  "type": "number",
+                  "example": 600
+                }
+              },
+              "required": [
+                "name",
+                "description",
+                "duration"
+              ]
+            }
+          },
+          {
+            "name": "video",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file object of the sub-lecture video"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success, return the newly created sub-lecture.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "subLectureID": {
+                  "type": "number",
+                  "example": 60
+                },
+                "lectureID": {
+                  "type": "number",
+                  "example": 90
+                },
+                "Name": {
+                  "type": "string",
+                  "example": "Swift basics"
+                },
+                "Description": {
+                  "type": "string",
+                  "example": "Learn about variables, conditionals, functions and loops"
+                },
+                "Duration": {
+                  "type": "number",
+                  "example": 600
+                },
+                "Video": {
+                  "type": "string",
+                  "example": "<Buffer> object"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Missing fields"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/courses/{courseID}/lectures": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Get all the sub-lectures and lectures under a course",
+        "parameters": [
+          {
+            "name": "courseID",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the course"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return an array containg the course as well as its respective lectures and sub-lectures",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "courseID": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Angular JS"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A JavaScript-based open-source front-end web framework for developing single-page applications."
+                  },
+                  "video": {
+                    "type": "string",
+                    "example": "<Buffer> object"
+                  },
+                  "details": {
+                    "type": "string",
+                    "example": "Learn the fundamentals of Angular JS"
+                  },
+                  "caption": {
+                    "type": "string",
+                    "example": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud."
+                  },
+                  "lectures": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "lectureID": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Introduction to Angular"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "An introduction to the Angular framework."
+                        },
+                        "category": {
+                          "type": "string",
+                          "example": "education"
+                        },
+                        "duration": {
+                          "type": "number",
+                          "example": 30
+                        },
+                        "subLectures": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "subLectureID": {
+                                "type": "number",
+                                "example": 1
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Angular Basics"
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "Learn the basics of Angular."
+                              },
+                              "duration": {
+                                "type": "number",
+                                "example": 10
+                              },
+                              "video": {
+                                "type": "string",
+                                "example": "<Buffer> object"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/courses/{courseID}/lectures/without-video": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Get all the sub-lectures and lectures under a course, excluding the sub-lecture videos",
+        "parameters": [
+          {
+            "name": "courseID",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the course"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return an array containg the course as well as its respective lectures and sub-lectures",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "courseID": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Angular JS"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A JavaScript-based open-source front-end web framework for developing single-page applications."
+                  },
+                  "video": {
+                    "type": "string",
+                    "example": "<Buffer> object"
+                  },
+                  "details": {
+                    "type": "string",
+                    "example": "Learn the fundamentals of Angular JS"
+                  },
+                  "caption": {
+                    "type": "string",
+                    "example": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud."
+                  },
+                  "lectures": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "lectureID": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Introduction to Angular"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "An introduction to the Angular framework."
+                        },
+                        "category": {
+                          "type": "string",
+                          "example": "education"
+                        },
+                        "duration": {
+                          "type": "number",
+                          "example": 30
+                        },
+                        "subLectures": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "subLectureID": {
+                                "type": "number",
+                                "example": 1
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Angular Basics"
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "Learn the basics of Angular."
+                              },
+                              "duration": {
+                                "type": "number",
+                                "example": 10
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               },
