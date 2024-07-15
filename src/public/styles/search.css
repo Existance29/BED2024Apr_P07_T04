@@ -39,7 +39,8 @@
 }
 
 .user-result img{
-    object-fit: contain;
-    width: 10%;
+    object-fit: cover;
     border-radius: 50%;
+    height: 2.8vw;
+    width: 2.8vw;
 }
