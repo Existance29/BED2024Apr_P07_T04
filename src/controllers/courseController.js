@@ -3,6 +3,52 @@ const path = require('path');
 const Course = require("../models/course");
 
 const createCourse = async (req, res) => {
+    // #swagger.tags = ['Courses']
+    // #swagger.description = 'Create a new course. Limited to lecturers only.'
+    //#swagger.consumes = ['multipart/form-data']  
+    /*  #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Sample body schema to create a new course',
+        schema: {
+            $title: 'Xcode',
+            $description: 'Learn how to use xcode with the swift programming language to develop IOS mobile apps',
+            $details: 'In this course, you will learn the basics of the swift programming language, make and design elements with xcode and launch an app',
+            $caption: 'Lead by industry professionals to master IOS app development',
+            $category: 'programming language,app development,sofware'
+        }
+    } */
+   /*#swagger.parameters['thumbnail'] = {
+            in: 'formData',
+            type: 'file',
+            required: 'true',
+            description: 'The file object of the thumbnail of the course',
+    } */
+   /*#swagger.parameters['video'] = {
+            in: 'formData',
+            type: 'file',
+            required: 'true',
+            description: 'The file object of the video of the course',
+    } */
+    /*  #swagger.parameters['authorization'] = {
+                in: 'header',
+                description: 'Format: \'Bearer (jwt)\'',
+        } */
+    /* #swagger.responses[201] = {
+                description: 'Success, return the newly created course.',
+                schema: {
+                    courseID: 9,
+                    title: 'Xcode',
+                    thumbnail: '<Buffer> object',
+                    description: 'Learn how to use xcode with the swift programming language to develop IOS mobile apps',
+                    details: 'In this course, you will learn the basics of the swift programming language, make and design elements with xcode and launch an app',
+                    caption: 'Lead by industry professionals to master IOS app development',
+                    category: 'programming language,app development,sofware',
+                    totalRate: 0,
+                    ratings: 0,
+                    video: '<Buffer> object',
+                    
+                }
+        } */
     try {
         const { title, description, details, caption, category } = req.body;
         const thumbnailPath = req.files['thumbnail'] ? req.files['thumbnail'][0].path : null;
@@ -45,6 +91,24 @@ const createCourse = async (req, res) => {
 };
 
 const getAllCourses = async (req, res) => {
+    // #swagger.tags = ['Courses']
+    // #swagger.description = 'Get a list of all courses'
+    /* #swagger.responses[200] = {
+                description: 'Success, returns a list of course objects.',
+                schema: [{
+                    courseID: 1,
+                    title: 'Angular JS',
+                    thumbnail: '<Buffer> object',
+                    description: 'A JavaScript-based open-source front-end web framework for developing single-page applications.',
+                    details: 'Learn the fundamentals of Angular JS',
+                    caption: 'AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud.',
+                    category: 'front-end,framework',
+                    totalRate: 2000,
+                    ratings: 500,
+                    video: '<Buffer> object',
+                    
+                }]
+        } */
     try {
         const courses = await Course.getAllCourses();
         res.json(courses);
@@ -55,6 +119,22 @@ const getAllCourses = async (req, res) => {
 };
 
 const getAllCoursesWithoutVideo = async (req, res) => {
+    // #swagger.tags = ['Courses']
+    // #swagger.description = 'Get a list of all courses without their introductory video'
+    /* #swagger.responses[200] = {
+                description: 'Success, returns a list of course objects without their video.',
+                schema: [{
+                    courseID: 1,
+                    title: 'Angular JS',
+                    thumbnail: '<Buffer> object',
+                    description: 'A JavaScript-based open-source front-end web framework for developing single-page applications.',
+                    details: 'Learn the fundamentals of Angular JS',
+                    caption: 'AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud.',
+                    category: 'front-end,framework',
+                    totalRate: 2000,
+                    ratings: 500,
+                }]
+        } */
     try {
         const courses = await Course.getAllCoursesWithoutVideo();
         res.json(courses);
@@ -65,6 +145,29 @@ const getAllCoursesWithoutVideo = async (req, res) => {
 };
 
 const getCourseById = async (req, res) => {
+    // #swagger.tags = ['Courses']
+    // #swagger.description = 'Get a course by its id'
+    /*  #swagger.parameters['id'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the course',
+    } */
+    /* #swagger.responses[200] = {
+                description: 'Success, returns the course objects.',
+                schema: {
+                    courseID: 1,
+                    title: 'Angular JS',
+                    thumbnail: '<Buffer> object',
+                    description: 'A JavaScript-based open-source front-end web framework for developing single-page applications.',
+                    details: 'Learn the fundamentals of Angular JS',
+                    caption: 'AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud.',
+                    category: 'front-end,framework',
+                    totalRate: 2000,
+                    ratings: 500,
+                    video: '<Buffer> object',
+                    
+                }
+        } */
     const id = parseInt(req.params.id);
     try {
         const course = await Course.getCourseById(id);
@@ -79,6 +182,41 @@ const getCourseById = async (req, res) => {
 };
 
 const updateCourse = async (req, res) => {
+    // #swagger.tags = ['Courses']
+    // #swagger.description = 'Update a course's contents. Does not allow for updating thumbnail and video'
+    /*  #swagger.parameters['id'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the course',
+    } */
+       /*  #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Sample body schema to update a pre-existing course course',
+        schema: {
+            $title: 'Angular JS',
+            $description: 'A JavaScript front-end web framework for single-page application development',
+            $details: 'Learn Angular JS',
+            $caption: 'Lead by industry professionals and gives an industry certification',
+            $category: 'front-end,framework'
+        }
+    } */
+   
+    /* #swagger.responses[200] = {
+                description: 'Success, returns the updated course object',
+                schema: {
+                    courseID: 1,
+                    title: 'Angular JS',
+                    thumbnail: '<Buffer> object',
+                    description: 'A JavaScript front-end web framework for single-page application development',
+                    details: 'Learn Angular JS',
+                    caption: 'Lead by industry professionals and gives an industry certification',
+                    category: 'front-end,framework',
+                    totalRate: 2000,
+                    ratings: 500,
+                    video: '<Buffer> object',
+                    
+                }
+        } */
     const id = parseInt(req.params.id);
     const updatedData = req.body;
     try {
@@ -94,6 +232,22 @@ const updateCourse = async (req, res) => {
 };
 
 const deleteCourse = async (req, res) => {
+    // #swagger.tags = ['Courses']
+    // #swagger.description = 'Delete a course by its id. Limited to lecturers'
+    /*  #swagger.parameters['id'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the course',
+    } */
+   /*  #swagger.parameters['authorization'] = {
+                in: 'header',
+                description: 'Format: \'Bearer (jwt)\'',
+        } */
+   /* #swagger.responses[204] = {
+                description: 'Success, course deleted. Returns an empty json',
+                schema: {
+                }
+        } */
     const id = parseInt(req.params.id);
     try {
         const success = await Course.deleteCourse(id);
@@ -108,6 +262,29 @@ const deleteCourse = async (req, res) => {
 };
 
 const searchCourses = async (req, res) => {
+    // #swagger.tags = ['Courses']
+    // #swagger.description = 'Search for courses. Possible matches include title, description, details, caption, category'
+    /*  #swagger.parameters['q'] = {
+          in: 'query',
+          type: "string",
+          description: 'The search query',
+    } */
+   /* #swagger.responses[200] = {
+                description: 'Returns a list of all courses that match the query',
+                schema: [{
+                    courseID: 1,
+                    title: 'Angular JS',
+                    thumbnail: '<Buffer> object',
+                    description: 'A JavaScript front-end web framework for single-page application development',
+                    details: 'Learn Angular JS',
+                    caption: 'Lead by industry professionals and gives an industry certification',
+                    category: 'front-end,framework',
+                    totalRate: 2000,
+                    ratings: 500,
+                    video: '<Buffer> object',
+                    
+                }]
+        } */
     const searchTerm = req.query.q;
     try {
         const courses = await Course.searchCourses(searchTerm);
