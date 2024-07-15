@@ -21,10 +21,10 @@ function switchCategory(element){
 //get search ressults from users and courses
 //TODO: also get results from comments once if route is done
 async function getResults(){
-    //get the user results and add them to the html
+    //get the user results and add them to the DOM
     const userResults = await (await get(`/users/search?q=${query}`)).json()
     console.log(userResults)
-    //display the user search results into the DOM
+    //display the user search results into the html
     let userResultsHTML = ''
     userResults.forEach(x => {
         userResultsHTML +=`
@@ -40,6 +40,32 @@ async function getResults(){
         `
     })
     document.getElementById('user-results').innerHTML = userResultsHTML
+
+    //get the course results and add them to the DOM
+    const courseResults = await (await get(`/courses/search?q=${query}`)).json()
+    console.log(courseResults)
+    let courseResultsHTML = ''
+    courseResults.forEach(x => {
+        courseResultsHTML +=`
+            <div class="course-result">
+                <div class="d-flex align-content-center">
+                    <img class = "course-img" src="data:image/png;base64,${x.img}">
+                    <div style="margin-left: 1.5vw;">
+                        <div class="poppins-medium" style="font-size: 1vw">Angular JS</div>
+                        <div class="poppins-regular" style="font-size: 0.95vw;">Learn the fastest way to build a modern dashboard for any platforms, browser, or device. </div>
+                        <div class="d-flex course-ratings" style="margin-top: 0.5vw; gap: 0.4vw;">
+                            <img src="./assets/lectures/fill-star-icon.png">
+                            <img src="./assets/lectures/fill-star-icon.png">
+                            <img src="./assets/lectures/fill-star-icon.png">
+                            <img src="./assets/lectures/empty-star-icon.png">
+                            <img src="./assets/lectures/empty-star-icon.png">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    })
+    document.getElementById('course-results').innerHTML = courseResultsHTML
 }
 
 getResults()
