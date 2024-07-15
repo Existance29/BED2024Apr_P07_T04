@@ -24,10 +24,22 @@ async function getResults(){
     //get the user results and add them to the html
     const userResults = await (await get(`/users/search?q=${query}`)).json()
     console.log(userResults)
-    userResultsHTML = ''
+    //display the user search results into the DOM
+    let userResultsHTML = ''
     userResults.forEach(x => {
-
+        userResultsHTML +=`
+            <div class="user-result" style="margin-top: 1vw;" onclick = "window.location.href='./profile.html?user=${x.id}'">
+                <div class="d-flex align-content-center">
+                    <img src="data:image/png;base64,${x.img}">
+                    <div class="poppins-medium" style="margin-left: 1vw; font-size: 1.1vw; display: flex; align-items: center;">${x.first_name} ${x.last_name}</div>
+                </div>
+                <div class="poppins-regular" style="margin-top: 1.3vw; font-size: 1vw;">${title(x.role)}</div>
+                <div class="poppins-regular" style="font-size: 1vw; color: #272727;">${x.job_title}</div>
+                <div class="poppins-regular" style="font-size: 1vw; color: #272727;">${x.country}</div>
+            </div>
+        `
     })
+    document.getElementById('user-results').innerHTML = userResultsHTML
 }
 
 getResults()
