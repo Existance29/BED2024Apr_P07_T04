@@ -88,7 +88,7 @@ async function getResults(){
     
     //if no course results are present, auto-switch to user
     //theres no need to do it for user since course is default
-    if (!courseResults.length) switchCategory(document.getElementById('user-filter'))
+    if (!courseResults.length && userResults.length) switchCategory(document.getElementById('user-filter'))
 }
 
 getResults()
