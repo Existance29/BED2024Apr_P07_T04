@@ -270,7 +270,7 @@ const searchCourses = async (req, res) => {
           description: 'The search query',
     } */
    /* #swagger.responses[200] = {
-                description: 'Returns a list of all courses that match the query',
+                description: 'Returns a list of all courses that match the query. Does not include the video',
                 schema: [{
                     courseID: 1,
                     title: 'Angular JS',
@@ -281,7 +281,6 @@ const searchCourses = async (req, res) => {
                     category: 'front-end,framework',
                     totalRate: 2000,
                     ratings: 500,
-                    video: '<Buffer> object',
                     
                 }]
         } */

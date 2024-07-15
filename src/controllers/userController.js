@@ -174,6 +174,42 @@ const getProfilePicture = async (req,res,id) => {
   }
 }
 
+const searchUsers = async (req,res) => {
+  // #swagger.tags = ['Users']
+  // #swagger.description = 'Retrieve a list of users that match the query by name or job title'
+  /*  #swagger.parameters['q'] = {
+          in: 'query',
+          type: "int",
+          description: 'The search query',
+  } */
+ /* #swagger.responses[200] = {
+            description: 'Success, returns an array of users that match the query',
+            schema: [{
+                    id: 1,
+                    first_name: "Toby",
+                    last_name: "Dean",
+                    about_me: "Maxing out mastermindz",
+                    country: "United States",
+                    join_date: "2022-06-04T00:00:00.000Z",
+                    job_title: "University Student",
+                    role: "student",
+                    pic_id: 1,
+                    img: "base64-string",
+  
+                }]
+    } */
+  const searchTerm = req.query.q
+  
+    try {    
+      //get the users that match the query and return it
+      const users = await User.searchUsers(searchTerm);
+      res.json(users)
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ message: "Error searching users" })
+    }
+}
+
 const getProfilePictureByID = async (req, res) => {
   // #swagger.tags = ['Users']
   // #swagger.description = 'Get the base64 encoded image of the profile picture of the user as specified in the id parameter'
@@ -474,5 +510,6 @@ module.exports = {
     hashPassword,
     addSubLecture,
     getViewedSubLecturesByCourse,
-    decodeJWT
+    decodeJWT,
+    searchUsers
 }

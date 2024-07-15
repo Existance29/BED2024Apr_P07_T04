@@ -707,6 +707,81 @@
         }
       }
     },
+    "/users/search": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Retrieve a list of users that match the query by name or job title",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "int",
+            "description": "The search query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns an array of users that match the query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "example": "Toby"
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "example": "Dean"
+                  },
+                  "about_me": {
+                    "type": "string",
+                    "example": "Maxing out mastermindz"
+                  },
+                  "country": {
+                    "type": "string",
+                    "example": "United States"
+                  },
+                  "join_date": {
+                    "type": "string",
+                    "example": "2022-06-04T00:00:00.000Z"
+                  },
+                  "job_title": {
+                    "type": "string",
+                    "example": "University Student"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "student"
+                  },
+                  "pic_id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "img": {
+                    "type": "string",
+                    "example": "base64-string"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/users/{id}": {
       "get": {
         "tags": [

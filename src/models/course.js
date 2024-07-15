@@ -172,7 +172,7 @@ class Course {
         const connection = await sql.connect(dbConfig);
         try {
             const sqlQuery = `
-                SELECT * FROM Courses
+                SELECT CourseID,Title,Thumbnail,Description,Details,Caption,Category,TotalRate,Ratings FROM Courses
                 WHERE Title LIKE '%${searchTerm}%'
                 OR Description LIKE '%${searchTerm}%'
                 OR Details LIKE '%${searchTerm}%'

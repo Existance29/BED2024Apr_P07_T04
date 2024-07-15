@@ -35,6 +35,7 @@ function searchBar(){
     navSearchBarForm.style.display = "flex"
     //trigger the animation
     navSearchBarDiv.classList.add("active")
+    navSearchBar.focus()
 
 }
 
@@ -51,11 +52,6 @@ function hideSearchBar(){
     }
 }
 
-navSearchBarDiv.addEventListener("keyup", ({key}) => {
-    if (key === "Enter") {
-        console.log(navSearchBar.value)
-    }
-})
 
 loadNavBar()
 
@@ -80,3 +76,14 @@ function logout(redirect=true){
     if (redirect) window.location.href = "../index.html"
 
 }
+
+//add listener to trigger when submitted
+document.getElementById("nav-search-bar-form").addEventListener('submit', event => {
+    //stop reloading behaviour
+    event.preventDefault()
+    //redirect to search page with query
+    window.location.href = `../search.html?q=${navSearchBar.value}`
+    return false
+})
+    
+  
