@@ -13,6 +13,9 @@
   "paths": {
     "/users": {
       "post": {
+        "tags": [
+          "Users"
+        ],
         "description": "Create a new user on registration",
         "parameters": [
           {
@@ -93,44 +96,50 @@
         }
       },
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "Get a list of all users information",
         "responses": {
           "200": {
             "description": "Success, returns a list of user objects.",
             "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 1
-                },
-                "first_name": {
-                  "type": "string",
-                  "example": "John"
-                },
-                "last_name": {
-                  "type": "string",
-                  "example": "Doe"
-                },
-                "about_me": {
-                  "type": "string",
-                  "example": "Hi! My name is John Doe"
-                },
-                "country": {
-                  "type": "string",
-                  "example": "United States"
-                },
-                "join_date": {
-                  "type": "string",
-                  "example": "2022-06-04T00:00:00.000Z"
-                },
-                "job_title": {
-                  "type": "string",
-                  "example": "UI/UX Designer"
-                },
-                "role": {
-                  "type": "string",
-                  "example": "student"
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "example": "Doe"
+                  },
+                  "about_me": {
+                    "type": "string",
+                    "example": "Hi! My name is John Doe"
+                  },
+                  "country": {
+                    "type": "string",
+                    "example": "United States"
+                  },
+                  "join_date": {
+                    "type": "string",
+                    "example": "2022-06-04T00:00:00.000Z"
+                  },
+                  "job_title": {
+                    "type": "string",
+                    "example": "UI/UX Designer"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "student"
+                  }
                 }
               },
               "xml": {
@@ -144,6 +153,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Users"
+        ],
         "description": "Update a user\\'s account data. User id is obtained from jwt",
         "parameters": [
           {
@@ -205,6 +217,9 @@
     },
     "/users/sublecture/{lid}": {
       "post": {
+        "tags": [
+          "Users"
+        ],
         "description": "Add a sublecture as viewed by the user. User id is obtained from jwt token",
         "parameters": [
           {
@@ -242,6 +257,9 @@
     },
     "/users/login": {
       "post": {
+        "tags": [
+          "Users"
+        ],
         "description": "Verify that a user\\'s login credentials are correct and generate a jwt",
         "parameters": [
           {
@@ -291,6 +309,9 @@
     },
     "/users/private": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "Retrieve a user\\'s information, but contains more sensetive data (such as email). User id obtained from jwt",
         "parameters": [
           {
@@ -361,6 +382,9 @@
     },
     "/users/decodejwt": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "Decode the jwt. Returns the decoded payload if successful",
         "parameters": [
           {
@@ -401,6 +425,9 @@
     },
     "/users/pic": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "Get the base64 encoded image of the profile picture of the user based on the jwt",
         "parameters": [
           {
@@ -449,6 +476,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Users"
+        ],
         "description": "Update a user\\'s profile picture. User id is obtained from jwt",
         "consumes": [
           "multipart/form-data"
@@ -491,6 +521,9 @@
     },
     "/users/pic/{id}": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "Get the base64 encoded image of the profile picture of the user as specified in the id parameter",
         "parameters": [
           {
@@ -536,6 +569,9 @@
     },
     "/users/complete/{id}": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "Retrieve a user\\'s profile information (regular info, profile pic, overall quiz data, completed courses). User id obtained from parameter",
         "parameters": [
           {
@@ -633,6 +669,9 @@
     },
     "/users/courses/sublectures/{cid}": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "Get all viewed sublectures by a user under a course. User is obtained from jwt",
         "parameters": [
           {
@@ -670,6 +709,9 @@
     },
     "/users/{id}": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "Get the information of the user as specified in the id parameter",
         "parameters": [
           {
@@ -735,6 +777,9 @@
     },
     "/users/password": {
       "put": {
+        "tags": [
+          "Users"
+        ],
         "description": "Update a user\\'s account data. User id is obtained from jwt",
         "parameters": [
           {
@@ -780,6 +825,579 @@
           },
           "403": {
             "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/courses": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Create a new course. Limited to lecturers only.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample body schema to create a new course",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Xcode"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Learn how to use xcode with the swift programming language to develop IOS mobile apps"
+                },
+                "details": {
+                  "type": "string",
+                  "example": "In this course, you will learn the basics of the swift programming language, make and design elements with xcode and launch an app"
+                },
+                "caption": {
+                  "type": "string",
+                  "example": "Lead by industry professionals to master IOS app development"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "programming language,app development,sofware"
+                }
+              },
+              "required": [
+                "title",
+                "description",
+                "details",
+                "caption",
+                "category"
+              ]
+            }
+          },
+          {
+            "name": "thumbnail",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file object of the thumbnail of the course"
+          },
+          {
+            "name": "video",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file object of the video of the course"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success, return the newly created course.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "courseID": {
+                  "type": "number",
+                  "example": 5
+                },
+                "title": {
+                  "type": "string",
+                  "example": "Xcode"
+                },
+                "thumbnail": {
+                  "type": "string",
+                  "example": "<Buffer> object"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Learn how to use xcode with the swift programming language to develop IOS mobile apps"
+                },
+                "details": {
+                  "type": "string",
+                  "example": "In this course, you will learn the basics of the swift programming language, make and design elements with xcode and launch an app"
+                },
+                "caption": {
+                  "type": "string",
+                  "example": "Lead by industry professionals to master IOS app development"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "programming language,app development,sofware"
+                },
+                "totalRate": {
+                  "type": "number",
+                  "example": 0
+                },
+                "ratings": {
+                  "type": "number",
+                  "example": 0
+                },
+                "video": {
+                  "type": "string",
+                  "example": "<Buffer> object"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Get a list of all courses",
+        "responses": {
+          "200": {
+            "description": "Success, returns a list of course objects.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "courseID": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Angular JS"
+                  },
+                  "thumbnail": {
+                    "type": "string",
+                    "example": "<Buffer> object"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A JavaScript-based open-source front-end web framework for developing single-page applications."
+                  },
+                  "details": {
+                    "type": "string",
+                    "example": "Learn the fundamentals of Angular JS"
+                  },
+                  "caption": {
+                    "type": "string",
+                    "example": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud."
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "front-end,framework"
+                  },
+                  "totalRate": {
+                    "type": "number",
+                    "example": 2000
+                  },
+                  "ratings": {
+                    "type": "number",
+                    "example": 500
+                  },
+                  "video": {
+                    "type": "string",
+                    "example": "<Buffer> object"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/courses/without-video": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Get a list of all courses without their video",
+        "responses": {
+          "200": {
+            "description": "Success, returns a list of course objects without their video.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "courseID": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Angular JS"
+                  },
+                  "thumbnail": {
+                    "type": "string",
+                    "example": "<Buffer> object"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A JavaScript-based open-source front-end web framework for developing single-page applications."
+                  },
+                  "details": {
+                    "type": "string",
+                    "example": "Learn the fundamentals of Angular JS"
+                  },
+                  "caption": {
+                    "type": "string",
+                    "example": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud."
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "front-end,framework"
+                  },
+                  "totalRate": {
+                    "type": "number",
+                    "example": 2000
+                  },
+                  "ratings": {
+                    "type": "number",
+                    "example": 500
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/courses/{id}": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Get a course by its id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the course"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns the course objects.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "courseID": {
+                  "type": "number",
+                  "example": 1
+                },
+                "title": {
+                  "type": "string",
+                  "example": "Angular JS"
+                },
+                "thumbnail": {
+                  "type": "string",
+                  "example": "<Buffer> object"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "A JavaScript-based open-source front-end web framework for developing single-page applications."
+                },
+                "details": {
+                  "type": "string",
+                  "example": "Learn the fundamentals of Angular JS"
+                },
+                "caption": {
+                  "type": "string",
+                  "example": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud."
+                },
+                "category": {
+                  "type": "string",
+                  "example": "front-end,framework"
+                },
+                "totalRate": {
+                  "type": "number",
+                  "example": 2000
+                },
+                "ratings": {
+                  "type": "number",
+                  "example": 500
+                },
+                "video": {
+                  "type": "string",
+                  "example": "<Buffer> object"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Update a course",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the course"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample body schema to update a pre-existing course course",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Angular JS"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "A JavaScript front-end web framework for single-page application development"
+                },
+                "details": {
+                  "type": "string",
+                  "example": "Learn Angular JS"
+                },
+                "caption": {
+                  "type": "string",
+                  "example": "Lead by industry professionals and gives an industry certification"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "front-end,framework"
+                }
+              },
+              "required": [
+                "title",
+                "description",
+                "details",
+                "caption",
+                "category"
+              ]
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns the updated course object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "courseID": {
+                  "type": "number",
+                  "example": 1
+                },
+                "title": {
+                  "type": "string",
+                  "example": "Angular JS"
+                },
+                "thumbnail": {
+                  "type": "string",
+                  "example": "<Buffer> object"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "A JavaScript front-end web framework for single-page application development"
+                },
+                "details": {
+                  "type": "string",
+                  "example": "Learn Angular JS"
+                },
+                "caption": {
+                  "type": "string",
+                  "example": "Lead by industry professionals and gives an industry certification"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "front-end,framework"
+                },
+                "totalRate": {
+                  "type": "number",
+                  "example": 2000
+                },
+                "ratings": {
+                  "type": "number",
+                  "example": 500
+                },
+                "video": {
+                  "type": "string",
+                  "example": "<Buffer> object"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Delete a course by its id. Limited to lecturers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the course"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success, course deleted. Returns an empty json",
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/courses/search": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Search for courses.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string",
+            "description": "The search query"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of all courses that match the query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "courseID": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Angular JS"
+                  },
+                  "thumbnail": {
+                    "type": "string",
+                    "example": "<Buffer> object"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A JavaScript front-end web framework for single-page application development"
+                  },
+                  "details": {
+                    "type": "string",
+                    "example": "Learn Angular JS"
+                  },
+                  "caption": {
+                    "type": "string",
+                    "example": "Lead by industry professionals and gives an industry certification"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "front-end,framework"
+                  },
+                  "totalRate": {
+                    "type": "number",
+                    "example": 2000
+                  },
+                  "ratings": {
+                    "type": "number",
+                    "example": 500
+                  },
+                  "video": {
+                    "type": "string",
+                    "example": "<Buffer> object"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"

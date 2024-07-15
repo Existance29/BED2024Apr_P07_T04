@@ -18,10 +18,11 @@ const generateAccessToken = (user) => {
 }
 
 const getAllUsers = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Get a list of all users information'
   /* #swagger.responses[200] = {
             description: 'Success, returns a list of user objects.',
-            schema: {
+            schema: [{
                 id: 1,
                 first_name: 'John',
                 last_name: 'Doe',
@@ -30,7 +31,7 @@ const getAllUsers = async (req, res) => {
                 join_date: "2022-06-04T00:00:00.000Z",
                 job_title: 'UI/UX Designer',
                 role: 'student'
-            }
+              }]
     } */
   try {
     const user = await User.getAllUsers()
@@ -42,6 +43,7 @@ const getAllUsers = async (req, res) => {
 }
 
 const getUserById = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Get the information of the user as specified in the id parameter'
   /*  #swagger.parameters['id'] = {
           in: 'path',
@@ -75,6 +77,7 @@ const getUserById = async (req, res) => {
 }
 
 const getPrivateUserById = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Retrieve a user\'s information, but contains more sensetive data (such as email). User id obtained from jwt'
   /*  #swagger.parameters['authorization'] = {
             in: 'header',
@@ -108,6 +111,7 @@ const getPrivateUserById = async (req, res) => {
 }
 
 const getCompleteUserByID = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Retrieve a user\'s profile information (regular info, profile pic, overall quiz data, completed courses). User id obtained from parameter'
   /*  #swagger.parameters['id'] = {
           in: 'path',
@@ -171,6 +175,7 @@ const getProfilePicture = async (req,res,id) => {
 }
 
 const getProfilePictureByID = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Get the base64 encoded image of the profile picture of the user as specified in the id parameter'
   /*  #swagger.parameters['id'] = {
           in: 'path',
@@ -199,6 +204,7 @@ const getProfilePictureByID = async (req, res) => {
 }
 
 const getProfilePictureByJWT = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Get the base64 encoded image of the profile picture of the user based on the jwt'
   /*  #swagger.parameters['authorization'] = {
             in: 'header',
@@ -224,6 +230,7 @@ const getProfilePictureByJWT = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Verify that a user\'s login credentials are correct and generate a jwt'
   /* #swagger.responses[200] = {
             description: 'User successfully logged in, returns the user\'s jsonwebtoken and role.',
@@ -258,6 +265,7 @@ const loginUser = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Create a new user on registration'
   /* #swagger.responses[201] = {
             description: 'User successfully created, returns the user\'s jsonwebtoken and role.',
@@ -280,6 +288,7 @@ const createUser = async (req, res) => {
 }
 
 const updateProfilePic = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Update a user\'s profile picture. User id is obtained from jwt'
   /* #swagger.responses[400] = {
             description: 'No file uploaded'
@@ -321,6 +330,7 @@ const updateProfilePic = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Update a user\'s account data. User id is obtained from jwt'
   /*  #swagger.parameters['authorization'] = {
             in: 'header',
@@ -339,6 +349,7 @@ const updateUser = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Update a user\'s account data. User id is obtained from jwt'
   /*  #swagger.parameters['authorization'] = {
             in: 'header',
@@ -355,6 +366,7 @@ const updatePassword = async (req, res) => {
 }
 
 const getViewedSubLecturesByCourse = async (req,res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Get all viewed sublectures by a user under a course. User is obtained from jwt'
   
   /*  #swagger.parameters['authorization'] = {
@@ -385,6 +397,7 @@ const getViewedSubLecturesByCourse = async (req,res) => {
 }
 
 const addSubLecture = async (req,res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Add a sublecture as viewed by the user. User id is obtained from jwt token'
   /*  #swagger.parameters['authorization'] = {
             in: 'header',
@@ -422,6 +435,7 @@ const addSubLecture = async (req,res) => {
 
 
 const decodeJWT = async (req, res) => {
+  // #swagger.tags = ['Users']
   // #swagger.description = 'Decode the jwt. Returns the decoded payload if successful'
   /*  #swagger.parameters['authorization'] = {
             in: 'header',
