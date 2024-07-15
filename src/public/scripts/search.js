@@ -5,6 +5,11 @@ const resultDisplays = document.getElementsByClassName("results-display")
 const query = getUrlParameter("q") || ""
 //display the search query
 document.getElementById("search-query").innerText = query
+
+//html for filled/empty stars
+const filledStar = '<img src="./assets/lectures/fill-star-icon.png">'
+const emptyStar = '<img src="./assets/lectures/empty-star-icon.png">'
+
 //switch categories
 function switchCategory(element){
     //unselect all filters
@@ -59,6 +64,7 @@ async function getResults(){
     courseResults.forEach(x => {
         //calculate rating
         const rating = Math.round(x.totalRate / x.ratings)
+        //the way stars are display are just if-else statements
         courseResultsHTML +=`
             <div class="course-result">
                 <div class="d-flex align-content-center">
@@ -67,11 +73,11 @@ async function getResults(){
                         <div class="poppins-medium" style="font-size: 1vw">${x.title}</div>
                         <div class="poppins-regular" style="font-size: 0.95vw;">${x.description}</div>
                         <div class="d-flex course-ratings" style="margin-top: 0.5vw; gap: 0.4vw;">
-                            <img src="./assets/lectures/fill-star-icon.png">
-                            <img src="./assets/lectures/fill-star-icon.png">
-                            <img src="./assets/lectures/fill-star-icon.png">
-                            <img src="./assets/lectures/empty-star-icon.png">
-                            <img src="./assets/lectures/empty-star-icon.png">
+                            ${rating >= 1? filledStar: emptyStar}
+                            ${rating >= 2? filledStar: emptyStar}
+                            ${rating >= 3? filledStar: emptyStar}
+                            ${rating >= 4? filledStar: emptyStar}
+                            ${rating >= 5? filledStar: emptyStar}
                         </div>
                     </div>
                 </div>
@@ -79,6 +85,10 @@ async function getResults(){
         `
     })
     document.getElementById('course-results').innerHTML = courseResultsHTML
+    
+    //if no course results are present, auto-switch to user
+    //theres no need to do it for user since course is default
+    if (!courseResults.length) switchCategory(document.getElementById('user-filter'))
 }
 
 getResults()
