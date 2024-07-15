@@ -51,9 +51,11 @@ function hideSearchBar(){
     }
 }
 
-navSearchBarDiv.addEventListener("keyup", ({key}) => {
-    if (key === "Enter") {
-        console.log(navSearchBar.value)
+navSearchBarDiv.addEventListener("keyup", event => {
+    event.preventDefault()
+    if (event.key === "Enter") {
+        console.log("a")
+        window.location.href = `../search.html?q=${navSearchBar.value}`
     }
 })
 

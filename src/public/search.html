@@ -16,11 +16,11 @@
     <div class="nav-placeholder"></div>
 
     <!--background-->
-    <main class="background-img long-bg" style="min-height: 100vh; padding: 8vw 10%">
+    <main class="background-img long-bg" style="min-height: 100vh; padding: 5vw 10%">
         <!--Display query-->
         <div class = "poppins-medium" style="font-size: 1.5vw; color: white;">Search Results for "<span id = "search-query"></span>"</div>
         <!--Filters-->
-        <div class="d-flex justify-content-between align-content-center poppins-medium" style="font-size: 1.2vw; margin-top: 3vw; margin-bottom: 3vw; width: 40%; color: white;" id = "search-filters">
+        <div class="d-flex justify-content-between align-content-center poppins-medium" style="font-size: 1.2vw; margin-top: 5vw; margin-bottom: 3vw; width: 30%; color: white;" id = "search-filters">
             <div id = "course-filter" class="active" style="cursor: pointer;">Courses</div>
             <div id = "users-filter" style="cursor: pointer;">People</div>
             <!--<div id = "comments-filter" style="cursor: pointer;">Comments</div>-->
@@ -28,7 +28,7 @@
 
         <!--display results-->
         <!--course results-->
-        <div id = "course-results" style="display: none;">
+        <div id = "course-results">
             <div class="course-result">
                 <div class="d-flex align-content-center">
                     <img class = "course-img" src="./assets/courses/topic-thumbnail/angular-js.png">
@@ -47,10 +47,15 @@
             </div>
         </div>
         <!--user results-->
-        <div id = "user-results">
+        <div id = "user-results" style="display: none;">
             <div class="user-result">
-                <img src="./assets/profile/default-profile-picture.jpg">
-                <div class="poppins-medium" style="margin-top: 1vw; font-size: 1.1vw;">John Jon</div>
+                <div class="d-flex align-content-center">
+                    <img src="./assets/profile/default-profile-picture.jpg">
+                    <div class="poppins-medium" style="margin-left: 1vw; font-size: 1.1vw; display: flex; align-items: center;">John Jon</div>
+                </div>
+                <div class="poppins-regular" style="margin-top: 1.3vw; font-size: 1vw;">Student</div>
+                <div class="poppins-regular" style="font-size: 1vw; color: #272727;">UI/UX</div>
+                <div class="poppins-regular" style="font-size: 1vw; color: #272727;">Singapore</div>
             </div>
         </div>
         
