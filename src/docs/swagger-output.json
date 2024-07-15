@@ -2234,6 +2234,308 @@
           }
         }
       }
+    },
+    "/quizzes": {
+      "get": {
+        "tags": [
+          "Quizzes"
+        ],
+        "description": "Get a list of all quizzes",
+        "responses": {
+          "200": {
+            "description": "Success, returns an array of all quiz objects.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Angular JS Basics"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Test your knowledge on the basics of Angular JS."
+                  },
+                  "totalQuestions": {
+                    "type": "number",
+                    "example": 5
+                  },
+                  "totalMarks": {
+                    "type": "number",
+                    "example": 50
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maxAttempts": {
+                    "type": "number",
+                    "example": 2
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/quizzes/{quizId}": {
+      "get": {
+        "tags": [
+          "Quizzes"
+        ],
+        "description": "Get a quiz by its id",
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the quiz"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns the quiz object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "title": {
+                  "type": "string",
+                  "example": "Angular JS Basics"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Test your knowledge on the basics of Angular JS."
+                },
+                "totalQuestions": {
+                  "type": "number",
+                  "example": 5
+                },
+                "totalMarks": {
+                  "type": "number",
+                  "example": 50
+                },
+                "duration": {
+                  "type": "number",
+                  "example": 1
+                },
+                "maxAttempts": {
+                  "type": "number",
+                  "example": 2
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/quizzes/{quizId}/questions": {
+      "get": {
+        "tags": [
+          "Quizzes"
+        ],
+        "description": "Get a list of all questions associated to a quiz",
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the quiz"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns an array of all quiz questions.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "quizId": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "text": {
+                    "type": "string",
+                    "example": "What is Angular JS?"
+                  },
+                  "options": {
+                    "type": "array",
+                    "example": [
+                      "A framework",
+                      "A library",
+                      "A language",
+                      "An IDE"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "correctAnswer": {
+                    "type": "number",
+                    "example": 0
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/quizzes/{quizId}/submit": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "answers": {
+                  "example": "any"
+                },
+                "duration": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/quizzes/{quizId}/results/{resultId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "resultId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/quizzes/attempt/{quizId}/{userId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/{userId}/results": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   }
 }
