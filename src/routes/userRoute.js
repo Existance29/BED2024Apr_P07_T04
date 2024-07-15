@@ -16,6 +16,7 @@ const userRoute = (app, upload) => {
     app.get("/users/pic/:id", usersController.getProfilePictureByID) //get the user's profile picture, publicly available
     app.get("/users/complete/:id", usersController.getCompleteUserByID) //get the overall stats for a user. Besides the usual user table, get their quiz stats and courses completed
     app.get("/users/courses/sublectures/:cid", authenticateToken,usersController.getViewedSubLecturesByCourse) //the user's viewed sublectures of a specific course
+    app.get("/users/search",usersController.searchUsers) //search for users
     app.get("/users/:id", usersController.getUserById) //get the user's data. Publicly available. No sensitive data like password or email
     app.put("/users/pic", authenticateToken, upload.single('pic'), usersController.updateProfilePic) // Update profile picture. using multer for uploading profile pictures
     app.put("/users", validateUser.validateUpdate,  authenticateToken, usersController.updateUser) //update data in the user table

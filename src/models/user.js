@@ -276,6 +276,23 @@ class User {
 
         }
     }
+
+    static async searchUsers(q){
+        //return the account data + profile picture
+        //check if name (first name + last name), about me, or job title matchezs
+        const query = `
+            SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id 
+            WHERE CONCAT(first_name, ' ', last_name) LIKE '%${q}%'
+            OR about_me LIKE '%${q}%'
+            OR job_title LIKE '%${q}%'
+            `
+        //omit password and email for privacy reasons
+        //omit user_id since it is redundant
+        const result = (await this.exceptSelectQuery(["password","email","user_id"],query)).recordset[0]
+        //no need to check if result is empty, returning an empty array is fine
+        return result
+
+    }
 }
   
   module.exports = User
