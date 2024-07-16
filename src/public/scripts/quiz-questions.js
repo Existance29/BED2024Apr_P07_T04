@@ -1,19 +1,15 @@
-//Check if user is logged in before loading content
-//if user is not logged in, redirect them to login screen
-//Dont wait for content to load, redirect asap
-guardLoginPage()
+// Check if user is logged in before loading content
+// If user is not logged in, redirect them to login screen
+// Don't wait for content to load, redirect asap
+guardLoginPage();
 
 const urlParams = new URLSearchParams(window.location.search);
 const quizId = urlParams.get('quizId');
-const userId = getUserID(); 
 let questions = [];
 let startTime;
 let timerInterval;
 let maxDuration; // Maximum duration in seconds
 let alertShown = false; // Flag to track if the 15 seconds alert has been shown
-
-//to jung sek: I removed the getUserID function, its not required.
-//as long as your html includes common.js, this file can access the functions in it
 
 function startQuiz() {
     startTime = new Date();
@@ -45,7 +41,7 @@ function updateTimer() {
 
 async function fetchQuizQuestions() {
     try {
-        const response = await fetch(`http://localhost:3000/quizzes/${quizId}/questions`);
+        const response = await get(`http://localhost:3000/quizzes/${quizId}/questions`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -58,7 +54,7 @@ async function fetchQuizQuestions() {
 
 async function fetchQuizTitle() {
     try {
-        const response = await fetch(`http://localhost:3000/quizzes/${quizId}`);
+        const response = await get(`http://localhost:3000/quizzes/${quizId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -101,7 +97,6 @@ async function submitQuiz() {
     clearInterval(timerInterval);
     const endTime = new Date();
     const duration = Math.floor((endTime - startTime) / 1000); // Duration in seconds
-    const userId = getUserID(); // Get the userId here
 
     const answers = questions.map(question => {
         const selectedOption = document.querySelector(`input[name="question-${question.id}"]:checked`);
@@ -115,9 +110,10 @@ async function submitQuiz() {
         const response = await fetch(`http://localhost:3000/quizzes/${quizId}/submit`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}` // Include the JWT token
             },
-            body: JSON.stringify({ quizId, userId, answers, duration }) // Include userId in the request body
+            body: JSON.stringify({ answers, duration })
         });
 
         if (!response.ok) {
@@ -131,8 +127,6 @@ async function submitQuiz() {
         console.error('Error submitting quiz:', error);
     }
 }
-
-
 
 fetchQuizQuestions();
 fetchQuizTitle();

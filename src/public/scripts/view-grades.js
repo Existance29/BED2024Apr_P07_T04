@@ -1,22 +1,11 @@
-//Check if user is logged in before loading content
-//if user is not logged in, redirect them to login screen
-//Dont wait for content to load, redirect asap
-
-
-const userId = getUserID(); 
-
-function getUserID(){
-    if (sessionStorage.userid != null){
-        return sessionStorage.userid;
-    } else if (localStorage.userid != null){
-        return localStorage.userid;
-    } 
-    return null;
-}
+// Check if user is logged in before loading content
+// If user is not logged in, redirect them to login screen
+// Don't wait for content to load, redirect asap
+guardLoginPage();
 
 async function fetchUserQuizResults() {
     try {
-        const response = await fetch(`http://localhost:3000/user/${userId}/results`);
+        const response = await get('http://localhost:3000/user/results');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
