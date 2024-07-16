@@ -75,6 +75,67 @@
             </div>
         </div>
     </main>
+    <!-- Edit Lecture Modal -->
+    <div class="modal fade" id="editLectureModal" tabindex="-1" aria-labelledby="editLectureModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLectureModalLabel">Edit Lecture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editLectureForm">
+                        <div class="mb-3">
+                            <label for="editLectureName" class="form-label">Lecture Name</label>
+                            <input type="text" class="form-control" id="editLectureName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLectureDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editLectureDescription" name="description" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLectureCategory" class="form-label">Category</label>
+                            <input type="text" class="form-control" id="editLectureCategory" name="category" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLectureDuration" class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" id="editLectureDuration" name="duration" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Sub-Lecture Modal -->
+    <div class="modal fade" id="editSubLectureModal" tabindex="-1" aria-labelledby="editSubLectureModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSubLectureModalLabel">Edit Sub-Lecture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editSubLectureForm">
+                        <div class="mb-3">
+                            <label for="editSubLectureName" class="form-label">Sub-Lecture Name</label>
+                            <input type="text" class="form-control" id="editSubLectureName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSubLectureDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editSubLectureDescription" name="description" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSubLectureDuration" class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" id="editSubLectureDuration" name="duration" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <div class="footer-placeholder"></div>

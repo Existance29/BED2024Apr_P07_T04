@@ -28,13 +28,36 @@
             margin-top: -10px;
             margin-bottom: 10px;
         }
+        .card {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            margin: 0 auto;
+        }
+        .btn-upload { 
+            width: calc(100% - 2rem); /* Adjust width to ensure space on the sides */
+            margin: 0 1rem; /* Center the button with margins */
+        }
+        .btn-uploadSub {
+            width: calc(100% - 2rem); /* Adjust width to ensure space on the sides */
+            margin: 0 1rem; /* Center the button with margins */
+        }
+        .btn-finish {
+            width: calc(100% - 2rem); /* Adjust width to ensure space on the sides */
+            margin: 0 1rem; /* Center the button with margins */
+        }
+        .btn {
+            padding-right: 18px;
+            margin: 0 auto; /* Center the button with margins */
+
+        }
     </style>
 </head>
 <body>
     <div class="nav-placeholder"></div>
     <main class="background-img long-bg">
         <div class="d-flex justify-content-center">
-            <div class="card" style="width: 50%; padding: 2rem;">
+            <div class="card">
                 <h2 class="card-title text-center">Upload Lecture</h2>
                 <form id="lectureUploadForm" enctype="multipart/form-data">
                     <div class="mb-3">
@@ -58,7 +81,7 @@
                         <div id="duration-error" class="field-error">Please enter a valid duration</div>
                     </div>
                     <input type="hidden" name="courseID" id="courseID">
-                    <button type="submit" class="btn btn-primary w-100">Upload</button>
+                    <button type="submit" class="btn btn-primary btn-upload">Upload</button>
                 </form>
                 <form id="subLectureUploadForm" enctype="multipart/form-data" style="display:none;">
                     <div class="mb-3">
@@ -78,9 +101,9 @@
                         <input type="file" class="form-control-file" name="video" id="subLectureVideo" accept="video/*" required>
                     </div>
                     <input type="hidden" name="lectureID" id="lectureID">
-                    <button type="submit" class="btn btn-primary w-100">Upload Sub Lecture</button>
+                    <button type="submit" class="btn btn-primary btn-uploadSub">Upload Sub Lecture</button>
                 </form>
-                <button id="finishButton" class="btn btn-success w-100" style="display:none;">Finish</button>
+                <button id="finishButton" class="btn btn-success btn-finish" style="display:none;">Finish</button>
             </div>
         </div>
     </main>
