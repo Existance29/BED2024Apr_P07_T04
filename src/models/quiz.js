@@ -27,8 +27,8 @@ class Quiz {
     }
 
     static async query(queryString, params) {
-        const connection = await sql.connect(dbConfig);
-        const request = connection.request();
+        const pool = await sql.connect(dbConfig);
+        const request = pool.request();
 
         if (params) {
             for (const [key, value] of Object.entries(params)) {
@@ -37,13 +37,12 @@ class Quiz {
         }
 
         const result = await request.query(queryString);
-        connection.close();
         return result;
     }
 
     static async getAllQuizzes() {
         const result = (await this.query("SELECT * FROM Quizzes")).recordset;
-        return result.length ? result.map((x) => this.toQuizObj(x)) : null;
+        return result.length ? result.map((x) => this.toQuizObj(x)) : [];
     }
 
     static async getQuizById(id) {
@@ -55,14 +54,15 @@ class Quiz {
     static async getQuizQuestions(id) {
         const params = { "quizId": id };
         const result = (await this.query("SELECT * FROM Questions WHERE quizId = @quizId", params)).recordset;
-        return result.length ? result.map((x) => this.toQuestionObj(x)) : null;
+        return result.length ? result.map((x) => this.toQuestionObj(x)) : [];
     }
+
     static async submitQuizAnswers(quizId, userId, answers, duration) {
         let score = 0;
         let totalQuestions = answers.length;
         let correctAnswers = 0;
         let incorrectQuestions = [];
-    
+
         for (const answer of answers) {
             const question = await this.query(
                 "SELECT * FROM Questions WHERE id = @questionId AND quizId = @quizId",
@@ -82,10 +82,10 @@ class Quiz {
                 });
             }
         }
-    
+
         const totalMarks = totalQuestions * 10;  // Calculate total marks
         const grade = calculateGrade(score, totalMarks);  // Calculate grade
-    
+
         // Store the result in the database
         const result = await this.query(
             `INSERT INTO Results (quizId, userId, score, totalQuestions, correctAnswers, timeTaken, totalMarks, grade) 
@@ -102,9 +102,9 @@ class Quiz {
                 grade: grade
             }
         );
-    
+
         const resultId = result.recordset[0].id;
-    
+
         // Insert incorrect questions into the IncorrectQuestions table
         for (const incorrectQuestion of incorrectQuestions) {
             await this.query(
@@ -119,13 +119,13 @@ class Quiz {
                 }
             );
         }
-    
+
         // Update the user's quiz attempts
         const userQuizAttempt = await this.query(
             "SELECT * FROM UserQuizAttempts WHERE userId = @userId AND quizId = @quizId",
             { userId: userId, quizId: quizId }
         );
-    
+
         if (userQuizAttempt.recordset.length === 0) {
             await this.query(
                 `INSERT INTO UserQuizAttempts (userId, quizId, attempts)
@@ -145,7 +145,7 @@ class Quiz {
                 }
             );
         }
-    
+
         return {
             score,
             totalQuestions,
@@ -155,22 +155,22 @@ class Quiz {
             grade
         };
     }
-        
+
     static async getQuizResult(quizId, resultId, userId) {
         const result = await this.query(
             "SELECT * FROM Results WHERE id = @resultId AND quizId = @quizId",
             { resultId: resultId, quizId: quizId }
         );
-    
+
         if (result.recordset.length === 0) {
             throw new Error("Result not found");
         }
-    
+
         const quizResult = result.recordset[0];
-    
+
         // Get the total marks for the quiz
         const quiz = await this.getQuizById(quizId);
-    
+
         // Get incorrect questions
         const incorrectQuestionsResult = await this.query(
             `SELECT iq.*, q.options 
@@ -179,17 +179,17 @@ class Quiz {
             WHERE iq.resultId = @resultId`,
             { resultId: resultId }
         );
-    
+
         const incorrectQuestions = incorrectQuestionsResult.recordset;
-    
+
         // Get the user's attempt data
         const userAttemptResult = await this.query(
             "SELECT * FROM UserQuizAttempts WHERE userId = @userId AND quizId = @quizId",
             { userId: userId, quizId: quizId }
         );
-    
+
         const userAttempts = userAttemptResult.recordset.length ? userAttemptResult.recordset[0].attempts : 0;
-    
+
         return {
             ...quizResult,
             incorrectQuestions,
@@ -199,30 +199,27 @@ class Quiz {
             maxAttempts: quiz.maxAttempts
         };
     }
-    
-    
+
     static async canAttemptQuiz(quizId, userId) {
         try {
-            const connection = await sql.connect(dbConfig);
-            const quizResult = await connection.request()
-                .input('quizId', sql.Int, quizId)
-                .query('SELECT maxAttempts FROM Quizzes WHERE id = @quizId');
-    
+            const quizResult = await this.query(
+                'SELECT maxAttempts FROM Quizzes WHERE id = @quizId',
+                { quizId }
+            );
+
             if (quizResult.recordset.length === 0) {
                 throw new Error('Quiz not found');
             }
-    
-            const maxAttempts = quizResult.recordset[0].maxAttempts;
-    
-            const userAttemptResult = await connection.request()
-                .input('quizId', sql.Int, quizId)
-                .input('userId', sql.Int, userId)
-                .query('SELECT * FROM UserQuizAttempts WHERE quizId = @quizId AND userId = @userId');
 
-            connection.close();
-            
-            const attempts = userAttemptResult.recordset.length? userAttemptResult.recordset[0].attempts : 0;
-    
+            const maxAttempts = quizResult.recordset[0].maxAttempts;
+
+            const userAttemptResult = await this.query(
+                'SELECT * FROM UserQuizAttempts WHERE quizId = @quizId AND userId = @userId',
+                { quizId, userId }
+            );
+
+            const attempts = userAttemptResult.recordset.length ? userAttemptResult.recordset[0].attempts : 0;
+
             return { canAttempt: attempts < maxAttempts, attempts: attempts, maxAttempts: maxAttempts };
         } catch (err) {
             throw new Error(`Error checking quiz attempt eligibility: ${err.message}`);
@@ -231,25 +228,19 @@ class Quiz {
 
     static async getUserQuizResults(userId) {
         try {
-            const connection = await sql.connect(dbConfig);
-            const userResults = await connection.request()
-                .input('userId', sql.Int, userId)
-                .query(`
-                    SELECT q.title, r.score, r.totalMarks, r.grade, r.timeTaken, r.quizId, r.id
-                    FROM Results r
-                    JOIN Quizzes q ON r.quizId = q.id
-                    WHERE r.userId = @userId
-                    ORDER BY r.quizId, r.id
-                `);
-    
+            const userResults = await this.query(`
+                SELECT q.title, r.score, r.totalMarks, r.grade, r.timeTaken, r.quizId, r.id
+                FROM Results r
+                JOIN Quizzes q ON r.quizId = q.id
+                WHERE r.userId = @userId
+                ORDER BY r.quizId, r.id
+            `, { userId });
+
             return userResults.recordset;
         } catch (err) {
             throw new Error(`Error fetching user quiz results: ${err.message}`);
         }
     }
-    
-    
-    
 }
 
 function calculateGrade(score, totalMarks) {
