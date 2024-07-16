@@ -1,19 +1,15 @@
-//Check if user is logged in before loading content
-//if user is not logged in, redirect them to login screen
-//Dont wait for content to load, redirect asap
-guardLoginPage()
+// Check if user is logged in before loading content
+// If user is not logged in, redirect them to login screen
+// Don't wait for content to load, redirect asap
+guardLoginPage();
 
 const urlParams = new URLSearchParams(window.location.search);
 const quizId = urlParams.get('quizId');
 const resultId = urlParams.get('resultId');
-const userId = getUserID();  // Fetch user ID using the function
-
-//to jung sek: I removed the getUserID function, its not required.
-//as long as your html includes common.js, this file can access the functions in it
 
 async function fetchQuizResults() {
     try {
-        const response = await fetch(`http://localhost:3000/quizzes/${quizId}/results/${resultId}?userId=${userId}`);
+        const response = await get(`http://localhost:3000/quizzes/${quizId}/results/${resultId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
