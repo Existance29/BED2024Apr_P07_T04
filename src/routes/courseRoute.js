@@ -9,7 +9,7 @@ const courseRoute = (app, upload) => {
     app.get("/courses/without-video", courseController.getAllCoursesWithoutVideo);
     app.get("/courses/search", courseController.searchCourses);
     app.get("/courses/:id", courseController.getCourseById);
-    app.put("/courses/:id", courseController.updateCourse); //HAVENT IMPLEMENT IN FRONT END!!
+    app.put("/courses/:id", authenticateToken, courseController.updateCourse); //HAVENT IMPLEMENT IN FRONT END!!
     app.delete("/courses/:id",authenticateToken, courseController.deleteCourse);
 };
 

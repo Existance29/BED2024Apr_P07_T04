@@ -40,10 +40,51 @@
         border: none;
         cursor: pointer;
     }
-    
+
+    .form-control, .form-control-file {
+        margin-bottom: 1rem;
+    }
+    .form-control {
+        color: black;
+        background-color: white;
+        border: 1px solid #ccc;
+    }
+    .form-control-file {
+        color: black;
+    }
+    .form-control::placeholder {
+        color: #ff0000;
+    }
+    .field-error {
+        display: none;
+        color: red;
+        margin-top: -10px;
+        margin-bottom: 10px;
+    }
+    .modal-lg {
+        max-width: 60%;
+    }
+    .modal-header .close {
+        margin-top: -1.5rem;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .modal-header .close {
+        font-size: 1.5rem;
+        line-height: 1;
+    }
+    .btn-primary {
+        width: 30%;
+        margin: 0 auto;
+        display: block;
+        padding: 10px 20px;
+    }
 </style>
 
-<body> 
+<body>
     <!--navbar-->
     <div class="nav-placeholder"></div>
 
@@ -52,7 +93,7 @@
         <div class="d-flex" style="margin-left: 17%; color: white; width: 65%; height: 2vw;">
             <!-- Title-->
             <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 30%;'>Courses</h1>
-            
+
             <!-- Search bar-->
             <div class="d-flex">
                 <input class="search-field" type="search" placeholder="Search" id="search" onkeyup="search()">
@@ -65,7 +106,7 @@
 
             <!-- View options (grid/list)-->
             <div class="d-flex" style="margin-left: -1vw;">
-                <img src="assets/lectures/grid-view-icon.png" style="margin-top: 0.2vw; width: 28px; height: 28px;cursor: pointer;" onclick="loadCourses()"> <!--Load Course in Grid format-->
+                <img src="assets/lectures/grid-view-icon.png" style="margin-top: 0.2vw; width: 28px; height: 28px; cursor: pointer;" onclick="loadCourses()"> <!--Load Course in Grid format-->
             </div>
             <img src="assets/lectures/edit-button.png" style="margin-left: 0.9vw; cursor: pointer;" onclick="toggleEditMode()">
 
@@ -89,6 +130,55 @@
             </div>
         </div>
     </main>
+
+    <!-- Update Course Modal -->
+    <div id="updateCourseModal" class="modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Course</h5>
+                    <button type="button" class="btn-close" onclick="closeUpdateCourseModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateCourseForm" onsubmit="updateCourse(event)">
+                        <input type="hidden" id="updateCourseID" name="courseID">
+
+                        <div class="mb-3">
+                            <label for="updateTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="updateTitle" name="title" required>
+                            <div id="updateTitle-error" class="field-error">Please enter a valid title</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="updateDescription" name="description" rows="3" required></textarea>
+                            <div id="updateDescription-error" class="field-error">Please enter a valid description</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateDetails" class="form-label">Details</label>
+                            <textarea class="form-control" id="updateDetails" name="details" rows="3" required></textarea>
+                            <div id="updateDetails-error" class="field-error">Please enter valid details</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateCaption" class="form-label">Caption</label>
+                            <input type="text" class="form-control" id="updateCaption" name="caption" required>
+                            <div id="updateCaption-error" class="field-error">Please enter a valid caption</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateCategory" class="form-label">Category</label>
+                            <input type="text" class="form-control" id="updateCategory" name="category" required>
+                            <div id="updateCategory-error" class="field-error">Please enter a valid category</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Update Course</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--footer-->
     <div class="footer-placeholder"></div>

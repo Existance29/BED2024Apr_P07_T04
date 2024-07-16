@@ -12,6 +12,7 @@ const lectureRoute = (app, upload) => {
     app.post("/lectures", upload.none(), authenticateToken, lectureController.createLecture); // Handle main lecture creation without files
     app.post("/lectures/:lectureID/sublectures", upload.fields([{ name: 'video', maxCount: 1 }]), authenticateToken, lectureController.createSubLecture); // Handle sub-lecture creation with video upload
     app.put("/lectures/:id", lectureController.updateLecture); // HAVENT IMPLEMENT IN FRONT END!!
+    app.put("/lectures/:lectureID/sublectures/:subLectureID", authenticateToken, lectureController.updateSubLecture);
     app.delete("/lectures/:id", authenticateToken, lectureController.deleteLecture); //HAVENT IMPLEMENT IN FRONT END!!
     app.delete("/lectures/:lectureID/sublectures/:subLectureID", authenticateToken, lectureController.deleteSubLecture);
 

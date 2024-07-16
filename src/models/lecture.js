@@ -121,6 +121,30 @@ class Lecture {
         connection.close();
         return this.getLectureById(lectureID);
     }
+    
+    static async updateSubLecture(lectureID, subLectureID, newSubLectureData) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `
+            UPDATE SubLectures SET
+                Name = @name,
+                Description = @description,
+                Duration = @duration
+            WHERE LectureID = @lectureID AND SubLectureID = @subLectureID;
+        `;
+    
+        const request = connection.request();
+        request.input("lectureID", sql.Int, lectureID);
+        request.input("subLectureID", sql.Int, subLectureID);
+        request.input("name", sql.NVarChar, newSubLectureData.name || null);
+        request.input("description", sql.NVarChar, newSubLectureData.description || null);
+        request.input("duration", sql.Int, newSubLectureData.duration || null);
+    
+        await request.query(sqlQuery);
+    
+        connection.close();
+        return this.getSubLectureById(lectureID, subLectureID);
+    }
+    
 
     static async deleteLecture(lectureID) {
         const connection = await sql.connect(dbConfig);

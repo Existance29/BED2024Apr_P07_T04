@@ -2,6 +2,8 @@ guardLoginPage();
 const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
 const role = sessionStorage.getItem("role") || localStorage.getItem("role");
 let editMode = false; // Initialize editMode to false
+let currentLectureID = null; // Store the current lecture ID for editing
+let currentSubLectureID = null; // Store the current sub-lecture ID for editing
 
 console.log('Role:', role); // Debugging log
 
@@ -98,7 +100,7 @@ async function loadCourseDetails() {
                 <div class="subchapter-container" style="margin-top: 1vw;">
                     <div class="subchapter">
                         <div style="width: 70%;" onclick="openLecture('${courseID}', '${lecture.lectureID}', '${subLecture.subLectureID}')">
-                            <div style="font-size: 0.9vw; color: #333333; font-weight: 500;">${subLecture.description}</div>
+                            <div style="font-size: 0.9vw; color: #333333; font-weight: 500;">${subLecture.name}</div>
                             <div style="font-size: 0.85vw; color: #59595A; font-weight: 400; margin-top: 0.2vw;">Lesson ${subIndex + 1}</div>
                         </div>
                         <div class="d-flex align-items-center time-container">
@@ -107,7 +109,7 @@ async function loadCourseDetails() {
                         </div>
                         ${(editMode && role === 'lecturer') ? `
                             <div class="edit-delete-buttons" style="margin-left: 1vw;">
-                                <button class="edit-btn" onclick="editSubLecture('${subLecture.subLectureID}')">
+                                <button class="edit-btn" onclick="openEditSubLectureModal('${lecture.lectureID}', '${subLecture.subLectureID}')">
                                     <img src="assets/lectures/edit-button-black.png" alt="Edit" style="width: 20px; height: 20px;">
                                 </button>
                                 <button class="delete-btn" onclick="deleteSubLecture('${lecture.lectureID}', '${subLecture.subLectureID}')">
@@ -124,12 +126,12 @@ async function loadCourseDetails() {
             <div class="chapter">
                 ${(editMode && role === 'lecturer') ? `
                     <div class="edit-delete-buttons">
-                        <button class="edit-btn" onclick="editLecture('${lecture.lectureID}')"><img src="assets/lectures/edit-button-black.png" alt="Edit" style="width: 20px; height: 20px;"></button>
+                        <button class="edit-btn" onclick="openEditLectureModal('${lecture.lectureID}')"><img src="assets/lectures/edit-button-black.png" alt="Edit" style="width: 20px; height: 20px;"></button>
                         <button class="delete-btn" onclick="deleteLecture('${lecture.lectureID}')"><img src="assets/lectures/delete-black.png" alt="Delete" style="width: 20px; height: 20px;"></button>
                     </div>
                 ` : ''}
                 <h2>${String(index + 1).padStart(2, '0')}</h2>
-                <div style="font-weight: 600; font-size: 1vw; margin-bottom: 1.5vw;">${lecture.description}</div>
+                <div style="font-weight: 600; font-size: 1vw; margin-bottom: 1.5vw;">${lecture.name}</div>
                 ${subLectureHTML}
                 
             </div>`;
@@ -169,11 +171,143 @@ function redirectToUploadLecture() {
     window.location.href = `upload-lecture.html?courseID=${courseID}`;
 }
 
-// Function to edit lecture
-function editLecture(lectureID) {
-    console.log('Edit Lecture:', lectureID);  // Log for debugging
-    // Implement the edit functionality here
+// Open edit lecture modal and populate the form with lecture details
+async function openEditLectureModal(lectureID) {
+    const lecture = await fetchLectureById(lectureID);
+    currentLectureID = lectureID;
+    document.getElementById('editLectureName').value = lecture.name;
+    document.getElementById('editLectureDescription').value = lecture.description;
+    document.getElementById('editLectureCategory').value = lecture.category;
+    document.getElementById('editLectureDuration').value = lecture.duration;
+    $('#editLectureModal').modal('show');
 }
+
+// Open edit sub-lecture modal and populate the form with sub-lecture details
+async function openEditSubLectureModal(lectureID, subLectureID) {
+    console.log('Editing Sub-Lecture:', { lectureID, subLectureID });  // Log lecture and sub-lecture IDs for debugging
+    const subLecture = await fetchSubLectureById(lectureID, subLectureID);
+    console.log('Fetched Sub-Lecture:', subLecture);  // Log fetched sub-lecture data for debugging
+
+    currentLectureID = lectureID;
+    currentSubLectureID = subLectureID;
+
+    if (subLecture) {
+        document.getElementById('editSubLectureName').value = subLecture.Name;
+        document.getElementById('editSubLectureDescription').value = subLecture.Description;
+        document.getElementById('editSubLectureDuration').value = subLecture.Duration;
+
+        $('#editSubLectureModal').modal('show');
+    } else {
+        console.error('Sub-Lecture not found');
+    }
+}
+
+// Fetch lecture details by ID
+async function fetchLectureById(lectureID) {
+    try {
+        const response = await fetch(`/lectures/${lectureID}`);
+        const lecture = await response.json();
+        return lecture;
+    } catch (error) {
+        console.error('Error fetching lecture details:', error);
+        return null;
+    }
+}
+
+/// Fetch sub-lecture details by ID
+async function fetchSubLectureById(lectureID, subLectureID) {
+    try {
+        console.log('Fetching Sub-Lecture:', { lectureID, subLectureID });  // Log IDs before fetching
+        const response = await fetch(`/lectures/${lectureID}/sublectures/${subLectureID}`);
+        const subLecture = await response.json();
+        console.log('Fetched Sub-Lecture Data:', subLecture);  // Log the fetched data
+        return subLecture;
+    } catch (error) {
+        console.error('Error fetching sub-lecture details:', error);
+        return null;
+    }
+}
+
+// Close edit lecture modal
+function closeEditLectureModal() {
+    $('#editLectureModal').modal('hide');
+}
+
+// Close edit sub-lecture modal
+function closeEditSubLectureModal() {
+    $('#editSubLectureModal').modal('hide');
+}
+
+// Update lecture details
+async function editLecture() {
+    const name = document.getElementById('editLectureName').value;
+    const description = document.getElementById('editLectureDescription').value;
+    const category = document.getElementById('editLectureCategory').value;
+    const duration = document.getElementById('editLectureDuration').value;
+
+    const updatedLectureData = {
+        name,
+        description,
+        category,
+        duration
+    };
+
+    try {
+        const response = await fetch(`/lectures/${currentLectureID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(updatedLectureData)
+        });
+
+        if (response.ok) {
+            console.log('Lecture updated successfully');
+            $('#editLectureModal').modal('hide');
+            loadCourseDetails();
+        } else {
+            console.error('Error updating lecture:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error updating lecture:', error);
+    }
+}
+
+/// Update sub-lecture details
+async function editSubLecture() {
+    const name = document.getElementById('editSubLectureName').value;
+    const description = document.getElementById('editSubLectureDescription').value;
+    const duration = document.getElementById('editSubLectureDuration').value;
+
+    const updatedSubLectureData = {
+        name,
+        description,
+        duration
+    };
+
+    try {
+        const response = await fetch(`/lectures/${currentLectureID}/sublectures/${currentSubLectureID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(updatedSubLectureData)
+        });
+
+        if (response.ok) {
+            console.log('Sub-lecture updated successfully');
+            $('#editSubLectureModal').modal('hide');
+            loadCourseDetails();
+        } else {
+            console.error('Error updating sub-lecture:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error updating sub-lecture:', error);
+    }
+}
+
 
 // Function to delete lecture
 async function deleteLecture(lectureID) {
@@ -239,4 +373,16 @@ function hideButtonsIfNotLecturer() {
 document.addEventListener('DOMContentLoaded', () => {
     hideButtonsIfNotLecturer();
     loadCourseDetails();
+
+    // Handle edit lecture form submission
+    $('#editLectureForm').submit(async function(event) {
+        event.preventDefault();
+        await editLecture();
+    });
+
+    // Handle edit sub-lecture form submission
+    $('#editSubLectureForm').submit(async function(event) {
+        event.preventDefault();
+        await editSubLecture();
+    });
 });

@@ -103,7 +103,7 @@ async function loadCourseAndLectureDetails() {
                     <div class="subchapter-container" style="margin-top: 1vw;">
                         <div class="subchapter ${subLecture.subLectureID === subLectureID ? 'active-sub' : ''}" data-sub-lecture-id="${subLecture.subLectureID}" data-lecture-id="${lec.lectureID}">
                             <div style="width: 70%;">
-                                <div style="font-size: 0.9vw; color: #333333; font-weight: 500;" id="desc-${subLecture.subLectureID}">${subLecture.description}</div>
+                                <div style="font-size: 0.9vw; color: #333333; font-weight: 500;" id="desc-${subLecture.subLectureID}">${subLecture.name}</div>
                             </div>
                             <div class="d-flex align-items-center time-container">
                                 <img src="./assets/lectures/time-icon-2.png" style="height: 0.85vw; margin-right: 0.3vw;">
