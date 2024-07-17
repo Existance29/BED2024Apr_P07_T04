@@ -1927,6 +1927,109 @@
           }
         }
       },
+      "put": {
+        "tags": [
+          "Lectures"
+        ],
+        "description": "Update an existing sub-lecture. Limited to lecturers only.",
+        "parameters": [
+          {
+            "name": "lectureID",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the lecture"
+          },
+          {
+            "name": "subLectureID",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the sub-lecture"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample body schema to update sub-lecture",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Swift basics"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Learn about variables, conditionals, functions and loops"
+                },
+                "duration": {
+                  "type": "number",
+                  "example": 600
+                }
+              },
+              "required": [
+                "name",
+                "description",
+                "duration"
+              ]
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, return the newly updated sub-lecture.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "subLectureID": {
+                  "type": "number",
+                  "example": 60
+                },
+                "lectureID": {
+                  "type": "number",
+                  "example": 90
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Swift basics"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Learn about variables, conditionals, functions and loops"
+                },
+                "duration": {
+                  "type": "number",
+                  "example": 600
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Missing fields"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
       "delete": {
         "tags": [
           "Lectures"
