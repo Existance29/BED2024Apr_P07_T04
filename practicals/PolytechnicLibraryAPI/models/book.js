@@ -21,7 +21,6 @@ class Book {
             }
             return result.recordset.map(row => new Book(row.book_id, row.title, row.author, row.availability));
         } catch (error) {
-            console.log(error);
             throw new Error("Error in book.js Could not get all books");
         } finally {
             if (connection) {
@@ -38,13 +37,13 @@ class Book {
             const request = connection.request();
             request.input('bookId', bookId);
             const result = await request.query(sqlQuery);
-            if (result.recordset[0] === 0) {
+            if (result.recordset[0] === 0 || !result.recordset.length) {
                 return null;
             }
             const row = result.recordset[0];
             return new Book(row.id, row.title, row.author, row.availability)
         } catch (error) {
-            console.log(error);
+            console.log(error)
             throw new Error("Error in book.js Could not get book");
         } finally {
             if (connection) {
@@ -66,15 +65,12 @@ class Book {
                 return null;
             }
             //return result.rowsAffected[0] > 0; // returns true 
-            connection.close();
-            return this.getBookById(bookId);
-        } catch (error) {
-            console.log(error);
-            throw new Error("Error in book.js Could not udpate book availability");
-        } finally {
             if (connection) {
                 await connection.close();
             }
+            return this.getBookById(bookId);
+        } catch (error) {
+            throw new Error("Error in book.js Could not update book availability");
         }
     }
 }
