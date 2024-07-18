@@ -244,6 +244,65 @@ const updateLecture = async (req, res) => {
     }
 };
 
+const updateSubLecture = async (req, res) => {
+    // #swagger.tags = ['Lectures']
+    // #swagger.description = 'Update an existing sub-lecture. Limited to lecturers only.'
+    /*  #swagger.parameters['lectureID'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the lecture',
+    } */
+    /*  #swagger.parameters['subLectureID'] = {
+          in: 'path',
+          type: "int",
+          description: 'The id of the sub-lecture',
+    } */
+    /*  #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Sample body schema to update sub-lecture',
+        schema: {
+            $name: 'Swift basics',
+            $description: 'Learn about variables, conditionals, functions and loops',
+            $duration: 600
+        }
+    } */
+    /*  #swagger.parameters['authorization'] = {
+                in: 'header',
+                description: 'Format: \'Bearer (jwt)\'',
+        } */
+    /* #swagger.responses[200] = {
+                description: 'Success, return the newly updated sub-lecture.',
+                schema: {
+                    subLectureID: 60,
+                    lectureID: 90,
+                    name: 'Swift basics',
+                    description: 'Learn about variables, conditionals, functions and loops',
+                    duration: 600
+                }
+        } */
+    /* #swagger.responses[400] = {
+                description: 'Missing fields',
+        } */
+    const lectureID = parseInt(req.params.lectureID);
+    const subLectureID = parseInt(req.params.subLectureID);
+    const { name, description, duration } = req.body;
+
+    if (!name || !description || !duration) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    try {
+        const updatedSubLecture = await Lecture.updateSubLecture(lectureID, subLectureID, { name, description, duration });
+        if (!updatedSubLecture) {
+            return res.status(404).send("Sub-Lecture not found");
+        }
+        res.json(updatedSubLecture);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error updating sub-lecture");
+    }
+};
+
 const deleteLecture = async (req, res) => {
     // #swagger.tags = ['Lectures']
     // #swagger.description = 'Delete a lecture by its id. Limited to lecturers'
@@ -475,6 +534,7 @@ module.exports = {
     getAllLectures,
     getLectureById,
     updateLecture,
+    updateSubLecture,
     deleteLecture,
     deleteSubLecture,
     searchLectures,

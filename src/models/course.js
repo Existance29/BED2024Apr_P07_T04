@@ -93,37 +93,62 @@ class Course {
 
     static async updateCourse(courseID, newCourseData) {
         const connection = await sql.connect(dbConfig);
+    
+        const setFields = [];
+        const request = connection.request();
+    
+        // Add fields to update based on the provided data
+        if (newCourseData.title) {
+            setFields.push("Title = @title");
+            request.input("title", sql.NVarChar, newCourseData.title);
+        }
+        if (newCourseData.thumbnail) {
+            setFields.push("Thumbnail = @thumbnail");
+            request.input("thumbnail", sql.VarBinary, newCourseData.thumbnail);
+        }
+        if (newCourseData.description) {
+            setFields.push("Description = @description");
+            request.input("description", sql.NVarChar, newCourseData.description);
+        }
+        if (newCourseData.details) {
+            setFields.push("Details = @details");
+            request.input("details", sql.NVarChar, newCourseData.details);
+        }
+        if (newCourseData.caption) {
+            setFields.push("Caption = @caption");
+            request.input("caption", sql.NVarChar, newCourseData.caption);
+        }
+        if (newCourseData.category) {
+            setFields.push("Category = @category");
+            request.input("category", sql.NVarChar, newCourseData.category);
+        }
+        if (newCourseData.totalRate !== undefined) {
+            setFields.push("TotalRate = @totalRate");
+            request.input("totalRate", sql.Int, newCourseData.totalRate);
+        }
+        if (newCourseData.ratings !== undefined) {
+            setFields.push("Ratings = @ratings");
+            request.input("ratings", sql.Int, newCourseData.ratings);
+        }
+        if (newCourseData.video) {
+            setFields.push("Video = @video");
+            request.input("video", sql.VarBinary, newCourseData.video);
+        }
+    
         const sqlQuery = `
             UPDATE Courses SET
-                Title = @title,
-                Thumbnail = @thumbnail,
-                Description = @description,
-                Details = @details,
-                Caption = @caption,
-                Category = @category,
-                TotalRate = @totalRate,
-                Ratings = @ratings,
-                Video = @video
+                ${setFields.join(", ")}
             WHERE CourseID = @courseID;
         `;
-        const request = connection.request();
-        request.input("courseID", sql.Int, courseID);  // Changed this line to explicitly set the type
-        request.input("title", sql.NVarChar, newCourseData.title || null);
-        request.input("thumbnail", sql.VarBinary, newCourseData.thumbnail || null);
-        request.input("description", sql.NVarChar, newCourseData.description || null);
-        request.input("details", sql.NVarChar, newCourseData.details || null);
-        request.input("caption", sql.NVarChar, newCourseData.caption || null);
-        request.input("category", sql.NVarChar, newCourseData.category || null);
-        request.input("totalRate", sql.Int, newCourseData.totalRate || null);
-        request.input("ratings", sql.Int, newCourseData.ratings || null);
-        request.input("video", sql.VarBinary, newCourseData.video || null);
-
+    
+        request.input("courseID", sql.Int, courseID);
+    
         await request.query(sqlQuery);
-
         connection.close();
-
+    
         return this.getCourseById(courseID);
     }
+    
 
     static async deleteCourse(courseID) {
         const connection = await sql.connect(dbConfig);

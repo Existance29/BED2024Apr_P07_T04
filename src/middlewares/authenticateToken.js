@@ -18,7 +18,9 @@ const authenticateToken = (req,res,next) => {
             'GET /users/verifyjwt': ['student', 'lecturer'],
 
             'POST /courses': ['lecturer'],
-            
+            'PUT /courses/:id': ['lecturer'],
+            'PUT /lectures/:id': ['lecturer'],
+            'PUT /lectures/:lectureID/sublectures/:subLectureID': ['lecturer'],
             'DELETE /courses/:id': ['lecturer'],
             'DELETE /lectures/:id': ['lecturer'],
             'DELETE /lectures/:lectureID/sublectures/:subLectureID': ['lecturer'],

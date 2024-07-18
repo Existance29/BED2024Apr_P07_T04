@@ -28,6 +28,17 @@
             margin-top: -10px;
             margin-bottom: 10px;
         }
+        
+        .btn-upload {
+            width: calc(100% - 2rem); /* Adjust width to ensure space on the sides */
+            margin: 0 1rem; /* Center the button with margins */
+        }
+
+        .btn {
+            padding-right: 18px;
+            margin: 0 auto; /* Center the button with margins */
+
+        }
     </style>
 </head>
 <body>
@@ -72,7 +83,7 @@
                         <input type="file" class="form-control-file" name="video" id="video" accept="video/*">
                         <div id="video-error" class="field-error">Please upload a valid course video</div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Upload</button>
+                    <button type="submit" class="btn btn-primary btn-upload">Upload</button>
                 </form>
             </div>
         </div>
