@@ -80,7 +80,7 @@ async function loadCourses() {
                     </div>
                     <div class="system-info">
                         <h3 class="poppins-semibold system-name">${course.title}</h3>
-                        <p class="poppins-regular system-desc">${course.description}</p>
+                        <p class="poppins-regular system-desc">${course.caption}</p>
                     </div>
                     <div class="learn-btn-container">
                         <button type="submit" class="poppins-medium learn-btn" onclick="goCourse('${course.courseID}')">Learn Now</button>
@@ -255,3 +255,72 @@ function goCourse(courseID) {
 }
 
 document.addEventListener("DOMContentLoaded", topicOnLoad);
+
+// Open update course modal and populate the form with course details
+async function editCourse(courseID) {
+    const course = await fetchCourseById(courseID);
+    document.getElementById('updateCourseID').value = course.courseID;
+    document.getElementById('updateTitle').value = course.title;
+    document.getElementById('updateDescription').value = course.description;
+    document.getElementById('updateDetails').value = course.details;
+    document.getElementById('updateCaption').value = course.caption;
+    document.getElementById('updateCategory').value = course.category;
+
+    document.getElementById('updateCourseModal').style.display = 'block';
+}
+
+// Fetch course details by ID
+async function fetchCourseById(courseID) {
+    try {
+        const response = await fetch(`/courses/${courseID}`);
+        const course = await response.json();
+        return course;
+    } catch (error) {
+        console.error('Error fetching course details:', error);
+        return null;
+    }
+}
+
+// Close update course modal
+function closeUpdateCourseModal() {
+    document.getElementById('updateCourseModal').style.display = 'none';
+}
+
+// Update course details
+async function updateCourse(event) {
+    event.preventDefault();
+    const courseID = document.getElementById('updateCourseID').value;
+    const title = document.getElementById('updateTitle').value;
+    const description = document.getElementById('updateDescription').value;
+    const details = document.getElementById('updateDetails').value;
+    const caption = document.getElementById('updateCaption').value;
+    const category = document.getElementById('updateCategory').value;
+
+    const updatedCourseData = {
+        title,
+        description,
+        details,
+        caption,
+        category
+    };
+
+    try {
+        const response = await fetch(`/courses/${courseID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(updatedCourseData)
+        });
+
+        if (response.ok) {
+            loadCourses();
+            closeUpdateCourseModal();
+        } else {
+            console.error('Error updating course:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error updating course:', error);
+    }
+}
