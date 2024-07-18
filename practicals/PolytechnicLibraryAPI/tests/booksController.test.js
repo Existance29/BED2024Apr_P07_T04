@@ -63,3 +63,71 @@ describe("booksController.getAllBooks", () => {
     expect(res.json).toHaveBeenCalledWith({ error: "Error in bookController: Could not get all books" });
   });
 });
+
+describe("booksController.updateBookAvailability", () => {
+  beforeEach(() => {
+    jest.clearAllMocks(); // Clear mock calls before each test
+  });
+
+  it("should update the book's availability and return status code 200", async () => {
+    const mockBook = {
+      "book_id": 2,
+      "title": "The Scarlet Letter",
+      "author": "Nathaniel Hawthorne",
+      "availability": "Y"
+    }
+    Book.getBookById.mockResolvedValue(mockBook) //book found
+    Book.updateBookAvailability.mockResolvedValue(mockBook); // update is successful
+
+    const req = {
+      params: {id: 1},
+      body: {availability: 'Y'}
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    await booksController.updateBookAvailability(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(mockBook);
+  });
+
+  it("should handle cases where book does not exist and return a 404 status with error message", async () => {
+    Book.getBookById.mockResolvedValue(null); // simulate case where book cannot be found
+
+    const req = {
+      params: {id: 1},
+      body: {availability: 'Y'}
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+
+    await booksController.updateBookAvailability(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.send).toHaveBeenCalledWith("Book not found");
+  });
+
+  it("should handle errors and return a 500 status with error message", async () => {
+    const errorMessage = "Database error";
+    Book.getBookById.mockRejectedValue(new Error(errorMessage)); // Simulate an error
+
+    const req = {
+      params: {id: 1},
+      body: {availability: 'Y'}
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    await booksController.updateBookAvailability(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: "Error in bookController: Could not update book availability" });
+  });
+});
