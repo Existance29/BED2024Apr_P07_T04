@@ -13,8 +13,24 @@ describe("booksController.getAllBooks", () => {
 
   it("should fetch all books and return a JSON response", async () => {
     const mockBooks = [
-      { id: 1, title: "The Lord of the Rings" },
-      { id: 2, title: "The Hitchhiker's Guide to the Galaxy" },
+        {
+            "book_id": 1,
+            "title": "The Adventures of Huckleberry Finn",
+            "author": "Mark Twain",
+            "availability": "N"
+        },
+        {
+            "book_id": 2,
+            "title": "The Scarlet Letter",
+            "author": "Nathaniel Hawthorne",
+            "availability": "Y"
+        },
+        {
+            "book_id": 3,
+            "title": "David Copperfield",
+            "author": "\tCharles Dickens",
+            "availability": "N"
+        }
     ];
 
     // Mock the Book.getAllBooks function to return the mock data
@@ -23,10 +39,10 @@ describe("booksController.getAllBooks", () => {
     const req = {};
     const res = {
       json: jest.fn(), // Mock the res.json function
+      status: jest.fn().mockReturnThis()
     };
 
     await booksController.getAllBooks(req, res);
-
     expect(Book.getAllBooks).toHaveBeenCalledTimes(1); // Check if getAllBooks was called
     expect(res.json).toHaveBeenCalledWith(mockBooks); // Check the response body
   });
@@ -38,12 +54,12 @@ describe("booksController.getAllBooks", () => {
     const req = {};
     const res = {
       status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
+      json: jest.fn()
     };
 
     await booksController.getAllBooks(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.send).toHaveBeenCalledWith("Error retrieving books");
+    expect(res.json).toHaveBeenCalledWith({ error: "Error in bookController: Could not get all books" });
   });
 });
