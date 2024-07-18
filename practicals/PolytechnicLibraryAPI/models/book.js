@@ -9,7 +9,7 @@ class Book {
         this.availability = availability
     }
 
-    static async getllBooks() {
+    static async getAllBooks() {
         let connection;
         try {
             connection = await sql.connect(dbConfig);
