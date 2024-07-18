@@ -23,6 +23,7 @@ const updateBookAvailability = async(req, res) => {
         const book = await Book.updateBookAvailability(bookId, availability);
         res.status(200).json(book);
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: "Error in bookController: Could not update book availability" });
     }
 }
