@@ -66,6 +66,7 @@ class Book {
                 return null;
             }
             //return result.rowsAffected[0] > 0; // returns true 
+            connection.close();
             return this.getBookById(bookId);
         } catch (error) {
             console.log(error);
