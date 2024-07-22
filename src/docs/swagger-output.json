@@ -2598,28 +2598,42 @@
     },
     "/quizzes/{quizId}/submit": {
       "post": {
-        "description": "",
+        "description": "Post the user's quiz results. User is obtained from jwt",
+        "tags": [
+          "Quizzes"
+        ],
         "parameters": [
           {
             "name": "quizId",
             "in": "path",
             "required": true,
+            "type": "string",
+            "description": "ID of the quiz"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
             "type": "string"
           },
           {
             "name": "body",
             "in": "body",
+            "description": "Sample schema to submit quiz",
             "schema": {
               "type": "object",
               "properties": {
-                "userId": {
-                  "example": "any"
-                },
                 "answers": {
-                  "example": "any"
+                  "example": [
+                    { "questionId": 1, "answer": 0 },
+                    { "questionId": 2, "answer": 0 },
+                    { "questionId": 3, "answer": 0 },
+                    { "questionId": 4, "answer": 0 },
+                    { "questionId": 5, "answer": 1 }
+                  ]
                 },
                 "duration": {
-                  "example": "any"
+                  "example": 10
                 }
               }
             }
@@ -2627,7 +2641,33 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success, returns an object similar to a result object. Contains the quiz result's score, total questions, correct answers, incorrect questions, result id and grade",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "score":{
+                  "example":50
+                },
+                "totalQuestions": {
+                  "example": 5
+                },
+                "correctAnswers": {
+                  "example": 5
+                },
+                "incorrectQuestions": {
+                  "example": []
+                },
+                "resultId": {
+                  "example":9
+                },
+                "grade": {
+                  "example": "A+"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"
@@ -2637,29 +2677,89 @@
     },
     "/quizzes/{quizId}/results/{resultId}": {
       "get": {
-        "description": "",
+        "description": "Gets the specific result of a quiz of a user.",
+        "tags": [
+          "Quizzes"
+        ],
         "parameters": [
           {
             "name": "quizId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "ID of a quiz"
           },
           {
             "name": "resultId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "ID of a quiz result"
           },
           {
-            "name": "userId",
-            "in": "query",
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success, returns a result object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": 11
+                },
+                "quizId": {
+                  "example": 4
+                },
+                "userId": {
+                  "example": 5
+                },
+                "score": {
+                  "example": 40
+                },
+                "totalQuestions": {
+                  "example": 5
+                },
+                "correctAnswers": {
+                  "example": 4
+                },
+                "timeTaken": {
+                  "example": 7
+                },
+                "totalMarks": {
+                  "example": 50
+                },
+                "grade": {
+                  "example": "A"
+                },
+                "incorrectQuestions": {
+                  "example": [
+                    {
+                      "id": 5,
+                      "resultId": 11,
+                      "text": "How do you create a list in Python?",
+                      "userAnswer": 2,
+                      "correctAnswer": 1,
+                      "questionId": 18,
+                      "options": "[\"list = {}\",\"list = []\",\"list = ()\",\"list = ||\"]"
+                    }
+                  ]
+                },
+                  "attempts": {
+                    "example": 1
+                  },
+                  "maxAttempts": {
+                    "example": 2
+                  }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"
@@ -2667,9 +2767,12 @@
         }
       }
     },
-    "/quizzes/attempt/{quizId}/{userId}": {
+    "/quizzes/attempt/{quizId}": {
       "get": {
-        "description": "",
+        "description": "Get the number of attempts by a user on a specific quiz",
+        "tags": [
+          "Quizzes"
+      ],
         "parameters": [
           {
             "name": "quizId",
@@ -2694,20 +2797,56 @@
         }
       }
     },
-    "/user/{userId}/results": {
+    "/user/results": {
       "get": {
-        "description": "",
+        "description": "Gets the result of a user. User is obtained from jwt",
+        "tags": [
+          "Users",
+          "Quizzes"
+        ],
         "parameters": [
           {
-            "name": "userId",
-            "in": "path",
-            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success, returns an array of objects of every quiz the user has taken. Each quiz contains the quiz's title, score, totalMarks, grade, time taken and quiz id",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "example": "Angular JS Basics"
+                  },
+                  "score": {
+                    "example": 50
+                  },
+                  "totalMarks": {
+                    "example": 50
+                  },
+                  "grade": {
+                    "example": "A"
+                  },
+                  "timeTaken":{
+                    "example": 10
+                  },
+                  "quizId": {
+                    "example": 1
+                  },
+                  "id": {
+                    "example": 1
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }  
           },
           "500": {
             "description": "Internal Server Error"
