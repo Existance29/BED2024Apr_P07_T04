@@ -1,3 +1,7 @@
+//editing swagger in the swagger-output file
+//do not build, it will override progress
+
+/*
 const swaggerAutogen = require('swagger-autogen')();
 
 const doc = {
@@ -11,7 +15,8 @@ const doc = {
 const outputFile = './swagger-output.json';
 const routes = ['../routes/userRoute.js','../routes/courseRoute','../routes/lectureRoute', '../routes/quizRoute'];
 
-/* NOTE: If you are using the express Router, you must pass in the 'routes' only the 
-root file where the route starts, such as index.js, app.js, routes.js, etc ... */
+//NOTE: If you are using the express Router, you must pass in the 'routes' only the 
+//root file where the route starts, such as index.js, app.js, routes.js, etc ... 
 
 swaggerAutogen(outputFile, routes, doc);
+*/
