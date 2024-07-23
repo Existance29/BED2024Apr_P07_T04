@@ -2769,7 +2769,7 @@
     },
     "/quizzes/attempt/{quizId}": {
       "get": {
-        "description": "Get the number of attempts by a user on a specific quiz",
+        "description": "Get the data on attempts by a user on a specific quiz. User is obtained from jwt",
         "tags": [
           "Quizzes"
       ],
@@ -2781,15 +2781,32 @@
             "type": "string"
           },
           {
-            "name": "userId",
-            "in": "path",
-            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success, returns a quiz attempt object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "canAttempt": {
+                  "example": true
+                },
+                "attempts": {
+                  "example": 0
+                },
+                "maxAttempts": {
+                  "example": 2
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"
