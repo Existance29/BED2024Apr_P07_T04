@@ -75,7 +75,7 @@ describe("quizController.getQuizQuestions", () => {
       }
     ]
 
-    // Mock the quiz.getAllQuizzes function to return the mock data
+    // Mock the model function to return the mock data
     Quiz.getQuizQuestions.mockResolvedValue(mockQuestions);
 
     //mock the reqs
@@ -87,7 +87,7 @@ describe("quizController.getQuizQuestions", () => {
     };
 
     await quizController.getQuizQuestions(req, res);
-    expect(Quiz.getQuizQuestions).toHaveBeenCalledTimes(1); // Check if getAllQuizzes was called
+    expect(Quiz.getQuizQuestions).toHaveBeenCalledTimes(1); // Check if model function was called
     expect(res.json).toHaveBeenCalledWith(mockQuestions); // Check the response body
   });
 
@@ -140,7 +140,7 @@ describe("quizController.getQuizById", () => {
     };
 
     await quizController.getQuizById(req, res);
-    expect(Quiz.getQuizById).toHaveBeenCalledTimes(1); // Check if getAllQuizzes was called
+    expect(Quiz.getQuizById).toHaveBeenCalledTimes(1); // Check if model function was called
     expect(res.json).toHaveBeenCalledWith(mockQuiz); // Check the response body
   });
 
@@ -259,54 +259,164 @@ describe("quizController.submitQuizAnswers", () => {
   })
 })
 
-describe("quizController.getQuizResult", () => {
+describe("quizController.canAttemptQuiz", () => {
   beforeEach(() => {
     jest.clearAllMocks(); // Clear mock calls before each test
   });
 
-  it("should fetch a quiz by its id and return a JSON response", async () => {
-    const mockQuiz = {
-        "id": 1,
-        "title": "Angular JS Basics",
-        "description": "Test your knowledge on the basics of Angular JS.",
-        "totalQuestions": 5,
-        "totalMarks": 50,
-        "duration": 1,
-        "maxAttempts": 2
-      }
+  //mock the req
+  const req = {
+    params: {quizId: 1},
+    user: {userId: 5}
+  };
 
-    // Mock the quiz.getAllQuizzes function to return the mock data
-    Quiz.getQuizById.mockResolvedValue(mockQuiz);
+  it("should fetch the attempt data of a user for a quiz and return a json response", async () => {
+    const mockAttempt = {
+      "canAttempt": true,
+      "attempts": 0,
+      "maxAttempts": 2
+    }
 
-    //mock the reqs
-    const req = {
-      params: {quizId: 1}
-    };
+    // Mock the quiz.canAttemptQuiz function to return the mock data
+    Quiz.canAttemptQuiz.mockResolvedValue(mockAttempt)
+
     const res = {
       json: jest.fn(), // Mock the res.json function
     };
 
-    await quizController.getQuizById(req, res);
-    expect(Quiz.getQuizById).toHaveBeenCalledTimes(1); // Check if getAllQuizzes was called
-    expect(res.json).toHaveBeenCalledWith(mockQuiz); // Check the response body
+    await quizController.canAttemptQuiz(req, res);
+    expect(Quiz.canAttemptQuiz).toHaveBeenCalledTimes(1); // Check if model function was called
+    expect(res.json).toHaveBeenCalledWith(mockAttempt); // Check the response body
   });
 
   it("should handle errors and return a 500 status with error message", async () => {
-    const errorMessage = "Database error";
-    Quiz.getQuizById.mockRejectedValue(new Error(errorMessage)); // Simulate an error
+    const errorMessage = "Database error"
+    Quiz.canAttemptQuiz.mockRejectedValue(new Error(errorMessage)); // Simulate an error
 
-    //mock the reqs
-    const req = {
-      params: {quizId: 1}
-    }
     const res = {
       status: jest.fn().mockReturnThis(),
       send: jest.fn()
     }
 
-    await quizController.getQuizById(req, res);
+    await quizController.canAttemptQuiz(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.send).toHaveBeenCalledWith("Error retrieving quiz");
+    expect(res.send).toHaveBeenCalledWith("Error checking quiz attempt eligibility")
+  })
+})
+
+describe("quizController.getQuizResult", () => {
+  beforeEach(() => {
+    jest.clearAllMocks(); // Clear mock calls before each test
+  });
+
+  //mock the req
+  const req = {
+    params: {quizId: 1, resultId: 11},
+    user: {userId: 5}
+  };
+
+  it("should fetch a quiz result by the user and quiz id and return a JSON response", async () => {
+    const mockResult = {
+      "id": 11,
+      "quizId": 4,
+      "userId": 5,
+      "score": 40,
+      "totalQuestions": 5,
+      "correctAnswers": 4,
+      "timeTaken": 7,
+      "totalMarks": 50,
+      "grade": "A",
+      "incorrectQuestions": [
+        {
+          "id": 5,
+          "resultId": 11,
+          "text": "How do you create a list in Python?",
+          "userAnswer": 2,
+          "correctAnswer": 1,
+          "questionId": 18,
+          "options": "[\"list = {}\",\"list = []\",\"list = ()\",\"list = ||\"]"
+        }
+      ],
+      "attempts": 1,
+      "maxAttempts": 2
+    }
+
+    // Mock the quiz.getQuizResult function to return the mock data
+    Quiz.getQuizResult.mockResolvedValue(mockResult);
+
+    const res = {
+      json: jest.fn(), // Mock the res.json function
+    };
+
+    await quizController.getQuizResult(req, res)
+    expect(Quiz.getQuizResult).toHaveBeenCalledTimes(1) // Check if model function was called
+    expect(res.json).toHaveBeenCalledWith(mockResult) // Check the response body
+  });
+
+  it("should handle errors and return a 500 status with error message", async () => {
+    const errorMessage = "Database error"
+    Quiz.getQuizResult.mockRejectedValue(new Error(errorMessage)); // Simulate an error
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    }
+
+    await quizController.getQuizResult(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(500)
+    expect(res.send).toHaveBeenCalledWith("Error fetching quiz result")
+  })
+})
+
+describe("quizController.getUserQuizResult", () => {
+  beforeEach(() => {
+    jest.clearAllMocks(); // Clear mock calls before each test
+  });
+
+  //mock the req
+  const req = {
+    user: {userId: 5}
+  };
+
+  it("should fetch all quiz results of the user and return a JSON response", async () => {
+    const mockResults = [
+      {
+        "title": "Angular JS Basics",
+        "score": 50,
+        "totalMarks": 50,
+        "grade": "A",
+        "timeTaken": 10,
+        "quizId": 1,
+        "id": 1
+      }
+    ]
+
+    // Mock the quiz.getUserQuizResults function to return the mock data
+    Quiz.getUserQuizResults.mockResolvedValue(mockResults);
+
+    const res = {
+      json: jest.fn(), // Mock the res.json function
+    };
+
+    await quizController.getUserQuizResults(req, res)
+    expect(Quiz.getUserQuizResults).toHaveBeenCalledTimes(1) // Check if model function was called
+    expect(res.json).toHaveBeenCalledWith(mockResults) // Check the response body
+  });
+
+  it("should handle errors and return a 500 status with error message", async () => {
+    const errorMessage = "Database error"
+    Quiz.getUserQuizResults.mockRejectedValue(new Error(errorMessage)); // Simulate an error
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    }
+
+    await quizController.getUserQuizResults(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(500)
+    expect(res.send).toHaveBeenCalledWith("Error fetching user quiz results")
   })
 })
