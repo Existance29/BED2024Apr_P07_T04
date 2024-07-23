@@ -1,4 +1,3 @@
-const express = require('express');
 const lectureController = require("../controllers/lectureController");
 const authenticateToken = require('../middlewares/authenticateToken');
 
