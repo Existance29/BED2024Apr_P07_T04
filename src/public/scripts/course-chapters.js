@@ -70,12 +70,14 @@ async function loadCourseDetails() {
 
         updateCourseDetails(basicCourseDetails);
         document.getElementById('chapter-grid').innerHTML = '<p>No lectures found for this course.</p>';
+        fetchYouTubeVideos(basicCourseDetails.title); // Automatically search for YouTube videos based on the course title
         return;
     }
 
     console.log('Loaded course with lectures:', courseWithLectures);
 
     updateCourseDetails(courseWithLectures);
+    fetchYouTubeVideos(courseWithLectures.title); // Automatically search for YouTube videos based on the course title
 
     // Ensure lectures are sorted by LectureID
     const lectures = courseWithLectures.lectures.sort((a, b) => a.lectureID - b.lectureID);

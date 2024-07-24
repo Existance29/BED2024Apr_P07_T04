@@ -48,6 +48,13 @@
         border-radius: 12px;
         margin-bottom: 2vw;
     }
+    .video-player {
+        margin-top: 20px;
+    }
+    .video-player iframe {
+        width: 100%;
+        height: 400px;
+    }
 </style>
 <body> 
     <!-- Navbar -->
@@ -72,6 +79,15 @@
             <!-- Chapters -->
             <div id="chapter-grid" class="chapter-grid">
                 <!-- Lectures will be loaded here -->
+            </div>
+        </div>
+        <!-- YouTube Search and Video Player -->
+        <div class="d-flex" style="margin-top: 5vw;">
+            <div style="width: 100%; color: white;">
+                <h4 class="exo-semibold" style="font-size: 0.95vw; margin-bottom: 1vw;">YouTube Search</h4>
+                <input type="text" id="youtube-search" placeholder="Search YouTube">
+                <div id="videos" class="video-player"></div>
+                <div id="youtube-player" class="video-player"></div> <!-- Correct ID for video player -->
             </div>
         </div>
     </main>
@@ -143,5 +159,7 @@
     <script src="./scripts/common.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="./scripts/course-chapters.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="./scripts/youtube.js"></script>
 </body>
 </html>
