@@ -543,7 +543,24 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Success, returns the id of the profile picture, the user's id and the new base64 encoded picture",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pic_id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "user_id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "img": {
+                  "type": "string",
+                  "example": "base64-string-here"
+                }
+              }
+            }
           },
           "400": {
             "description": "No file uploaded"
