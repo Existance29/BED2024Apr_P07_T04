@@ -17,6 +17,7 @@ class Quiz {
     }
 
     static toQuestionObj(row) {
+        console.log(row.options)
         return {
             id: row.id,
             quizId: row.quizId,
