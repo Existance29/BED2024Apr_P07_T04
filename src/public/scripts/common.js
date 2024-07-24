@@ -17,7 +17,7 @@ const userRole =  localStorage.getItem("role") || sessionStorage.getItem("role")
 
 
 
-//console.log(accessToken)
+console.log(accessToken)
 //returns a string with title-casing
 function title(str) {
     return str.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');

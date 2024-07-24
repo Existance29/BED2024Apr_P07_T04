@@ -291,7 +291,6 @@ const loginUser = async (req, res) => {
     if (!bcrypt.compareSync(password,user.password)){
       return res.status(404).send("Incorrect login details")
     }
-    
     //generate jwt token
     res.json(generateAccessToken(user));
   } catch (error) {
