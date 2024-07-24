@@ -9,6 +9,7 @@ jest.mock("../models/quiz")
 describe("quizController.getAllQuizzes", () => {
   beforeEach(() => {
     jest.clearAllMocks(); // Clear mock calls before each test
+    jest.spyOn(console, 'error').mockImplementation(jest.fn())
   });
 
   it("should fetch all quizzes and return a JSON response", async () => {
@@ -57,6 +58,7 @@ describe("quizController.getAllQuizzes", () => {
 describe("quizController.getQuizQuestions", () => {
   beforeEach(() => {
     jest.clearAllMocks(); // Clear mock calls before each test
+    jest.spyOn(console, 'error').mockImplementation(jest.fn())
   });
 
   it("should fetch all questions of a quiz and return a JSON response", async () => {
@@ -115,6 +117,7 @@ describe("quizController.getQuizQuestions", () => {
 describe("quizController.getQuizById", () => {
   beforeEach(() => {
     jest.clearAllMocks(); // Clear mock calls before each test
+    jest.spyOn(console, 'error').mockImplementation(jest.fn()) //silence console error
   });
 
   it("should fetch a quiz by its id and return a JSON response", async () => {
@@ -187,6 +190,7 @@ describe("quizController.getQuizById", () => {
 describe("quizController.submitQuizAnswers", () => {
   beforeEach(() => {
     jest.clearAllMocks(); // Clear mock calls before each test
+    jest.spyOn(console, 'error').mockImplementation(jest.fn()) //silence console error
   });
 
   //mock request body
@@ -262,6 +266,7 @@ describe("quizController.submitQuizAnswers", () => {
 describe("quizController.canAttemptQuiz", () => {
   beforeEach(() => {
     jest.clearAllMocks(); // Clear mock calls before each test
+    jest.spyOn(console, 'error').mockImplementation(jest.fn()) //silence console error
   });
 
   //mock the req
@@ -308,6 +313,7 @@ describe("quizController.canAttemptQuiz", () => {
 describe("quizController.getQuizResult", () => {
   beforeEach(() => {
     jest.clearAllMocks(); // Clear mock calls before each test
+    jest.spyOn(console, 'error').mockImplementation(jest.fn()) //silence console error
   });
 
   //mock the req
@@ -372,6 +378,7 @@ describe("quizController.getQuizResult", () => {
 
 describe("quizController.getUserQuizResult", () => {
   beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation(jest.fn()) //silence console error
     jest.clearAllMocks(); // Clear mock calls before each test
   });
 
