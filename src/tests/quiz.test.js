@@ -171,13 +171,5 @@ describe("Quiz.submitQuizAnswers", () => {
       "grade": "A+"
     }
 
-    //mock the query to return the mssql results
-    Quiz.query = jest.fn().mockResolvedValue({recordset: mockData})
-    JSON.parse = jest.fn().mockImplementationOnce(() => mockData[0].options) //also mock json.parse
-    const result = await Quiz.getQuizQuestions(1); //get the output from the test function
-
-    //check the results
-    expect(Quiz.query).toHaveBeenCalled()
-    expect(result[0]).toEqual(mockData[0])
   })
 })

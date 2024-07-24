@@ -265,7 +265,8 @@ const getProfilePictureByJWT = async (req, res) => {
   await getProfilePicture(req,res,id)
 }
 
-const loginUser = async (req, res) => {
+//use dependency injection for code testing
+const loginUser = async (req, res, next, _generateAccessToken = generateAccessToken) => {
   // #swagger.tags = ['Users']
   // #swagger.description = 'Verify that a user\'s login credentials are correct and generate a jwt'
   /* #swagger.responses[200] = {
@@ -292,14 +293,14 @@ const loginUser = async (req, res) => {
       return res.status(404).send("Incorrect login details")
     }
     //generate jwt token
-    res.json(generateAccessToken(user));
+    res.json(_generateAccessToken(user));
   } catch (error) {
     console.error(error)
     res.status(500).send("Error logging in")
   }
 }
-
-const createUser = async (req, res) => {
+//use dependency injection for code testing
+const createUser = async (req, res, next, _generateAccessToken = generateAccessToken) => {
   // #swagger.tags = ['Users']
   // #swagger.description = 'Create a new user on registration'
   /* #swagger.responses[201] = {
@@ -315,7 +316,7 @@ const createUser = async (req, res) => {
     newUser.password = hashPassword(newUser.password)
     const createdUser = await User.createUser(newUser)
     //create user successful, display it as json
-    res.status(201).json(generateAccessToken(createdUser));
+    res.status(201).json(_generateAccessToken(createdUser));
   } catch (error) {
     console.error(error);
     res.status(500).send("Error creating user")
@@ -427,7 +428,7 @@ const getViewedSubLecturesByCourse = async (req,res) => {
     res.json(await User.getViewedSubLecturesByCourse(uid,cid))
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error checking if viewed sub lecture")
+    res.status(500).send("Error getting viewed sub lectures")
   }
 }
 

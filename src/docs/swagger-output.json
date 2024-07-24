@@ -201,7 +201,47 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Update successful, returns the updated user data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "first_name": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Doe"
+                },
+                "about_me": {
+                  "type": "string",
+                  "example": "Hi! My name is John Doe"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "United States"
+                },
+                "join_date": {
+                  "type": "string",
+                  "example": "2022-06-04T00:00:00.000Z"
+                },
+                "job_title": {
+                  "type": "string",
+                  "example": "UI/UX Designer"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "student"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -323,7 +363,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success, returns a list of user objects.",
+            "description": "Success, returns a array of user objects.",
             "schema": {
               "type": "object",
               "properties": {
@@ -338,6 +378,10 @@
                 "last_name": {
                   "type": "string",
                   "example": "Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "johndoe@email.com"
                 },
                 "about_me": {
                   "type": "string",
@@ -690,7 +734,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Success, returns a list of sublecture ids"
+            "description": "Success, returns a array of sublecture ids",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "example": [1,2,3]
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -855,7 +906,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Update a user\\'s account data. User id is obtained from jwt",
+        "description": "Update a user\\'s password. User id is obtained from jwt",
         "parameters": [
           {
             "name": "body",
@@ -893,7 +944,16 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Update successful, returns the new password",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "type": "string",
+                  "example": "hashed-new-password"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -1045,7 +1105,7 @@
         "description": "Get a list of all courses",
         "responses": {
           "200": {
-            "description": "Success, returns a list of course objects.",
+            "description": "Success, returns a array of course objects.",
             "schema": {
               "type": "array",
               "items": {
@@ -1112,7 +1172,7 @@
         "description": "Get a list of all courses without their introductory video",
         "responses": {
           "200": {
-            "description": "Success, returns a list of course objects without their video.",
+            "description": "Success, returns a array of course objects without their video.",
             "schema": {
               "type": "array",
               "items": {
@@ -1415,7 +1475,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns a list of all courses that match the query",
+            "description": "Returns a array of all courses that match the query",
             "schema": {
               "type": "array",
               "items": {

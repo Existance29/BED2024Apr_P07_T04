@@ -192,8 +192,8 @@ class User {
 
     static async updatePassword(id, newPassword){
         await this.query("UPDATE Users SET password = @password WHERE id = @id", {"id":id,"password":newPassword})
-        //return the updated user
-        return this.getUserById(id)
+        //return the updated hashed password
+        return {password: newPassword}
     }
 
     static async addSubLecture(userID, subLectureID){
@@ -248,7 +248,7 @@ class User {
 
         const result = await this.query(sql, {"uid": userID, "cid":courseID})
         //unlike the other get functions, dont return null if its empty. Just return the empty array
-        //return an array containing ints representing the sublecture ids
+        //return an array containing sublecture ids
         return result.recordset.map((x) => x.sub_lecture_id)
     }
 
