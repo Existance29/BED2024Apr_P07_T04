@@ -842,3 +842,25 @@ describe("userController.addSubLecture", () => {
       expect(res.send).toHaveBeenCalledWith("Error adding viewed sub-lecture");
     })
 })
+
+describe("userController.decodeJWT", () => {
+    beforeEach(() => {
+      jest.clearAllMocks(); // Clear mock calls before each test
+      jest.spyOn(console, 'error').mockImplementation(jest.fn())
+    });
+  
+    it("should return a json response with status 200", async () => {
+        const mockData = {userId: 1, role: "student"}
+        const req = {
+            user: mockData
+        }
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn() // Mock the res.json function
+        };
+
+        await userController.decodeJWT(req, res);
+        expect(res.status).toHaveBeenCalledWith(200); // Check the status
+        expect(res.json).toHaveBeenCalledWith(mockData); // Check the response body
+    });
+})
