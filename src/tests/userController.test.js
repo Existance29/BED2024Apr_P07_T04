@@ -782,3 +782,63 @@ describe("userController.getViewedSubLecturesByCourse", () => {
       expect(res.send).toHaveBeenCalledWith("Error getting viewed sub lectures");
     })
 })
+
+describe("userController.addSubLecture", () => {
+    const req = {
+        params: {lid: 1},
+        user: {userId: 1}
+    }
+    beforeEach(() => {
+      jest.clearAllMocks(); // Clear mock calls before each test
+      jest.spyOn(console, 'error').mockImplementation(jest.fn())
+    });
+  
+    it("should mark a sublecture as viewed and return a sucess message with status 201", async () => {
+            
+        //Mock user has not viewed sublecture
+        User.hasViewedSubLecture.mockResolvedValue(false)
+        // Mock the add sublecture model function (returns null)
+        User.addSubLecture(null)
+
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn() // Mock the res.json function
+        };
+
+        await userController.addSubLecture(req, res);
+        expect(User.hasViewedSubLecture).toHaveBeenCalledTimes(1); // Check if model was called
+        expect(User.addSubLecture).toHaveBeenCalledTimes(2); // Check if model was called
+        expect(res.send).toHaveBeenCalledWith("success"); // Check the response body
+    });
+
+    it("should handle cases where user does not exist and return a 404 status with a error message", async () => {
+        // Mock the model function to be null
+        User.getUserById.mockResolvedValue(null)
+    
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn()
+        }
+        //call function
+        await userController.addSubLecture(req, res);
+        //compare status and error message
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.send).toHaveBeenCalledWith("User not found");
+      });
+  
+    it("should handle errors and return a 500 status with error message", async () => {
+      const errorMessage = "Database error"
+      User.getUserById.mockRejectedValue(new Error(errorMessage)); // Simulate an error
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn()
+      }
+
+      //call function
+      await userController.addSubLecture(req, res);
+      //compare status and error message
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.send).toHaveBeenCalledWith("Error adding viewed sub-lecture");
+    })
+})

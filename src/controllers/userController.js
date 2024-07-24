@@ -461,7 +461,7 @@ const addSubLecture = async (req,res) => {
     //still return status 201 anyways, its still a success
     if (await User.hasViewedSubLecture(uid, lid)) return res.status(201).send("user already viewed sub lecture")
     //user has not viewed lecture, add it
-    User.addSubLecture(uid,lid)
+    await User.addSubLecture(uid,lid)
     res.status(201).send("success");
   } catch (error) {
     console.error("Error adding viewed sub-lecture:", error);
