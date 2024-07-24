@@ -1,0 +1,20 @@
+main{
+    background-color: #32CB94;
+    background-image: url('../assets/general/pattern-bg-full.png');
+    padding: 5vw 11%;
+}
+
+.container{
+    background: white;
+    border-radius: 20px;
+    height: 200px;
+    width: 100%;
+}
+
+.card {
+    margin-top: 20px;
+}
+
+textarea {
+    resize: none;
+}
