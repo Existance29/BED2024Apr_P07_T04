@@ -159,8 +159,11 @@ class Course {
             await transaction.begin();
             const request = transaction.request();
     
-            // Delete all sub-lectures associated with the course
+            // Delete all entries in User_Completed_Courses associated with the course
             await request.input("courseID", sql.Int, courseID);
+            await request.query(`DELETE FROM User_Completed_Courses WHERE course_id = @courseID`);
+    
+            // Delete all sub-lectures associated with the course
             await request.query(`
                 DELETE FROM SubLectures
                 WHERE LectureID IN (SELECT LectureID FROM CourseLectures WHERE CourseID = @courseID)
@@ -192,7 +195,7 @@ class Course {
             connection.close();
         }
     }
-
+    
     static async searchCourses(searchTerm) {
         const connection = await sql.connect(dbConfig);
         try {
