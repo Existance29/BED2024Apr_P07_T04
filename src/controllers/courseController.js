@@ -79,7 +79,7 @@ const createCourse = async (req, res) => {
                 console.log("Uploads folder deleted successfully.");
                 // Recreate the uploads folder
                 fs.mkdirSync(uploadDir, { recursive: true });
-                console.log("Uploads folder recreated successfully.");
+                //console.log("Uploads folder recreated successfully.");
             }
         });
 

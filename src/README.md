@@ -1,6 +1,3 @@
-**Important** 
-All of the project files are in the src directory. Make sure to cd into it before running any commands
-
 ## Project Setup
 
 ### Installing node modules
