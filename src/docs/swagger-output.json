@@ -2947,6 +2947,45 @@
           }
         }
       }
+    },
+    "/quizzes/{:id}": {
+      "delete": {
+        "description": "Delete a quiz. Limited to lecturers only",
+        "tags": ["Quizzes"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "id of the quiz to delete"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success, quiz deleted"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+
+      }
     }
   }
 }

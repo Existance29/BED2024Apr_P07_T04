@@ -39,6 +39,48 @@ class Quiz {
         const result = await request.query(queryString);
         return result;
     }
+    
+    static async createQuiz(newQuizData) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `
+            INSERT INTO Quizzes (title, description, totalQuestions, totalMarks, duration, maxAttempts)
+            VALUES (@title, @description, @totalQuestions, @totalMarks, @duration, @maxAttempts);
+            SELECT SCOPE_IDENTITY() AS id;
+        `;
+
+        const request = connection.request();
+        request.input("title", sql.VarChar, newQuizData.title);
+        request.input("description", sql.VarChar, newQuizData.description);
+        request.input("totalQuestions", sql.Int, newQuizData.totalQuestions);
+        request.input("totalMarks", sql.Int, newQuizData.totalMarks);
+        request.input("duration", sql.Int, newQuizData.duration);
+        request.input("maxAttempts", sql.Int, newQuizData.maxAttempts);
+
+        const result = await request.query(sqlQuery);
+        connection.close();
+
+        return this.getQuizById(result.recordset[0].id);
+    }
+
+    static async createQuizQuestion(newQuizQuestionData) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `
+            INSERT INTO Questions (quizId, text, options, correctAnswer)
+            VALUES (@quizId, @text, @options, @correctAnswer);
+            SELECT SCOPE_IDENTITY() AS id;
+        `;
+
+        const request = connection.request();
+        request.input("quizId", sql.Int, newQuizQuestionData.quizId);
+        request.input("text", sql.VarChar, newQuizQuestionData.text);
+        request.input("options", sql.NVarChar, newQuizQuestionData.options);
+        request.input("correctAnswer", sql.Int, newQuizQuestionData.correctAnswer);
+
+        const result = await request.query(sqlQuery);
+        connection.close();
+
+        return this.getQuizQuestions(result.recordset[0].id);
+    }
 
     static async getAllQuizzes() {
         const result = (await this.query("SELECT * FROM Quizzes")).recordset;
