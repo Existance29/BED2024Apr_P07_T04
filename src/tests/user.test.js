@@ -1,5 +1,8 @@
 // user.test.js
 const User = require("../models/user");
+const fs = require('fs')
+//mock fs
+jest.mock("fs")
 
 describe("User.getAllUsers", () => {
   beforeEach(() => {
@@ -276,6 +279,51 @@ describe("User.getUserByEmail", () => {
       //check the results
       expect(User.query).toHaveBeenCalled()
       expect(result).toEqual(mockData[0])
+    })
+  
+    it("should return null when user is not found", async () => {
+      const mockData = []
+  
+      //mock the query to return the mssql results
+      User.query = jest.fn().mockResolvedValue({recordset: mockData})
+  
+      const result = await User.getUserByEmail("email") //get the output from the test function
+  
+      //check the results
+      expect(User.query).toHaveBeenCalled()
+      expect(result).toBeNull()
+    });
+})
+
+describe("User.createUser", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+  
+    it("should create a user into the database", async () => {
+      const mockData = {
+            "id": 1,
+            "first_name": "John",
+            "last_name": "Doe",
+            "about_me": "Hi! My name is John Doe",
+            "country": "United States",
+            "join_date": "2022-06-04T00:00:00.000Z",
+            "job_title": "UI/UX Designer",
+            "role": "student",
+            "email": "johndoe@gmail.com",
+            "password": "hash-password-1"
+          }
+  
+      //mock the query to return the mssql results
+      User.query = jest.fn().mockResolvedValue({recordset: [{id:mockData.id}]})
+      fs.readFileSync.mockResolvedValue("base-64-img")
+      User.getUserById = jest.fn().mockResolvedValue(mockData)
+    
+      const result = await User.createUser(mockData) //get the output from the test function
+  
+      //check the results
+      expect(User.query).toHaveBeenCalled()
+      expect(result).toEqual(mockData)
     })
   
     it("should return null when user is not found", async () => {
