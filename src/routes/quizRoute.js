@@ -2,6 +2,8 @@ const quizController = require('../controllers/quizController');
 const authenticateToken = require('../middlewares/authenticateToken');
 
 const quizRoute = (app) => {
+    app.post("/quizzes", authenticateToken, quizController.createQuiz);
+    app.post("/quizzes/:quizId/questions", authenticateToken, quizController.createQuizQuestion);
     app.get("/quizzes", quizController.getAllQuizzes);
     app.get("/quizzes/:quizId", quizController.getQuizById);
     app.get("/quizzes/:quizId/questions", quizController.getQuizQuestions);

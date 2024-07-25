@@ -1,5 +1,69 @@
 const Quiz = require("../models/quiz");
 
+const createQuiz = async (req, res) => {
+    try {
+        const { title, description, totalQuestions, totalMarks, duration, maxAttempts } = req.body;
+
+        if (!title || !description || !totalQuestions || !totalMarks || !duration || !maxAttempts) {
+            console.log("Missing fields:", { title, description, totalQuestions, totalMarks, duration, maxAttempts });
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const newQuizData = {
+            title,
+            description,
+            totalQuestions: parseInt(totalQuestions),
+            totalMarks: parseInt(totalMarks),
+            duration: parseInt(duration),
+            maxAttempts: parseInt(maxAttempts),
+        };
+
+        const createdQuiz = await Quiz.createQuiz(newQuizData);
+
+        res.status(201).json(createdQuiz);
+    } catch (error) {
+        console.error("Error creating quiz:", error);
+        res.status(500).json({ message: "Error creating quiz", error: error.message });
+    }
+};
+
+const createQuizQuestion = async (req, res) => {
+    const quizId = parseInt(req.params.quizId);
+    const { questions } = req.body;
+
+    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+        console.log("Missing or invalid questions array");
+        return res.status(400).json({ message: "Missing or invalid questions array" });
+    }
+
+    try {
+        const createdQuestions = [];
+        for (const question of questions) {
+            const { text, options, correctAnswer } = question;
+
+            if (!text || !options || correctAnswer === undefined) {
+                console.log("Missing fields:", { text, options, correctAnswer });
+                return res.status(400).json({ message: "Missing required fields" });
+            }
+
+            const newQuestionData = {
+                quizId: quizId,
+                text,
+                options: JSON.stringify(options),
+                correctAnswer: parseInt(correctAnswer)
+            };
+
+            const createdQuestion = await Quiz.createQuizQuestion(newQuestionData);
+            createdQuestions.push(createdQuestion);
+        }
+
+        res.status(201).json({ questions: createdQuestions });
+    } catch (error) {
+        console.error("Error creating quiz questions:", error);
+        res.status(500).json({ message: "Error creating quiz questions", error: error.message });
+    }
+};
+
 const getAllQuizzes = async (req, res) => {
     try {
         const quizzes = await Quiz.getAllQuizzes();
@@ -110,5 +174,7 @@ module.exports = {
     getQuizResult,
     canAttemptQuiz,
     getUserQuizResults,
-    deleteQuiz 
+    deleteQuiz,
+    createQuiz,
+    createQuizQuestion 
 };

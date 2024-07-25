@@ -1,0 +1,28 @@
+main{
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-style: normal;
+  }
+
+h2{
+    font-size: 1.9vw !important;
+    font-weight:600 !important;
+}
+
+#quizForm{
+    background-color: #fff;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    align-items: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+#quizForm input, #quizForm textarea {
+    background: #dadada;
+}
+
+#quizForm label{
+    font-size: 1.5vw;
+    font-weight: 500;
+}
