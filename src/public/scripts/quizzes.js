@@ -37,9 +37,12 @@ function displayQuizzes(quizzes) {
         const quizDiv = document.createElement('div');
         quizDiv.className = 'quiz';
 
-        const deleteButton = (role === 'lecturer') ? `
+        const buttons = (role === 'lecturer') ? `
         <button class="delete-btn btn section-text" type="button" onclick="confirmDeleteQuiz('${quiz.id}')" style="border-radius: 25px; margin-top: 10px; background-color: red; color: white;">
            <img src="assets/lectures/delete.png" alt="Delete" style="width: 25px; height: 25px;">
+        </button>
+        <button class="edit-btn btn section-text" type="button" onclick="redirectToEditQuiz('${quiz.id}')" style="border-radius: 25px; margin-top: 10px; background-color: #245D51; color: white;">
+           <img src="assets/lectures/edit-button.png" alt="Edit"  style="width: 25px; height: 25px;">
         </button>
         ` : '';
 
@@ -54,7 +57,7 @@ function displayQuizzes(quizzes) {
                 <div class="col-md-2 text-end">
                     <a href="quizDetails.html?quizId=${quiz.id}" class="quiz-btn btn section-text" type="button" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Start</a>
                     <br>
-                    ${deleteButton}
+                    ${buttons}
                 </div>
             </div>
         `;
@@ -69,6 +72,11 @@ function confirmDeleteQuiz(quizId) {
         deleteQuiz(quizId);
     }
 }
+
+function redirectToEditQuiz(quizId) {
+    window.location.href = `edit-quiz.html?quizId=${quizId}`;
+}
+
 
 async function deleteQuiz(quizId) {
     try {

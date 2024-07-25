@@ -3,6 +3,8 @@ const authenticateToken = require('../middlewares/authenticateToken');
 
 const quizRoute = (app) => {
     app.post("/quizzes", authenticateToken, quizController.createQuiz);
+    app.put("/quizzes/:quizId", authenticateToken, quizController.updateQuiz);
+    app.put("/quizzes/:quizId/questions", authenticateToken, quizController.updateQuizQuestions);
     app.post("/quizzes/:quizId/questions", authenticateToken, quizController.createQuizQuestion);
     app.get("/quizzes", quizController.getAllQuizzes);
     app.get("/quizzes/:quizId", quizController.getQuizById);

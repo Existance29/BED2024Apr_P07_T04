@@ -151,6 +151,53 @@ const getUserQuizResults = async (req, res) => {
         res.status(500).send("Error fetching user quiz results");
     }
 };
+const updateQuiz = async (req, res) => {
+    try {
+        const quizId = parseInt(req.params.quizId);
+        const { title, description, totalQuestions, totalMarks, duration, maxAttempts } = req.body;
+
+        if (!title || !description || !totalQuestions || !totalMarks || !duration || !maxAttempts) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const updatedQuizData = {
+            title,
+            description,
+            totalQuestions: parseInt(totalQuestions),
+            totalMarks: parseInt(totalMarks),
+            duration: parseInt(duration),
+            maxAttempts: parseInt(maxAttempts)
+        };
+
+        const updatedQuiz = await Quiz.updateQuiz(quizId, updatedQuizData);
+
+        res.status(200).json(updatedQuiz);
+    } catch (error) {
+        console.error("Error updating quiz:", error);
+        res.status(500).json({ message: "Error updating quiz", error: error.message });
+    }
+};
+
+const updateQuizQuestions = async (req, res) => {
+    const quizId = parseInt(req.params.quizId);
+    const { questions } = req.body;
+
+    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+        console.log("Missing or invalid questions array");
+        return res.status(400).json({ message: "Missing or invalid questions array" });
+    }
+
+    try {
+        console.log('Received questions for updating:', questions); // Log received questions
+        await Quiz.updateQuizQuestions(quizId, questions);
+        res.status(200).json({ message: 'Questions updated successfully' });
+    } catch (error) {
+        console.error("Error updating quiz questions:", error);
+        res.status(500).json({ message: "Error updating quiz questions", error: error.message });
+    }
+};
+
+
 
 const deleteQuiz = async (req, res) => {
     const id = parseInt(req.params.id);
@@ -176,5 +223,7 @@ module.exports = {
     getUserQuizResults,
     deleteQuiz,
     createQuiz,
-    createQuizQuestion 
+    createQuizQuestion ,
+    updateQuiz,
+    updateQuizQuestions
 };
