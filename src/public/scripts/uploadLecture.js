@@ -1,49 +1,53 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Retrieve the access token and role from session storage or local storage
     const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
     const role = sessionStorage.getItem("role") || localStorage.getItem("role");
-    const params = new URLSearchParams(window.location.search);
-    const courseID = params.get('courseID');
+    const params = new URLSearchParams(window.location.search); // Parse URL parameters
+    const courseID = params.get('courseID'); // Get the course ID from the URL
 
-    console.log('Course ID from URL:', courseID);
+    console.log('Course ID from URL:', courseID); // Log the course ID
 
+    // Add event listeners to the lecture and sub-lecture upload forms
     document.getElementById('lectureUploadForm').addEventListener('submit', handleLectureSubmit);
     document.getElementById('subLectureUploadForm').addEventListener('submit', handleSubLectureSubmit);
     document.getElementById('finishButton').addEventListener('click', function() {
-        window.location.href = `course-chapters.html?courseID=${courseID}`;
+        window.location.href = `course-chapters.html?courseID=${courseID}`; // Redirect to the course chapters page
     });
 
+    // Handle lecture form submission
     async function handleLectureSubmit(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent the default form submission behavior
 
-        const form = document.getElementById('lectureUploadForm');
-        const formData = new FormData(form);
+        const form = document.getElementById('lectureUploadForm'); // Get the lecture upload form element
+        const formData = new FormData(form); // Create a FormData object from the form
 
-        // Log formData for debugging
+        // Log form data for debugging
         for (let [key, value] of formData.entries()) {
             console.log(key, value);
         }
 
         try {
+            // Send a POST request to upload the lecture
             const lectureResponse = await fetch('/lectures', {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`, // Include the access token in the headers
                 }
             });
 
-            const responseText = await lectureResponse.text();
-            console.log('Raw response from server:', responseText);
+            const responseText = await lectureResponse.text(); // Get the raw response text
+            console.log('Raw response from server:', responseText); // Log the raw response
 
             if (!lectureResponse.ok) {
-                const errorData = JSON.parse(responseText);
-                console.error('Error response from server:', errorData);
-                alert(`Error uploading lecture: ${errorData.message}`);
+                const errorData = JSON.parse(responseText); // Parse the error response
+                console.error('Error response from server:', errorData); // Log the error
+                alert(`Error uploading lecture: ${errorData.message}`); // Display an alert with the error message
                 return;
             }
 
-            const lectureResult = JSON.parse(responseText);
-            console.log('Lecture response from server:', lectureResult);
+            const lectureResult = JSON.parse(responseText); // Parse the successful response
+            console.log('Lecture response from server:', lectureResult); // Log the response
 
             // Set the lectureID for the sub-lecture form
             document.getElementById('lectureID').value = lectureResult.lectureID;
@@ -53,45 +57,47 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('subLectureUploadForm').style.display = 'block';
             alert('Lecture uploaded successfully! Now you can upload sub-lectures.');
         } catch (error) {
-            console.error('Error uploading lecture:', error);
-            alert('Failed to upload lecture: ' + error.message);
+            console.error('Error uploading lecture:', error); // Log the error
+            alert('Failed to upload lecture: ' + error.message); // Display an alert with the error message
         }
     }
 
+    // Handle sub-lecture form submission
     async function handleSubLectureSubmit(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent the default form submission behavior
 
-        const form = document.getElementById('subLectureUploadForm');
-        const formData = new FormData(form);
+        const form = document.getElementById('subLectureUploadForm'); // Get the sub-lecture upload form element
+        const formData = new FormData(form); // Create a FormData object from the form
 
-        // Log formData for debugging
+        // Log form data for debugging
         for (let [key, value] of formData.entries()) {
             console.log(key, value);
         }
 
-        const lectureID = formData.get('lectureID');
+        const lectureID = formData.get('lectureID'); // Get the lecture ID from the form data
 
         try {
+            // Send a POST request to upload the sub-lecture
             const subLectureResponse = await fetch(`/lectures/${lectureID}/sublectures`, {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`, // Include the access token in the headers
                 }
             });
 
-            const responseText = await subLectureResponse.text();
-            console.log('Raw response from server:', responseText);
+            const responseText = await subLectureResponse.text(); // Get the raw response text
+            console.log('Raw response from server:', responseText); // Log the raw response
 
             if (!subLectureResponse.ok) {
-                const errorData = JSON.parse(responseText);
-                console.error('Error response from server:', errorData);
-                alert(`Error uploading sub-lecture: ${errorData.message}`);
+                const errorData = JSON.parse(responseText); // Parse the error response
+                console.error('Error response from server:', errorData); // Log the error
+                alert(`Error uploading sub-lecture: ${errorData.message}`); // Display an alert with the error message
                 return;
             }
 
-            const subLectureResult = JSON.parse(responseText);
-            console.log('Sub-lecture response from server:', subLectureResult);
+            const subLectureResult = JSON.parse(responseText); // Parse the successful response
+            console.log('Sub-lecture response from server:', subLectureResult); // Log the response
 
             alert('Sub-lecture uploaded successfully! You can add another one or finish.');
 
@@ -99,14 +105,14 @@ document.addEventListener('DOMContentLoaded', function () {
             form.reset();
             document.getElementById('finishButton').style.display = 'block';
         } catch (error) {
-            console.error('Error uploading sub-lecture:', error);
-            alert('Failed to upload sub-lecture: ' + error.message);
+            console.error('Error uploading sub-lecture:', error); // Log the error
+            alert('Failed to upload sub-lecture: ' + error.message); // Display an alert with the error message
         }
     }
 
     // Retrieve the courseID from the URL and set it in the form
     if (courseID) {
-        console.log('Course ID from URL:', courseID);
-        document.getElementById('courseID').value = courseID;
+        console.log('Course ID from URL:', courseID); // Log the course ID
+        document.getElementById('courseID').value = courseID; // Set the course ID in the form
     }
 });

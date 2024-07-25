@@ -1,105 +1,113 @@
 const sql = require("mssql");
 const dbConfig = require("../database/dbConfig");
 
+// Define the Lecture class to manage lecture-related data
 class Lecture {
+    // Constructor to initialize a new Lecture instance
     constructor(lectureID, name, description, category, duration) {
-        this.lectureID = lectureID;
-        this.name = name;
-        this.description = description;
-        this.category = category;
-        this.duration = duration;
+        this.lectureID = lectureID;      // ID of the lecture
+        this.name = name;                // Name of the lecture
+        this.description = description;  // Description of the lecture
+        this.category = category;        // Category of the lecture
+        this.duration = duration;        // Duration of the lecture in minutes
     }
 
+    // Method to create a new lecture in the database
     static async createLecture(newLectureData) {
-        const connection = await sql.connect(dbConfig);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
         const sqlQuery = `
             INSERT INTO Lectures (Name, Description, Category, Duration)
             VALUES (@name, @description, @category, @duration);
             SELECT SCOPE_IDENTITY() AS LectureID;
-        `;
+        `;  // SQL query to insert a new lecture and return the new lecture ID
 
         const request = connection.request();
-        request.input("name", sql.NVarChar, newLectureData.name);
-        request.input("description", sql.NVarChar, newLectureData.description);
-        request.input("category", sql.NVarChar, newLectureData.category);
-        request.input("duration", sql.Int, newLectureData.duration);
+        request.input("name", sql.NVarChar, newLectureData.name);  // Set name input parameter
+        request.input("description", sql.NVarChar, newLectureData.description);  // Set description input parameter
+        request.input("category", sql.NVarChar, newLectureData.category);  // Set category input parameter
+        request.input("duration", sql.Int, newLectureData.duration);  // Set duration input parameter
 
-        const result = await request.query(sqlQuery);
-        connection.close();
+        const result = await request.query(sqlQuery);  // Execute the SQL query
+        connection.close();  // Close the database connection
 
-        return this.getLectureById(result.recordset[0].LectureID);
+        return this.getLectureById(result.recordset[0].LectureID);  // Retrieve and return the newly created lecture by its ID
     }
 
+    // Method to create a new sub-lecture in the database
     static async createSubLecture(newSubLectureData) {
-        const connection = await sql.connect(dbConfig);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
         const sqlQuery = `
             INSERT INTO SubLectures (LectureID, Name, Description, Duration, Video)
             VALUES (@lectureID, @name, @description, @duration, @video);
             SELECT SCOPE_IDENTITY() AS SubLectureID;
-        `;
+        `;  // SQL query to insert a new sub-lecture and return the new sub-lecture ID
 
         const request = connection.request();
-        request.input("lectureID", sql.Int, newSubLectureData.lectureID);
-        request.input("name", sql.NVarChar, newSubLectureData.name);
-        request.input("description", sql.NVarChar, newSubLectureData.description);
-        request.input("duration", sql.Int, newSubLectureData.duration);
-        request.input("video", sql.VarBinary, newSubLectureData.video);
+        request.input("lectureID", sql.Int, newSubLectureData.lectureID);  // Set lectureID input parameter
+        request.input("name", sql.NVarChar, newSubLectureData.name);  // Set name input parameter
+        request.input("description", sql.NVarChar, newSubLectureData.description);  // Set description input parameter
+        request.input("duration", sql.Int, newSubLectureData.duration);  // Set duration input parameter
+        request.input("video", sql.VarBinary, newSubLectureData.video);  // Set video input parameter
 
-        const result = await request.query(sqlQuery);
-        connection.close();
+        const result = await request.query(sqlQuery);  // Execute the SQL query
+        connection.close();  // Close the database connection
 
-        return this.getSubLectureById(newSubLectureData.lectureID, result.recordset[0].SubLectureID);
+        return this.getSubLectureById(newSubLectureData.lectureID, result.recordset[0].SubLectureID);  // Retrieve and return the newly created sub-lecture by its ID
     }
 
+    // Method to link a lecture to a course in the database
     static async linkLectureToCourse(lectureID, courseID) {
-        const connection = await sql.connect(dbConfig);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
         const sqlQuery = `
             INSERT INTO CourseLectures (CourseID, LectureID)
             VALUES (@courseID, @lectureID);
-        `;
+        `;  // SQL query to link a lecture to a course
 
         const request = connection.request();
-        request.input("courseID", sql.Int, courseID);
-        request.input("lectureID", sql.Int, lectureID);
+        request.input("courseID", sql.Int, courseID);  // Set courseID input parameter
+        request.input("lectureID", sql.Int, lectureID);  // Set lectureID input parameter
 
-        await request.query(sqlQuery);
-        connection.close();
+        await request.query(sqlQuery);  // Execute the SQL query
+        connection.close();  // Close the database connection
     }
 
+    // Method to retrieve all lectures from the database
     static async getAllLectures() {
-        const connection = await sql.connect(dbConfig);
-        const sqlQuery = `SELECT * FROM Lectures`;
+        const connection = await sql.connect(dbConfig);  // Connect to the database
+        const sqlQuery = `SELECT * FROM Lectures`;  // SQL query to select all lectures
 
         const request = connection.request();
-        const result = await request.query(sqlQuery);
+        const result = await request.query(sqlQuery);  // Execute the SQL query
 
-        connection.close();
+        connection.close();  // Close the database connection
         return result.recordset.map(
             (row) => new Lecture(row.LectureID, row.Name, row.Description, row.Category, row.Duration)
-        );
+        );  // Map each row to a new Lecture instance and return the array of lectures
     }
 
+    // Method to retrieve a lecture by its ID from the database
     static async getLectureById(lectureID) {
-        const connection = await sql.connect(dbConfig);
-        const sqlQuery = `SELECT * FROM Lectures WHERE LectureID = @lectureID`;
+        const connection = await sql.connect(dbConfig);  // Connect to the database
+        const sqlQuery = `SELECT * FROM Lectures WHERE LectureID = @lectureID`;  // SQL query to select a lecture by its ID
 
         const request = connection.request();
-        request.input("lectureID", sql.Int, lectureID);
+        request.input("lectureID", sql.Int, lectureID);  // Set lectureID input parameter
 
-        const result = await request.query(sqlQuery);
+        const result = await request.query(sqlQuery);  // Execute the SQL query
 
-        connection.close();
+        connection.close();  // Close the database connection
 
-        if (result.recordset.length === 0) {
-            return null;
+        if (result.recordset.length === 0) {  // Check if the lecture was found
+            return null;  // Return null if no lecture was found
         }
         return result.recordset.map(
             (row) => new Lecture(row.LectureID, row.Name, row.Description, row.Category, row.Duration)
-        )[0];
+        )[0];  // Return the found lecture as a new Lecture instance
     }
 
+    // Method to update a lecture in the database
     static async updateLecture(lectureID, newLectureData) {
-        const connection = await sql.connect(dbConfig);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
         const sqlQuery = `
             UPDATE Lectures SET
                 Name = @name,
@@ -107,52 +115,52 @@ class Lecture {
                 Category = @category,
                 Duration = @duration
             WHERE LectureID = @lectureID;
-        `;
+        `;  // SQL query to update the lecture with the specified fields
 
         const request = connection.request();
-        request.input("lectureID", sql.Int, lectureID);
-        request.input("name", sql.NVarChar, newLectureData.name || null);
-        request.input("description", sql.NVarChar, newLectureData.description || null);
-        request.input("category", sql.NVarChar, newLectureData.category || null);
-        request.input("duration", sql.Int, newLectureData.duration || null);
+        request.input("lectureID", sql.Int, lectureID);  // Set lectureID input parameter
+        request.input("name", sql.NVarChar, newLectureData.name || null);  // Set name input parameter
+        request.input("description", sql.NVarChar, newLectureData.description || null);  // Set description input parameter
+        request.input("category", sql.NVarChar, newLectureData.category || null);  // Set category input parameter
+        request.input("duration", sql.Int, newLectureData.duration || null);  // Set duration input parameter
 
-        await request.query(sqlQuery);
+        await request.query(sqlQuery);  // Execute the SQL query
 
-        connection.close();
-        return this.getLectureById(lectureID);
+        connection.close();  // Close the database connection
+        return this.getLectureById(lectureID);  // Retrieve and return the updated lecture by its ID
     }
-    
+
+    // Method to update a sub-lecture in the database
     static async updateSubLecture(lectureID, subLectureID, newSubLectureData) {
-        const connection = await sql.connect(dbConfig);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
         const sqlQuery = `
             UPDATE SubLectures SET
                 Name = @name,
                 Description = @description,
                 Duration = @duration
             WHERE LectureID = @lectureID AND SubLectureID = @subLectureID;
-        `;
+        `;  // SQL query to update the sub-lecture with the specified fields
     
         const request = connection.request();
-        request.input("lectureID", sql.Int, lectureID);
-        request.input("subLectureID", sql.Int, subLectureID);
-        request.input("name", sql.NVarChar, newSubLectureData.name || null);
-        request.input("description", sql.NVarChar, newSubLectureData.description || null);
-        request.input("duration", sql.Int, newSubLectureData.duration || null);
+        request.input("lectureID", sql.Int, lectureID);  // Set lectureID input parameter
+        request.input("subLectureID", sql.Int, subLectureID);  // Set subLectureID input parameter
+        request.input("name", sql.NVarChar, newSubLectureData.name || null);  // Set name input parameter
+        request.input("description", sql.NVarChar, newSubLectureData.description || null);  // Set description input parameter
+        request.input("duration", sql.Int, newSubLectureData.duration || null);  // Set duration input parameter
     
-        await request.query(sqlQuery);
+        await request.query(sqlQuery);  // Execute the SQL query
     
-        connection.close();
-        return this.getSubLectureById(lectureID, subLectureID);
+        connection.close();  // Close the database connection
+        return this.getSubLectureById(lectureID, subLectureID);  // Retrieve and return the updated sub-lecture by its ID
     }
-    
 
+    // Method to delete a lecture from the database
     static async deleteLecture(lectureID) {
-        const connection = await sql.connect(dbConfig);
-        const transaction = new sql.Transaction(connection);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
+        const transaction = new sql.Transaction(connection);  // Begin a new transaction
         
         try {
-            // Start a transaction
-            await transaction.begin();
+            await transaction.begin();  // Start the transaction
             const request = transaction.request();
         
             // Delete all references in the User_Sub_Lectures table
@@ -175,29 +183,26 @@ class Lecture {
             // Finally, delete the lecture itself
             await request.query(`DELETE FROM Lectures WHERE LectureID = @lectureID`);
             
-            // Commit the transaction
-            await transaction.commit();
+            await transaction.commit();  // Commit the transaction
         
-            return true;
+            return true;  // Return true to indicate success
         } catch (error) {
-            // If there's an error, rollback the transaction
             if (transaction) {
-                await transaction.rollback();
+                await transaction.rollback();  // Rollback the transaction in case of error
             }
-            throw error;
+            throw error;  // Throw the error
         } finally {
-            connection.close();
+            connection.close();  // Close the database connection
         }
     }
-    
 
+    // Method to delete a sub-lecture from the database
     static async deleteSubLecture(lectureID, subLectureID) {
-        const connection = await sql.connect(dbConfig);
-        const transaction = new sql.Transaction(connection);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
+        const transaction = new sql.Transaction(connection);  // Begin a new transaction
         
         try {
-            // Start a transaction
-            await transaction.begin();
+            await transaction.begin();  // Start the transaction
             const request = transaction.request();
         
             // Delete references in the User_Sub_Lectures table
@@ -208,45 +213,44 @@ class Lecture {
             await request.input("lectureID", sql.Int, lectureID);
             await request.query(`DELETE FROM SubLectures WHERE LectureID = @lectureID AND SubLectureID = @subLectureID`);
             
-            // Commit the transaction
-            await transaction.commit();
+            await transaction.commit();  // Commit the transaction
         
-            return true;
+            return true;  // Return true to indicate success
         } catch (error) {
-            // If there's an error, rollback the transaction
             if (transaction) {
-                await transaction.rollback();
+                await transaction.rollback();  // Rollback the transaction in case of error
             }
-            throw error;
+            throw error;  // Throw the error
         } finally {
-            connection.close();
+            connection.close();  // Close the database connection
         }
     }
-    
 
+    // Method to search for lectures in the database
     static async searchLectures(searchTerm) {
-        const connection = await sql.connect(dbConfig);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
         try {
             const sqlQuery = `
                 SELECT * FROM Lectures
                 WHERE Name LIKE '%${searchTerm}%'
                 OR Description LIKE '%${searchTerm}%'
-            `;
+            `;  // SQL query to search for lectures based on the search term
 
             const request = connection.request();
-            const result = await request.query(sqlQuery);
+            const result = await request.query(sqlQuery);  // Execute the SQL query
             return result.recordset.map(
                 (row) => new Lecture(row.LectureID, row.Name, row.Description, row.Category, row.Duration)
-            );
+            );  // Map each row to a new Lecture instance and return the array of lectures
         } catch (error) {
-            throw new Error("Error searching lectures");
+            throw new Error("Error searching lectures");  // Throw an error if the search operation fails
         } finally {
-            await connection.close();
+            await connection.close();  // Close the database connection
         }
     }
 
+    // Method to retrieve a course with its lectures and sub-lectures from the database
     static async getCourseWithLecture(courseID) {
-        const connection = await sql.connect(dbConfig);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
         try {
             const sqlQuery = `
                 SELECT 
@@ -262,11 +266,11 @@ class Lecture {
                 LEFT JOIN SubLectures sl ON l.LectureID = sl.LectureID
                 WHERE c.CourseID = @courseID
                 ORDER BY l.LectureID, sl.SubLectureID;
-            `;
+            `;  // SQL query to retrieve a course with its lectures and sub-lectures
     
             const request = connection.request();
-            request.input("courseID", sql.Int, courseID);
-            const result = await request.query(sqlQuery);
+            request.input("courseID", sql.Int, courseID);  // Set courseID input parameter
+            const result = await request.query(sqlQuery);  // Execute the SQL query
     
             // Group courses, lectures, and sub-lectures
             const coursesWithLectures = {};
@@ -312,17 +316,17 @@ class Lecture {
                 coursesWithLectures[courseID].lectures = Object.values(coursesWithLectures[courseID].lectures);
             }
     
-            return Object.values(coursesWithLectures);
+            return Object.values(coursesWithLectures);  // Return the grouped courses with lectures and sub-lectures
         } catch (error) {
-            throw new Error("Error fetching course with lectures");
+            throw new Error("Error fetching course with lectures");  // Throw an error if the fetch operation fails
         } finally {
-            await connection.close();
+            await connection.close();  // Close the database connection
         }
     }
-    
 
+    // Method to retrieve a course with its lectures and sub-lectures (without videos) from the database
     static async getCourseWithLectureWithoutVideo(courseID) {
-        const connection = await sql.connect(dbConfig);
+        const connection = await sql.connect(dbConfig);  // Connect to the database
         try {
             const sqlQuery = `
                 SELECT 
@@ -338,11 +342,11 @@ class Lecture {
                 LEFT JOIN SubLectures sl ON l.LectureID = sl.LectureID
                 WHERE c.CourseID = @courseID
                 ORDER BY l.LectureID, sl.SubLectureID;
-            `;
+            `;  // SQL query to retrieve a course with its lectures and sub-lectures without videos
     
             const request = connection.request();
-            request.input("courseID", sql.Int, courseID);
-            const result = await request.query(sqlQuery);
+            request.input("courseID", sql.Int, courseID);  // Set courseID input parameter
+            const result = await request.query(sqlQuery);  // Execute the SQL query
     
             // Group courses, lectures, and sub-lectures
             const coursesWithLectures = {};
@@ -387,31 +391,33 @@ class Lecture {
                 coursesWithLectures[courseID].lectures = Object.values(coursesWithLectures[courseID].lectures);
             }
     
-            return Object.values(coursesWithLectures);
+            return Object.values(coursesWithLectures);  // Return the grouped courses with lectures and sub-lectures without videos
         } catch (error) {
-            throw new Error("Error fetching course with lectures without video");
+            throw new Error("Error fetching course with lectures without video");  // Throw an error if the fetch operation fails
         } finally {
-            await connection.close();
+            await connection.close();  // Close the database connection
         }
-    }    
+    }
 
+    // Method to retrieve a sub-lecture by its ID from the database
     static async getSubLectureById(lectureID, subLectureID) {
-        const connection = await sql.connect(dbConfig);
-        const sqlQuery = `SELECT * FROM SubLectures WHERE LectureID = @lectureID AND SubLectureID = @subLectureID`;
+        const connection = await sql.connect(dbConfig);  // Connect to the database
+        const sqlQuery = `SELECT * FROM SubLectures WHERE LectureID = @lectureID AND SubLectureID = @subLectureID`;  // SQL query to select a sub-lecture by its ID
 
         const request = connection.request();
-        request.input("lectureID", sql.Int, lectureID);
-        request.input("subLectureID", sql.Int, subLectureID);
+        request.input("lectureID", sql.Int, lectureID);  // Set lectureID input parameter
+        request.input("subLectureID", sql.Int, subLectureID);  // Set subLectureID input parameter
 
-        const result = await request.query(sqlQuery);
+        const result = await request.query(sqlQuery);  // Execute the SQL query
 
-        connection.close();
+        connection.close();  // Close the database connection
 
-        if (result.recordset.length === 0) {
-            return null;
+        if (result.recordset.length === 0) {  // Check if the sub-lecture was found
+            return null;  // Return null if no sub-lecture was found
         }
-        return result.recordset[0];
+        return result.recordset[0];  // Return the found sub-lecture
     }
 }
 
+// Export the Lecture class to be used in other modules
 module.exports = Lecture;
