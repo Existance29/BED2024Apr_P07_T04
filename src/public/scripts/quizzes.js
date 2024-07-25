@@ -1,11 +1,11 @@
-//Check if user is logged in before loading content
-//if user is not logged in, redirect them to login screen
-//Dont wait for content to load, redirect asap
-guardLoginPage()
+// Check if user is logged in before loading content
+// If user is not logged in, redirect them to login screen
+// Don't wait for content to load, redirect asap
+guardLoginPage();
 
 async function fetchQuizzes() {
     try {
-        const response = await fetch('http://localhost:3000/quizzes');
+        const response = await get('http://localhost:3000/quizzes');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -39,17 +39,12 @@ function displayQuizzes(quizzes) {
     });
 }
 
-//to jung sek: I removed the getUserID function, its not required.
-//as long as your html includes common.js, quizzes.js can access the functions in it
 function redirectToQuizResults() {
-    const userId = getUserID();
-    if (userId) {
-        window.location.href = `view-grades.html?userId=${userId}`;
+    if (accessToken) {
+        window.location.href = `view-grades.html`;
     } else {
         alert("User not logged in. Please log in to view your quiz results.");
     }
 }
 
-
 fetchQuizzes();
-

@@ -8,12 +8,12 @@ async function loadNavBar(){
     const loggedIn = await isLoggedIn()
     if (loggedIn){
         document.getElementById("profile").style.display = "block" 
-        const userid = getUserID()
         //use asynchronous fetch, we want the header and content to load asap
-        fetch(`/users/pic/${userid}`)
+        fetch(`/users/pic`, {method: "GET",headers:{"authorization": `Bearer ${accessToken}`}})
         .then((response) => {
-            //cant find user in database, log out
-            if (response.status == 404){
+            //response is not ok, log out
+            //cause by: forbidden/user not found
+            if (!response.ok){
                 logout(false)
                 return null
             }
@@ -35,6 +35,7 @@ function searchBar(){
     navSearchBarForm.style.display = "flex"
     //trigger the animation
     navSearchBarDiv.classList.add("active")
+    navSearchBar.focus()
 
 }
 
@@ -51,18 +52,14 @@ function hideSearchBar(){
     }
 }
 
-navSearchBarDiv.addEventListener("keyup", ({key}) => {
-    if (key === "Enter") {
-        console.log(navSearchBar.value)
-    }
-})
 
 loadNavBar()
 
 
 
-function goToProfile(){
-    const userID = getUserID()
+async function goToProfile(){
+    //get user id
+    const userID = (await (await get("/users/decodejwt")).json()).userId
     location.href = `../profile.html?user=${userID}`
 }
 
@@ -70,9 +67,23 @@ function logout(redirect=true){
     //show login button and hide profile icon
     document.getElementById("login").style.display = "block"
     document.getElementById("profile").style.display = "none" 
-    //remove access token cookie
+    //remove access token 
     localStorage.removeItem("accessToken")
     sessionStorage.removeItem("accessToken")
+    //remove role
+    localStorage.removeItem("role")
+    sessionStorage.removeItem("role")
     if (redirect) window.location.href = "../index.html"
 
 }
+
+//add listener to trigger when submitted
+document.getElementById("nav-search-bar-form").addEventListener('submit', event => {
+    //stop reloading behaviour
+    event.preventDefault()
+    //redirect to search page with query
+    window.location.href = `../search.html?q=${navSearchBar.value}`
+    return false
+})
+    
+  

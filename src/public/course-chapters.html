@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link href="./styles/course-chapters.css" rel="stylesheet">
     <link href="./styles/common.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -22,8 +22,38 @@
         align-items: center;
         justify-content: center;
         font-weight: bold;
-        margin-left: 73.4vw;
         margin-bottom: 2vw;
+    }
+
+    .edit-delete-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .edit-btn, .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .chapter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2vw;
+    }
+
+    .chapter {
+        background: #FFFFFF;
+        padding: 1vw 2vw;
+        border-radius: 12px;
+        margin-bottom: 2vw;
+    }
+    .video-player {
+        margin-top: 20px;
+    }
+    .video-player iframe {
+        width: 100%;
+        height: 400px;
     }
 </style>
 <body> 
@@ -37,20 +67,91 @@
             <div class="d-flex justify-content-between align-items-center" style="color: white; margin-bottom: 5vw;">
                 <h1 id="title">Course Title</h1>
                 <p id="header-desc">Course Description</p>
+                <div class="d-flex" style="gap: 1vw;">
+                    <button class="btn upload-button" id="upload-button" onclick="redirectToUploadLecture()">Upload</button>
+                    <img src="assets/lectures/edit-button.png" style="cursor: pointer; width: 2vw; height: 2vw;" onclick="toggleEditMode()">
+                </div>
             </div>
-            <button class="btn upload-button" onclick="redirectToUploadLecture()">
-                Upload
-            </button>
             <!-- Banner -->
             <video id="course-video" width="100%" controls style="margin-bottom: 6vw;">
                 Your browser does not support the video tag.
             </video>
             <!-- Chapters -->
-            <div id="chapter-grid">
+            <div id="chapter-grid" class="chapter-grid">
                 <!-- Lectures will be loaded here -->
             </div>
         </div>
+        <!-- YouTube Search and Video Player -->
+        <div class="d-flex" style="margin-top: 5vw;">
+            <div style="width: 100%; color: white;">
+                <h4 class="exo-semibold" style="font-size: 0.95vw; margin-bottom: 1vw;">YouTube Search</h4>
+                <input type="text" id="youtube-search" placeholder="Search YouTube">
+                <div id="videos" class="video-player"></div>
+                <div id="youtube-player" class="video-player"></div> <!-- Correct ID for video player -->
+            </div>
+        </div>
     </main>
+    <!-- Edit Lecture Modal -->
+    <div class="modal fade" id="editLectureModal" tabindex="-1" aria-labelledby="editLectureModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLectureModalLabel">Edit Lecture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editLectureForm">
+                        <div class="mb-3">
+                            <label for="editLectureName" class="form-label">Lecture Name</label>
+                            <input type="text" class="form-control" id="editLectureName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLectureDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editLectureDescription" name="description" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLectureCategory" class="form-label">Category</label>
+                            <input type="text" class="form-control" id="editLectureCategory" name="category" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLectureDuration" class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" id="editLectureDuration" name="duration" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Sub-Lecture Modal -->
+    <div class="modal fade" id="editSubLectureModal" tabindex="-1" aria-labelledby="editSubLectureModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSubLectureModalLabel">Edit Sub-Lecture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editSubLectureForm">
+                        <div class="mb-3">
+                            <label for="editSubLectureName" class="form-label">Sub-Lecture Name</label>
+                            <input type="text" class="form-control" id="editSubLectureName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSubLectureDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editSubLectureDescription" name="description" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSubLectureDuration" class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" id="editSubLectureDuration" name="duration" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <div class="footer-placeholder"></div>
@@ -58,5 +159,7 @@
     <script src="./scripts/common.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="./scripts/course-chapters.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="./scripts/youtube.js"></script>
 </body>
 </html>

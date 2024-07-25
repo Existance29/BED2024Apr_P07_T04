@@ -11,14 +11,13 @@ $(".footer-placeholder").load("./commonHTML/footer.html")
 //load the header for course-view pages
 $(".course-header-placeholder").load("./commonHTML/course-header.html")
 
-//get the access token
-var accessToken = null
-if (localStorage.accessToken){
-  accessToken = localStorage.accessToken
-}else if (sessionStorage.accessToken){
-  accessToken = sessionStorage.accessToken
-}
-//console.log(accessToken)
+// Get the access token and role
+const accessToken = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+const userRole =  localStorage.getItem("role") || sessionStorage.getItem("role");
+
+
+
+console.log(accessToken)
 //returns a string with title-casing
 function title(str) {
     return str.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -86,8 +85,8 @@ async function put(url, jsondata){
 async function isLoggedIn(){
   if (accessToken === null) return false
   //make sure the jwt is valid
-  const response = await get("/users/verifyjwt")
-  return (response.status == 201)
+  const response = await get("/users/decodejwt")
+  return (response.status == 200)
 }
 
 //ensures the user is logged in before accessing the page, else they get redirected to login page
@@ -109,8 +108,9 @@ function getUserID(){
 
   //ensure that accessToken exists
   if (!accessToken) return null
-  return JSON.parse(atob(accessToken.split('.')[1])).userId
+  return  
 }
+
 
 //to be called when content is done loading
 //shows the content and hides the loading animation

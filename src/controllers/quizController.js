@@ -25,7 +25,7 @@ const getQuizById = async (req, res) => {
 }
 
 const getQuizQuestions = async (req, res) => {
-    const quizId = req.params.quizId;
+    const quizId = parseInt(req.params.quizId);
     try {
         const questions = await Quiz.getQuizQuestions(quizId);
         res.json(questions);
@@ -36,8 +36,10 @@ const getQuizQuestions = async (req, res) => {
 };
 
 const submitQuizAnswers = async (req, res) => {
+    const userId = req.user.userId; // Get userId from the JWT token
     const quizId = parseInt(req.params.quizId);
-    const { userId, answers, duration } = req.body;  // Ensure userId is included in the request body
+    const { answers, duration } = req.body;
+
     try {
         const result = await Quiz.submitQuizAnswers(quizId, userId, answers, duration);
         res.json(result);
@@ -47,11 +49,10 @@ const submitQuizAnswers = async (req, res) => {
     }
 }
 
-
 const getQuizResult = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
     const resultId = parseInt(req.params.resultId);
-    const userId = parseInt(req.query.userId);  // Assuming userId is passed as a query parameter
+    const userId = req.user.userId; // Get userId from the JWT token
 
     try {
         const result = await Quiz.getQuizResult(quizId, resultId, userId);
@@ -62,11 +63,9 @@ const getQuizResult = async (req, res) => {
     }
 }
 
-
-
 const canAttemptQuiz = async (req, res) => {
+    const userId = req.user.userId; // Get userId from the JWT token
     const quizId = parseInt(req.params.quizId);
-    const userId = parseInt(req.params.userId);
 
     try {
         const { canAttempt, attempts, maxAttempts } = await Quiz.canAttemptQuiz(quizId, userId);
@@ -77,9 +76,8 @@ const canAttemptQuiz = async (req, res) => {
     }
 };
 
-
 const getUserQuizResults = async (req, res) => {
-    const userId = parseInt(req.params.userId);
+    const userId = req.user.userId; // Get userId from the JWT token
 
     try {
         const results = await Quiz.getUserQuizResults(userId);

@@ -6,8 +6,6 @@ const tabContents = Array.prototype.slice.call(document.getElementsByClassName("
 const settingTitle = document.getElementById("settings-title")
 const settingDesc = document.getElementById("settings-desc")
 
-const userid = getUserID()
-
 //input fields
 const profileImg = document.getElementById("profile-img")
 const imgInput = document.getElementById("upload-img")
@@ -170,7 +168,7 @@ async function resetSettings(load = false){
             return
         }
         //get the profile img
-        const profileImg = await(await get(`/users/pic/${userid}`)).json()
+        const profileImg = await(await get(`/users/pic`)).json()
         //data is global variable
         data = {...await response.json(),...profileImg}
     }

@@ -126,13 +126,14 @@ CREATE TABLE SubLectures (
 
 CREATE TABLE Comments (
   UserID INT NOT NULL,
-  subLectureID INT NOT NULL,
   CommentID INT PRIMARY KEY IDENTITY(1,1),
   Message NVARCHAR(MAX) NOT NULL,
   Rating NVARCHAR(MAX) NOT NULL,
+  sub_lecture_id INT NOT NULL,
   FOREIGN KEY (UserID) REFERENCES Users(id),
-  FOREIGN KEY (subLectureID) REFERENCES SubLectures(SubLectureID)
+  FOREIGN KEY (sub_lecture_id) REFERENCES SubLectures(SubLectureID)
 );
+
 
 CREATE TABLE User_Sub_Lectures (
   user_id INT NOT NULL,
@@ -242,9 +243,9 @@ const systemData = [
         "category": "education", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Angular Basics", "description": "Learn the basics of Angular.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Angular Setup", "description": "Setup your Angular environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Angular First App", "description": "Build your first Angular app.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Angular Basics", "description": "Learn the basics of Angular.", "duration": 10, "video": "Angular/Angular01/Angular Basics.mp4" },
+          { "name": "Angular Setup", "description": "Setup your Angular environment.", "duration": 10, "video": "Angular/Angular01/Angular Setup.mp4" },
+          { "name": "Angular First App", "description": "Build your first Angular app.", "duration": 10, "video": "Angular/Angular01/Angular First App.mp4" }
         ]
       },
       { 
@@ -253,9 +254,9 @@ const systemData = [
         "category": "education", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Template Syntax", "description": "Learn about template syntax.", "duration": 15, "video": "test.mp4" },
-          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "Angular/Angular02/Component Basics.mp4" },
+          { "name": "Template Syntax", "description": "Learn about template syntax.", "duration": 15, "video": "Angular/Angular02/Template Syntax.mp4" },
+          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "Angular/Angular02/Component Interaction.mp4" }
         ]
       },
       { 
@@ -264,9 +265,9 @@ const systemData = [
         "category": "education", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Binding Basics", "description": "Learn the basics of data binding.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Property Binding", "description": "Understand property binding.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Event Binding", "description": "Handle events with event binding.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Binding Basics", "description": "Learn the basics of data binding.", "duration": 15, "video": "Angular/Angular03/Binding Basics.mp4" },
+          { "name": "Property Binding", "description": "Understand property binding.", "duration": 15, "video": "Angular/Angular03/Property Binding.mp4" },
+          { "name": "Event Binding", "description": "Handle events with event binding.", "duration": 15, "video": "Angular/Angular03/Event Binding.mp4" }
         ]
       },
       { 
@@ -275,9 +276,9 @@ const systemData = [
         "category": "education", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Service Basics", "description": "Learn the basics of services.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Dependency Injection", "description": "Understand dependency injection.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Using Services", "description": "Use services in your application.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Service Basics", "description": "Learn the basics of services.", "duration": 15, "video": "Angular/Angular04/Service Basics.mp4" },
+          { "name": "Dependency Injection", "description": "Understand dependency injection.", "duration": 15, "video": "Angular/Angular04/Dependency Injection.mp4" },
+          { "name": "Using Services", "description": "Use services in your application.", "duration": 15, "video": "Angular/Angular04/Using Services.mp4" }
         ]
       }
     ]
@@ -301,9 +302,9 @@ const systemData = [
         "category": "cloud", 
         "duration": 30, 
         "subLectures": [
-          { "name": "AWS Basics", "description": "Learn the basics of AWS.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "AWS Setup", "description": "Setup your AWS environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "AWS First App", "description": "Build your first AWS app.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "AWS Basics", "description": "Learn the basics of AWS.", "duration": 10, "video": "AWS/AWS01/AWS Basics.mp4" },
+          { "name": "AWS Setup", "description": "Setup your AWS environment.", "duration": 10, "video": "AWS/AWS01/AWS Setup.mp4" },
+          { "name": "AWS First App", "description": "Build your first AWS app.", "duration": 10, "video": "AWS/AWS01/AWS First App.mp4" }
         ]
       },
       { 
@@ -312,9 +313,9 @@ const systemData = [
         "category": "cloud", 
         "duration": 45, 
         "subLectures": [
-          { "name": "EC2 Basics", "description": "Understand the basics of EC2.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "EC2 Setup", "description": "Setup your EC2 environment.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "EC2 Management", "description": "Manage EC2 instances.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "EC2 Basics", "description": "Understand the basics of EC2.", "duration": 15, "video": "AWS/AWS02/EC2 Basics.mp4" },
+          { "name": "EC2 Setup", "description": "Setup your EC2 environment.", "duration": 15, "video": "AWS/AWS02/EC2 Setup.mp4" },
+          { "name": "EC2 Management", "description": "Manage EC2 instances.", "duration": 15, "video": "AWS/AWS02/EC2 Management.mp4" }
         ]
       },
       { 
@@ -323,9 +324,9 @@ const systemData = [
         "category": "cloud", 
         "duration": 40, 
         "subLectures": [
-          { "name": "S3 Basics", "description": "Learn the basics of S3.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "S3 Setup", "description": "Setup your S3 environment.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "S3 Management", "description": "Manage S3 buckets.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "S3 Basics", "description": "Learn the basics of S3.", "duration": 15, "video": "AWS/AWS03/S3 Basics.mp4" },
+          { "name": "S3 Setup", "description": "Setup your S3 environment.", "duration": 15, "video": "AWS/AWS03/S3 Setup.mp4" },
+          { "name": "S3 Management", "description": "Manage S3 buckets.", "duration": 15, "video": "AWS/AWS03/S3 Management.mp4" }
         ]
       },
       { 
@@ -334,9 +335,9 @@ const systemData = [
         "category": "cloud", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Lambda Basics", "description": "Learn the basics of Lambda.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Lambda Setup", "description": "Setup your Lambda environment.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Lambda Functions", "description": "Build your first Lambda function.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Lambda Basics", "description": "Learn the basics of Lambda.", "duration": 15, "video": "AWS/AWS04/Lambda Basics.mp4" },
+          { "name": "Lambda Setup", "description": "Setup your Lambda environment.", "duration": 15, "video": "AWS/AWS04/Lambda Setup.mp4" },
+          { "name": "Lambda Functions", "description": "Build your first Lambda function.", "duration": 15, "video": "AWS/AWS04/Lambda Functions.mp4" }
         ]
       }
     ]
@@ -360,9 +361,9 @@ const systemData = [
         "category": "education", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Vue Basics", "description": "Learn the basics of Vue.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Vue Setup", "description": "Setup your Vue environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Vue First App", "description": "Build your first Vue app.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Vue Basics", "description": "Learn the basics of Vue.", "duration": 10, "video": "Vue/Vue01/Vue Basics.mp4" },
+          { "name": "Vue Setup", "description": "Setup your Vue environment.", "duration": 10, "video": "Vue/Vue01/Vue Setup.mp4" },
+          { "name": "Vue First App", "description": "Build your first Vue app.", "duration": 10, "video": "Vue/Vue01/Vue First App.mp4" }
         ]
       },
       { 
@@ -371,9 +372,9 @@ const systemData = [
         "category": "education", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Template Syntax", "description": "Learn about template syntax.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "Vue/Vue02/Component Basics.mp4" },
+          { "name": "Template Syntax", "description": "Learn about template syntax.", "duration": 15, "video": "Vue/Vue02/Template Syntax.mp4" },
+          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "Vue/Vue02/Component Interaction.mp4" }
         ]
       },
       { 
@@ -382,9 +383,9 @@ const systemData = [
         "category": "education", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Directive Basics", "description": "Learn the basics of directives.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Custom Directives", "description": "Create custom directives.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Directive Usage", "description": "Use directives in your application.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Directive Basics", "description": "Learn the basics of directives.", "duration": 15, "video": "Vue/Vue03/Directive Basics.mp4" },
+          { "name": "Custom Directives", "description": "Create custom directives.", "duration": 15, "video": "Vue/Vue03/Custom Directives.mp4" },
+          { "name": "Directive Usage", "description": "Use directives in your application.", "duration": 15, "video": "Vue/Vue03/Directive Usage.mp4" }
         ]
       },
       { 
@@ -393,9 +394,9 @@ const systemData = [
         "category": "education", 
         "duration": 35, 
         "subLectures": [
-          { "name": "CLI Basics", "description": "Learn the basics of Vue CLI.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "CLI Setup", "description": "Setup your Vue CLI environment.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "CLI Projects", "description": "Create projects with Vue CLI.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "CLI Basics", "description": "Learn the basics of Vue CLI.", "duration": 15, "video": "Vue/Vue04/CLI Basics.mp4" },
+          { "name": "CLI Setup", "description": "Setup your Vue CLI environment.", "duration": 15, "video": "Vue/Vue04/CLI Setup.mp4" },
+          { "name": "CLI Projects", "description": "Create projects with Vue CLI.", "duration": 15, "video": "Vue/Vue04/CLI Projects.mp4" }
         ]
       }
     ]
@@ -419,9 +420,9 @@ const systemData = [
         "category": "programming", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Python Basics", "description": "Learn the basics of Python.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Python Setup", "description": "Setup your Python environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Python First Script", "description": "Write your first Python script.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Python Basics", "description": "Learn the basics of Python.", "duration": 10, "video": "Python/Python01/Python Basics.mp4" },
+          { "name": "Python Setup", "description": "Setup your Python environment.", "duration": 10, "video": "Python/Python01/Python Setup.mp4" },
+          { "name": "Python First Script", "description": "Write your first Python script.", "duration": 10, "video": "Python/Python01/Python First Script.mp4" }
         ]
       },
       { 
@@ -430,9 +431,9 @@ const systemData = [
         "category": "programming", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Data Type Basics", "description": "Learn the basics of data types.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Complex Data Types", "description": "Understand complex data types.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Data Type Operations", "description": "Perform operations on data types.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Data Type Basics", "description": "Learn the basics of data types.", "duration": 15, "video": "Python/Python02/Data Type Basics.mp4" },
+          { "name": "Complex Data Types", "description": "Understand complex data types.", "duration": 15, "video": "Python/Python02/Complex Data Types.mp4" },
+          { "name": "Data Type Operations", "description": "Perform operations on data types.", "duration": 15, "video": "Python/Python02/Data Type Operations.mp4" }
         ]
       },
       { 
@@ -441,9 +442,9 @@ const systemData = [
         "category": "programming", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Function Basics", "description": "Learn the basics of functions.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Lambda Functions", "description": "Understand lambda functions.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Function Usage", "description": "Use functions in your scripts.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Function Basics", "description": "Learn the basics of functions.", "duration": 15, "video": "Python/Python03/Function Basics.mp4" },
+          { "name": "Lambda Functions", "description": "Understand lambda functions.", "duration": 15, "video": "Python/Python03/Lambda Functions.mp4" },
+          { "name": "Function Usage", "description": "Use functions in your scripts.", "duration": 15, "video": "Python/Python03/Function Usage.mp4" }
         ]
       },
       { 
@@ -452,9 +453,9 @@ const systemData = [
         "category": "programming", 
         "duration": 35, 
         "subLectures": [
-          { "name": "OOP Basics", "description": "Learn the basics of OOP.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Classes and Objects", "description": "Understand classes and objects.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "OOP Principles", "description": "Learn OOP principles.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "OOP Basics", "description": "Learn the basics of OOP.", "duration": 15, "video": "Python/Python04/OOP Basics.mp4" },
+          { "name": "Classes and Objects", "description": "Understand classes and objects.", "duration": 15, "video": "Python/Python04/Classes and Objects.mp4" },
+          { "name": "OOP Principles", "description": "Learn OOP principles.", "duration": 15, "video": "Python/Python04/OOP Principles.mp4" }
         ]
       }
     ]
@@ -478,9 +479,9 @@ const systemData = [
         "category": "education", 
         "duration": 30, 
         "subLectures": [
-          { "name": "React Basics", "description": "Learn the basics of React.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "React Setup", "description": "Setup your React environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "React First App", "description": "Build your first React app.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "React Basics", "description": "Learn the basics of React.", "duration": 10, "video": "React/React01/React Basics.mp4" },
+          { "name": "React Setup", "description": "Setup your React environment.", "duration": 10, "video": "React/React01/React Setup.mp4" },
+          { "name": "React First App", "description": "Build your first React app.", "duration": 10, "video": "React/React01/React First App.mp4" }
         ]
       },
       { 
@@ -489,9 +490,9 @@ const systemData = [
         "category": "education", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "JSX Syntax", "description": "Learn about JSX syntax.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "React/React02/Component Basics.mp4" },
+          { "name": "JSX Syntax", "description": "Learn about JSX syntax.", "duration": 15, "video": "React/React02/JSX Syntax.mp4" },
+          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "React/React02/Component Interaction.mp4" }
         ]
       },
       { 
@@ -500,9 +501,9 @@ const systemData = [
         "category": "education", 
         "duration": 40, 
         "subLectures": [
-          { "name": "State Basics", "description": "Learn the basics of state.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Props Usage", "description": "Use props in components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "State Management", "description": "Manage state in React.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "State Basics", "description": "Learn the basics of state.", "duration": 15, "video": "React/React03/State Basics.mp4" },
+          { "name": "Props Usage", "description": "Use props in components.", "duration": 15, "video": "React/React03/Props Usage.mp4" },
+          { "name": "State Management", "description": "Manage state in React.", "duration": 15, "video": "React/React03/State Management.mp4" }
         ]
       },
       { 
@@ -511,9 +512,9 @@ const systemData = [
         "category": "education", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Hooks Basics", "description": "Learn the basics of React Hooks.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Custom Hooks", "description": "Create custom hooks.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Using Hooks", "description": "Use hooks in your application.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Hooks Basics", "description": "Learn the basics of React Hooks.", "duration": 15, "video": "React/React04/Hooks Basics.mp4" },
+          { "name": "Custom Hooks", "description": "Create custom hooks.", "duration": 15, "video": "React/React04/Custom Hooks.mp4" },
+          { "name": "Using Hooks", "description": "Use hooks in your application.", "duration": 15, "video": "React/React04/Using Hooks.mp4" }
         ]
       }
     ]
@@ -537,9 +538,9 @@ const systemData = [
         "category": "testing", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Testing Basics", "description": "Learn the basics of software testing.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Testing Setup", "description": "Setup your testing environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "First Test Case", "description": "Write your first test case.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Testing Basics", "description": "Learn the basics of software testing.", "duration": 10, "video": "Software/Software01/Testing Basics.mp4" },
+          { "name": "Testing Setup", "description": "Setup your testing environment.", "duration": 10, "video": "Software/Software01/Testing Setup.mp4" },
+          { "name": "First Test Case", "description": "Write your first test case.", "duration": 10, "video": "Software/Software01/First Test Case.mp4" }
         ]
       },
       { 
@@ -548,9 +549,9 @@ const systemData = [
         "category": "testing", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Manual Testing Basics", "description": "Learn the basics of manual testing.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Writing Test Cases", "description": "Write effective test cases.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Executing Test Cases", "description": "Execute test cases.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Manual Testing Basics", "description": "Learn the basics of manual testing.", "duration": 15, "video": "Software/Software02/Manual Testing Basics.mp4" },
+          { "name": "Writing Test Cases", "description": "Write effective test cases.", "duration": 15, "video": "Software/Software02/Writing Test Cases.mp4" },
+          { "name": "Executing Test Cases", "description": "Execute test cases.", "duration": 15, "video": "Software/Software02/Executing Test Cases.mp4" }
         ]
       },
       { 
@@ -559,9 +560,9 @@ const systemData = [
         "category": "testing", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Automated Testing Basics", "description": "Learn the basics of automated testing.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Using Testing Tools", "description": "Use automated testing tools.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Creating Automated Tests", "description": "Create automated tests.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Automated Testing Basics", "description": "Learn the basics of automated testing.", "duration": 15, "video": "Software/Software03/Automated Testing Basics.mp4" },
+          { "name": "Using Testing Tools", "description": "Use automated testing tools.", "duration": 15, "video": "Software/Software03/Using Testing Tools.mp4" },
+          { "name": "Creating Automated Tests", "description": "Create automated tests.", "duration": 15, "video": "Software/Software03/Creating Automated Tests.mp4" }
         ]
       },
       { 
@@ -570,9 +571,9 @@ const systemData = [
         "category": "testing", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Tool Basics", "description": "Learn the basics of testing tools.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Selecting Tools", "description": "Select the right tools for your needs.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Using Tools", "description": "Effectively use testing tools.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Tool Basics", "description": "Learn the basics of testing tools.", "duration": 15, "video": "Software/Software04/Tools Basics.mp4" },
+          { "name": "Selecting Tools", "description": "Select the right tools for your needs.", "duration": 15, "video": "Software/Software04/Selecting Tools.mp4" },
+          { "name": "Using Tools", "description": "Effectively use testing tools.", "duration": 15, "video": "Software/Software04/Using Tools.mp4" }
         ]
       }
     ]
@@ -596,9 +597,9 @@ const systemData = [
         "category": "ui", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Core UI Basics", "description": "Learn the basics of Core UI.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Core UI Setup", "description": "Setup your Core UI environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "First Core UI Project", "description": "Create your first Core UI project.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Core UI Basics", "description": "Learn the basics of Core UI.", "duration": 10, "video": "Core/Core01/Core UI Basics.mp4" },
+          { "name": "Core UI Setup", "description": "Setup your Core UI environment.", "duration": 10, "video": "Core/Core01/Core UI Setup.mp4" },
+          { "name": "First Core UI Project", "description": "Create your first Core UI project.", "duration": 10, "video": "Core/Core01/First Core UI Project.mp4" }
         ]
       },
       { 
@@ -607,9 +608,9 @@ const systemData = [
         "category": "ui", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Component Basics", "description": "Understand the basics of Core UI components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Advanced Components", "description": "Learn about advanced Core UI components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Component Integration", "description": "Integrate Core UI components into your project.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Component Basics", "description": "Understand the basics of Core UI components.", "duration": 15, "video": "Core/Core02/Component Basics.mp4" },
+          { "name": "Advanced Components", "description": "Learn about advanced Core UI components.", "duration": 15, "video": "Core/Core02/Advanced Components.mp4" },
+          { "name": "Component Integration", "description": "Integrate Core UI components into your project.", "duration": 15, "video": "Core/Core02/Component Integration.mp4" }
         ]
       },
       { 
@@ -618,9 +619,9 @@ const systemData = [
         "category": "ui", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Dashboard Basics", "description": "Learn the basics of building dashboards.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Dashboard Design", "description": "Design effective dashboards.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Advanced Dashboards", "description": "Create advanced dashboards.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Dashboard Basics", "description": "Learn the basics of building dashboards.", "duration": 15, "video": "Core/Core03/Dashboard Basics.mp4" },
+          { "name": "Dashboard Design", "description": "Design effective dashboards.", "duration": 15, "video": "Core/Core03/Dashboard Design.mp4" },
+          { "name": "Advanced Dashboards", "description": "Create advanced dashboards.", "duration": 15, "video": "Core/Core03/Advanced Dashboards.mp4" }
         ]
       },
       { 
@@ -629,9 +630,9 @@ const systemData = [
         "category": "ui", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Advanced UI Techniques", "description": "Learn advanced UI techniques.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Performance Optimization", "description": "Optimize the performance of your UI.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "UI Testing", "description": "Test your UI for functionality and performance.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Advanced UI Techniques", "description": "Learn advanced UI techniques.", "duration": 15, "video": "Core/Core04/Advanced UI Techniques.mp4" },
+          { "name": "Performance Optimization", "description": "Optimize the performance of your UI.", "duration": 15, "video": "Core/Core04/Performance Optimization.mp4" },
+          { "name": "UI Testing", "description": "Test your UI for functionality and performance.", "duration": 15, "video": "Core/Core04/UI Testing.mp4" }
         ]
       }
     ]
@@ -655,9 +656,9 @@ const systemData = [
         "category": "data", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Power BI Basics", "description": "Learn the basics of Power BI.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Power BI Setup", "description": "Setup your Power BI environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "First Power BI Report", "description": "Create your first Power BI report.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Power BI Basics", "description": "Learn the basics of Power BI.", "duration": 10, "video": "Power/Power01/Power BI Basics.mp4" },
+          { "name": "Power BI Setup", "description": "Setup your Power BI environment.", "duration": 10, "video": "Power/Power01/Power BI Setup.mp4" },
+          { "name": "First Power BI Report", "description": "Create your first Power BI report.", "duration": 10, "video": "Power/Power01/First Power BI Report.mp4" }
         ]
       },
       { 
@@ -666,9 +667,9 @@ const systemData = [
         "category": "data", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Data Source Basics", "description": "Understand the basics of data sources.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Connecting Data Sources", "description": "Connect to different data sources.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Managing Data Sources", "description": "Manage and transform data sources.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Data Source Basics", "description": "Understand the basics of data sources.", "duration": 15, "video": "Power/Power02/Data Source Basics.mp4" },
+          { "name": "Connecting Data Sources", "description": "Connect to different data sources.", "duration": 15, "video": "Power/Power02/Connecting Data Sources.mp4" },
+          { "name": "Managing Data Sources", "description": "Manage and transform data sources.", "duration": 15, "video": "Power/Power02/Managing Data Sources.mp4" }
         ]
       },
       { 
@@ -677,9 +678,9 @@ const systemData = [
         "category": "data", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Report Basics", "description": "Learn the basics of creating reports.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Advanced Reports", "description": "Create advanced reports.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Report Customization", "description": "Customize your reports.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Report Basics", "description": "Learn the basics of creating reports.", "duration": 15, "video": "Power/Power03/Report Basics.mp4" },
+          { "name": "Advanced Reports", "description": "Create advanced reports.", "duration": 15, "video": "Power/Power03/Advanced Reports.mp4" },
+          { "name": "Report Customization", "description": "Customize your reports.", "duration": 15, "video": "Power/Power03/Report Customization.mp4" }
         ]
       },
       { 
@@ -688,9 +689,9 @@ const systemData = [
         "category": "data", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Advanced Data Visualization", "description": "Learn advanced data visualization techniques.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Data Analysis", "description": "Perform data analysis in Power BI.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Power BI Automation", "description": "Automate tasks in Power BI.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Advanced Data Visualization", "description": "Learn advanced data visualization techniques.", "duration": 15, "video": "Power/Power04/Advanced Data Visualization.mp4" },
+          { "name": "Data Analysis", "description": "Perform data analysis in Power BI.", "duration": 15, "video": "Power/Power04/Data Analysis.mp4" },
+          { "name": "Power BI Automation", "description": "Automate tasks in Power BI.", "duration": 15, "video": "Power/Power04/Power BI Automation.mp4" }
         ]
       }
     ]

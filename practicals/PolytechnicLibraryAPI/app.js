@@ -28,7 +28,7 @@ app.post("/login", validateSchema.validateLogin, userController.loginUser)
 
 
 // librarian
-app.put('/books/:bookId/availability', verifyJWT, bookController.updateBookAvailability);
+app.put('/books/:id/availability', verifyJWT, bookController.updateBookAvailability);
 
 // get all books for both member and librarian
 app.get('/books', verifyJWT, bookController.getAllBooks);

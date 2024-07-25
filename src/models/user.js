@@ -102,10 +102,11 @@ class User {
     }
 
     static async getCompleteUserByID(id) {
-        //join all tables related to the user and return them (excluding password)
+        //get all profile data related to the user and return them (excluding password)
+        //user_id can also be excluded as it is redundant
         //this is mostly meant for the user's profile page
         const query = "SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id WHERE id = @id"
-        const result = (await this.exceptSelectQuery(["password","email"],query,{"id":id})).recordset[0]
+        const result = (await this.exceptSelectQuery(["password","email","user_id"],query,{"id":id})).recordset[0]
         //check if user exists
         if (!result) return null
         //get more stats
@@ -191,8 +192,8 @@ class User {
 
     static async updatePassword(id, newPassword){
         await this.query("UPDATE Users SET password = @password WHERE id = @id", {"id":id,"password":newPassword})
-        //return the updated user
-        return this.getUserById(id)
+        //return the updated hashed password
+        return {password: newPassword}
     }
 
     static async addSubLecture(userID, subLectureID){
@@ -247,7 +248,7 @@ class User {
 
         const result = await this.query(sql, {"uid": userID, "cid":courseID})
         //unlike the other get functions, dont return null if its empty. Just return the empty array
-        //return an array containing ints representing the sublecture ids
+        //return an array containing sublecture ids
         return result.recordset.map((x) => x.sub_lecture_id)
     }
 
@@ -274,6 +275,22 @@ class User {
             questions_completed: questionsCompleted,
 
         }
+    }
+
+    static async searchUsers(q){
+        //return the account data + profile picture
+        //check if name (first name + last name), or job title matches
+        const query = `
+            SELECT * FROM Users INNER JOIN Profile_Pictures ON Profile_Pictures.user_id = Users.id 
+            WHERE CONCAT(first_name, ' ', last_name) LIKE '%${q}%'
+            OR job_title LIKE '%${q}%'
+            `
+        //omit password and email for privacy reasons
+        //omit user_id since it is redundant
+        const result = (await this.exceptSelectQuery(["password","email","user_id"],query)).recordset
+        //no need to check if result is empty, returning an empty array is fine
+        return result
+
     }
 }
   

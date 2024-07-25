@@ -11,11 +11,13 @@ const userRoute = (app, upload) => {
     app.post("/users/login", usersController.loginUser) //login
     app.get("/users", usersController.getAllUsers) //get all users. Mostly useful for testing
     app.get("/users/private", authenticateToken, usersController.getPrivateUserById) //get the user's data by id but also includes email
-    app.get("/users/verifyjwt", authenticateToken, usersController.verifyUserToken) //this route is for verifying that the jwt token is valid
-    app.get("/users/:id", usersController.getUserById) //get the user's data. Publicly available. No sensitive data like password or email
+    app.get("/users/decodejwt", authenticateToken, usersController.decodeJWT) //this route is for decoding the jwt
+    app.get("/users/pic", authenticateToken, usersController.getProfilePictureByJWT) //get the user's own profile picture
     app.get("/users/pic/:id", usersController.getProfilePictureByID) //get the user's profile picture, publicly available
     app.get("/users/complete/:id", usersController.getCompleteUserByID) //get the overall stats for a user. Besides the usual user table, get their quiz stats and courses completed
-    app.get("/users/courses/sublectures/:uid/:cid", usersController.getViewedSubLecturesByCourse) //the user's viewed sublectures of a specific course. Public
+    app.get("/users/courses/sublectures/:cid", authenticateToken,usersController.getViewedSubLecturesByCourse) //the user's viewed sublectures of a specific course
+    app.get("/users/search",usersController.searchUsers) //search for users
+    app.get("/users/:id", usersController.getUserById) //get the user's data. Publicly available. No sensitive data like password or email
     app.put("/users/pic", authenticateToken, upload.single('pic'), usersController.updateProfilePic) // Update profile picture. using multer for uploading profile pictures
     app.put("/users", validateUser.validateUpdate,  authenticateToken, usersController.updateUser) //update data in the user table
     app.put("/users/password", validateUser.validateNewPassword, authenticateToken, usersController.updatePassword) //update passwords

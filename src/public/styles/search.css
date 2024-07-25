@@ -1,0 +1,47 @@
+/*apply the select effect for the filter with the active class*/
+#search-filters .active{
+    border-radius: 15px;
+    background-color: #FFFFFF85;
+}
+
+/*align the text in the filters to be centered*/
+#search-filters div{
+    padding: 0.45vw 1.2vw;
+    display: flex;
+    justify-content: center; /* Align horizontal */
+    align-items: center; /* Align vertical */
+}
+
+.course-result{
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    padding: 2vw 2vw;
+    cursor: pointer;
+    margin-top: 1vw;
+}
+
+.course-img{
+    width: 6.5%;
+    object-fit: contain;
+}
+
+.course-ratings img{
+    width: 1vw;
+    object-fit: contain;
+}
+
+.user-result{
+    background: white;
+    border-radius: 20px;
+    width: 50%;
+    padding: 1.5vw 3vw;
+    cursor: pointer;
+}
+
+.user-result img{
+    object-fit: cover;
+    border-radius: 50%;
+    height: 2.8vw;
+    width: 2.8vw;
+}

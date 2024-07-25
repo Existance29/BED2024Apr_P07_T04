@@ -1,8 +1,10 @@
+**Important** 
+All of the project files are in the src directory. Make sure to cd into it before running any commands
+
 ## Project Setup
 
 ### Installing node modules
-1. cd into the src directory
-2. run ``npm install``
+run ``npm install``
 
 ### Database configuration
 
@@ -31,3 +33,9 @@ The sql to seed the database can be found in src/database/seedScript.js <br />
 ``npm start`` (for nodemon) <br />
 or <br />
 ``node app.js``
+
+## Documentation
+The API Documentation can be found at /api-docs
+
+## Testing
+run ``npm test``

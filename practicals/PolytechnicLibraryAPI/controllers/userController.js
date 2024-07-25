@@ -32,16 +32,14 @@ const loginUser = async (req, res) => {
 
   try {
     // Validate user credentials
-    
-    if (!await getUserByUsername(username)) {
+    const user = await User.getUserByUsername(username)
+    if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-
     // Compare password with hash
     if (!await bcrypt.compare(password, user.passwordHash)) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-
     // Generate JWT token
     const payload = {
       id: user.id,

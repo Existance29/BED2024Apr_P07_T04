@@ -31,13 +31,18 @@ function hideErrors(){
 async function signUp(){
     hideErrors() 
     //create object for the user's data
+    let country = "United States"
+    try{
+        country = (await (await get("http://ip-api.com/json")).json()).country //auto detect the user's country, defaults to US if it fails
+    }catch(e){}
+    
     const user = {
         "first_name": first_nameInput.value,
         "last_name": last_nameInput.value,
         "email": emailInput.value,
         "password": passwordInput.value,
         "about_me": "",
-        "country": (await (await get("http://ip-api.com/json")).json()).country, //auto-detect the user's country
+        "country": country,
         "job_title": "", //default to blank
         "role": roleInput.value
     }
@@ -60,6 +65,7 @@ async function signUp(){
     //valid input
     //save the jwt token to session storage
     sessionStorage.accessToken = body.accessToken
+    sessionStorage.role = body.role
     //redirect user to courses
     window.location.href = "../courses.html"
     

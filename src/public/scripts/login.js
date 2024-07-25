@@ -25,13 +25,19 @@ async function login(){
     }
     //login successful
     
-    const token = (await response.json()).accessToken
-    //store the token in a session storage
-    //store it in local if remember me is enabled
-    sessionStorage.accessToken = token
+    const token = await response.json();
+    const accessToken = token.accessToken;
+    const role = token.role
+  
+    // Store the token and role in session storage
+    sessionStorage.setItem('accessToken', accessToken);
+    sessionStorage.setItem('role', role);
     
-    if (rememberInput.checked) localStorage.accessToken = token 
-
+    // Store in local if remember me is enabled
+    if (rememberInput.checked) {
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('role', role);
+    }
     //redirect user to courses
     window.location.href = "../courses.html"
     

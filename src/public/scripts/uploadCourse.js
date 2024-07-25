@@ -1,3 +1,6 @@
+const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
+const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+
 async function handleSubmit(event) {
     event.preventDefault();
 
@@ -16,7 +19,10 @@ async function handleSubmit(event) {
     try {
         const response = await fetch('/courses', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
 
         if (!response.ok) {

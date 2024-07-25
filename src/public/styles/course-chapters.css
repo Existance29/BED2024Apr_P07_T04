@@ -62,3 +62,11 @@ h2{
 .subchapter.active .time-container{
   background: #B7EB9E;
 }
+
+video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 500px; /* Adjust as needed */
+  background-color: black; /* Fallback for browsers that do not support video */
+}
