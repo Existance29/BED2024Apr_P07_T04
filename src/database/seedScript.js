@@ -129,9 +129,9 @@ CREATE TABLE Comments (
   CommentID INT PRIMARY KEY IDENTITY(1,1),
   Message NVARCHAR(MAX) NOT NULL,
   Rating NVARCHAR(MAX) NOT NULL,
-  sub_lecture_id INT NOT NULL,
+  subLectureID INT NOT NULL,
   FOREIGN KEY (UserID) REFERENCES Users(id),
-  FOREIGN KEY (sub_lecture_id) REFERENCES SubLectures(SubLectureID)
+  FOREIGN KEY (subLectureID) REFERENCES SubLectures(SubLectureID)
 );
 
 
@@ -1022,6 +1022,22 @@ async function run() {
     await insertUsers(connection);
     console.log("Users inserted");
 
+    //Insert comment data
+    await request.query(`
+      INSERT INTO Comments (UserID, subLectureID, Message, Rating)
+      VALUES 
+      (1, 1, 'The lecture was very informative and well-structured.', 5),
+      (1, 1, 'I appreciated the clear explanations and examples.', 4),
+      (1, 1, 'The pacing was perfect and kept me engaged throughout.', 5),
+      (1, 1, 'Some parts were a bit confusing, but overall it was good.', 3),
+      (1, 1, 'The lecturer was very knowledgeable and approachable.', 5),
+      (1, 1, 'I found the content a bit too advanced for my current level.', 2),
+      (1, 1, 'Great use of visual aids to explain complex concepts.', 4),
+      (1, 1, 'The lecture could have included more interactive elements.', 3),
+      (1, 1, 'I learned a lot from this lecture, thank you!', 5),
+      (1, 1, 'The slides were a bit hard to read, but the content was good.', 3);
+    `)
+    console.log("Comments inserted")
     connection.close();
     console.log("Seeding completed");
   } catch (err) {

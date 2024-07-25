@@ -505,7 +505,7 @@ const decodeJWT = async (req, res) => {
   /* #swagger.responses[403] = {
             description: 'Token is invalid',
     } */
-  console.log(req.user)
+  //console.log(req.user)
   res.status(200).json(req.user)
 }
 

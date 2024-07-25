@@ -4,7 +4,7 @@ const loggedInUserID = getUserID()
 const tooltipDesc = {
     "accuracy": "Users that answer quiz questions correctly",
     "versatility": "Users that are versatile and\ncomplete courses from different categories",
-    "activity": "Users that are active and frequently\ncomment and rate courses"
+    "activity": "Users that are active and frequently\ncomment"
 }
 
 function roundToTwo(num) {
