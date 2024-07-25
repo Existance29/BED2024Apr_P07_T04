@@ -28,7 +28,7 @@ const authenticateToken = (req,res,next) => {
             'POST /lectures': ['lecturer'],
             'POST /lectures/:lectureID/sublectures': ['lecturer'],
             
-
+            'DELETE /quizzes/:id': ['lecturer'],  
         };
         
         const userRole = user.role;

@@ -3,6 +3,11 @@
 // Don't wait for content to load, redirect asap
 guardLoginPage();
 
+const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
+const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+
+console.log('Role:', role); // Debugging log
+
 async function fetchQuizzes() {
     try {
         const response = await get('http://localhost:3000/quizzes');
@@ -22,6 +27,13 @@ function displayQuizzes(quizzes) {
     quizzes.forEach(quiz => {
         const quizDiv = document.createElement('div');
         quizDiv.className = 'quiz';
+
+        const deleteButton = (role === 'lecturer') ? `
+        <button class="delete-btn btn section-text" type="button" onclick="confirmDeleteQuiz('${quiz.id}')" style="border-radius: 25px; margin-top: 10px; background-color: red; color: white;">
+            Delete
+        </button>
+        ` : '';
+
         quizDiv.innerHTML = `
             <div class="quiz-item row">
                 <div class="col-md-10 quiz-info">
@@ -32,11 +44,41 @@ function displayQuizzes(quizzes) {
                 </div>
                 <div class="col-md-2 text-end">
                     <a href="quizDetails.html?quizId=${quiz.id}" class="quiz-btn btn section-text" type="button" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Start</a>
+                    ${deleteButton}
                 </div>
             </div>
         `;
         quizList.appendChild(quizDiv);
     });
+}
+
+// Confirm before sending DELETE request
+function confirmDeleteQuiz(quizId) {
+    const isConfirmed = confirm("Are you sure you want to delete this quiz?");
+    if (isConfirmed) {
+        deleteQuiz(quizId);
+    }
+}
+
+async function deleteQuiz(quizId) {
+    try {
+        const response = await fetch(`/quizzes/${quizId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if (response.ok) {
+            // Quiz deleted successfully, reload the quizzes
+            fetchQuizzes();
+        } else {
+            console.error('Error deleting quiz:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error deleting quiz:', error);
+    }
 }
 
 function redirectToQuizResults() {

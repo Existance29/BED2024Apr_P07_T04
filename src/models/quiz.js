@@ -57,6 +57,52 @@ class Quiz {
         return result.length ? result.map((x) => this.toQuestionObj(x)) : [];
     }
 
+    static async deleteQuiz(quizId) {
+        const connection = await sql.connect(dbConfig);
+        const transaction = new sql.Transaction(connection);
+
+        try {
+            // Start a transaction
+            await transaction.begin();
+            const request = transaction.request();
+
+            // Delete all entries in UserQuizAttempts associated with the quiz
+            await request.input("quizId", sql.Int, quizId);
+            await request.query(`DELETE FROM UserQuizAttempts WHERE quizId = @quizId`);
+
+            // Delete all entries in IncorrectQuestions associated with the quiz
+            await request.query(`
+                DELETE FROM IncorrectQuestions
+                WHERE questionId IN (SELECT id FROM Questions WHERE quizId = @quizId)
+            `);
+
+            // Delete all entries in Answers associated with the quiz
+            await request.query(`DELETE FROM Answers WHERE quizId = @quizId`);
+
+            // Delete all entries in Results associated with the quiz
+            await request.query(`DELETE FROM Results WHERE quizId = @quizId`);
+
+            // Delete all questions associated with the quiz
+            await request.query(`DELETE FROM Questions WHERE quizId = @quizId`);
+
+            // Finally, delete the quiz itself
+            await request.query(`DELETE FROM Quizzes WHERE id = @quizId`);
+
+            // Commit the transaction
+            await transaction.commit();
+
+            return true;
+        } catch (error) {
+            // If there's an error, rollback the transaction
+            if (transaction) {
+                await transaction.rollback();
+            }
+            throw error;
+        } finally {
+            connection.close();
+        }
+    }
+
     static async submitQuizAnswers(quizId, userId, answers, duration) {
         let score = 0;
         let totalQuestions = answers.length;
