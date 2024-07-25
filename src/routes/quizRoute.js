@@ -12,6 +12,7 @@ const quizRoute = (app) => {
     app.post("/quizzes/:quizId/submit", authenticateToken, quizController.submitQuizAnswers);
     app.get("/quizzes/:quizId/results/:resultId", authenticateToken, quizController.getQuizResult);
     app.get('/quizzes/attempt/:quizId', authenticateToken, quizController.canAttemptQuiz);
+    app.get("/quizzes/:quizId/checkAttempts", authenticateToken, quizController.checkQuizAttempts);
     app.get('/user/results', authenticateToken, quizController.getUserQuizResults);
     app.delete("/quizzes/:id", authenticateToken, quizController.deleteQuiz);
 }
