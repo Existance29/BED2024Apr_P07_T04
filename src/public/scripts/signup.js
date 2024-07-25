@@ -31,10 +31,6 @@ function hideErrors(){
 async function signUp(){
     hideErrors() 
     //create object for the user's data
-    let country = "United States"
-    try{
-        country = (await (await get("http://ip-api.com/json")).json()).country //auto detect the user's country, defaults to US if it fails
-    }catch(e){}
     
     const user = {
         "first_name": first_nameInput.value,
@@ -42,7 +38,7 @@ async function signUp(){
         "email": emailInput.value,
         "password": passwordInput.value,
         "about_me": "",
-        "country": country,
+        "country": "United States", //default to US, will be set in controller
         "job_title": "", //default to blank
         "role": roleInput.value
     }

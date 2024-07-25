@@ -72,7 +72,7 @@ const getAllQuizzes = async (req, res) => {
         console.error(error);
         res.status(500).send("Error retrieving quizzes");
     }
-}
+};
 
 const getQuizById = async (req, res) => {
     const id = parseInt(req.params.quizId);
@@ -86,7 +86,7 @@ const getQuizById = async (req, res) => {
         console.error(error);
         res.status(500).send("Error retrieving quiz");
     }
-}
+};
 
 const getQuizQuestions = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
@@ -111,7 +111,7 @@ const submitQuizAnswers = async (req, res) => {
         console.error(error);
         res.status(500).send("Error submitting quiz answers");
     }
-}
+};
 
 const getQuizResult = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
@@ -125,7 +125,7 @@ const getQuizResult = async (req, res) => {
         console.error(`Error fetching quiz result for quizId ${quizId} and resultId ${resultId}:`, error);
         res.status(500).send("Error fetching quiz result");
     }
-}
+};
 
 const canAttemptQuiz = async (req, res) => {
     const userId = req.user.userId; // Get userId from the JWT token
@@ -137,6 +137,17 @@ const canAttemptQuiz = async (req, res) => {
     } catch (error) {
         console.error('Error checking quiz attempt eligibility:', error);
         res.status(500).send("Error checking quiz attempt eligibility");
+    }
+};
+
+const checkQuizAttempts = async (req, res) => {
+    const quizId = parseInt(req.params.quizId);
+    try {
+        const attempts = await Quiz.checkQuizAttempts(quizId);
+        res.json({ hasAttempts: attempts > 0 });
+    } catch (error) {
+        console.error('Error checking quiz attempts:', error);
+        res.status(500).send("Error checking quiz attempts");
     }
 };
 
@@ -152,6 +163,54 @@ const getUserQuizResults = async (req, res) => {
     }
 };
 
+const updateQuiz = async (req, res) => {
+    try {
+        const quizId = parseInt(req.params.quizId);
+        const { title, description, totalQuestions, totalMarks, duration, maxAttempts } = req.body;
+
+        if (!title || !description || !totalQuestions || !totalMarks || !duration || !maxAttempts) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const updatedQuizData = {
+            title,
+            description,
+            totalQuestions: parseInt(totalQuestions),
+            totalMarks: parseInt(totalMarks),
+            duration: parseInt(duration),
+            maxAttempts: parseInt(maxAttempts)
+        };
+
+        const updatedQuiz = await Quiz.updateQuiz(quizId, updatedQuizData);
+
+        res.status(200).json(updatedQuiz);
+    } catch (error) {
+        console.error("Error updating quiz:", error);
+        res.status(500).json({ message: "Error updating quiz", error: error.message });
+    }
+};
+
+const updateQuizQuestions = async (req, res) => {
+    const quizId = parseInt(req.params.quizId);
+    const { questions } = req.body;
+
+    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+        console.log("Missing or invalid questions array");
+        return res.status(400).json({ message: "Missing or invalid questions array" });
+    }
+
+    try {
+        console.log('Received questions for updating:', questions); // Log received questions
+        await Quiz.updateQuizQuestions(quizId, questions);
+        res.status(200).json({ message: 'Questions updated successfully' });
+    } catch (error) {
+        console.error("Error updating quiz questions:", error);
+        res.status(500).json({ message: "Error updating quiz questions", error: error.message });
+    }
+};
+
+
+
 const deleteQuiz = async (req, res) => {
     const id = parseInt(req.params.id);
     try {
@@ -164,7 +223,7 @@ const deleteQuiz = async (req, res) => {
         console.error(error);
         res.status(500).send("Error deleting quiz");
     }
-}
+};
 
 module.exports = {
     getAllQuizzes,
@@ -173,8 +232,11 @@ module.exports = {
     submitQuizAnswers,
     getQuizResult,
     canAttemptQuiz,
+    checkQuizAttempts,
     getUserQuizResults,
     deleteQuiz,
     createQuiz,
-    createQuizQuestion 
+    createQuizQuestion ,
+    updateQuiz,
+    updateQuizQuestions
 };

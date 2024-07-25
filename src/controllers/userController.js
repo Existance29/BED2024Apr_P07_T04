@@ -2,6 +2,7 @@ const User = require("../models/user")
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const jwt = require("jsonwebtoken")
+const axios = require('axios');
 require("dotenv").config()
 
 
@@ -96,7 +97,6 @@ const getPrivateUserById = async (req, res) => {
                 role: 'student'
             }
     } */
-  //update the data found in the user table
   const id = parseInt(req.user.userId);
   try {
     const user = await User.getPrivateUserById(id)
@@ -314,6 +314,20 @@ const createUser = async (req, res, next, _generateAccessToken = generateAccessT
   try {
     //hash the password and replace the password field with the new hashed password
     newUser.password = hashPassword(newUser.password)
+    //use an ip API to get the user's country and replace it
+    //use try-catch, in case api call fails, country will remain unchanged (US by default)
+    const options = {
+      'method': 'GET',
+      'url': 'http://ip-api.com/json',
+      'headers': {
+        'Content-Type': 'application/json'
+      }
+    }
+    try{
+      newUser.country = (await axios(options)).data.country
+    }catch (e){
+      console.error(e)
+    }
     const createdUser = await User.createUser(newUser)
     //create user successful, display it as json
     res.status(201).json(_generateAccessToken(createdUser));
@@ -358,7 +372,7 @@ const updateProfilePic = async (req, res) => {
       // Clean up uploaded file
       fs.unlinkSync(file.path);
 
-      res.status(201).send("Profile picture updated successfully");
+      res.status(200).send("Profile picture updated successfully");
   } catch (error) {
       console.error(error);
       res.status(500).send("Error updating profile picture");
@@ -377,7 +391,7 @@ const updateUser = async (req, res) => {
   const id = req.user.userId
   try {
     const updatedUser = await User.updateUser(id,data)
-    res.status(201).json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error updating user")
@@ -394,7 +408,7 @@ const updatePassword = async (req, res) => {
   //update the user's password
   try {
     const updatedUser = await User.updatePassword(req.user.userId,hashPassword(req.body.new_password))
-    res.status(201).json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error updating user password")
@@ -459,7 +473,7 @@ const addSubLecture = async (req,res) => {
     //check if user already viewed lecture
     //we do not want duplicates of a table entry
     //still return status 201 anyways, its still a success
-    if (await User.hasViewedSubLecture(uid, lid)) return res.status(201).send("user already viewed sub lecture")
+    if (await User.hasViewedSubLecture(uid, lid)) return res.status(200).send("user already viewed sub lecture")
     //user has not viewed lecture, add it
     await User.addSubLecture(uid,lid)
     res.status(201).send("success");

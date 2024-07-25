@@ -19,7 +19,7 @@
         </div>
         <div class="row" style="margin-left: 17%; color: white; width: 65%; height: 2vw;">
             <div class="col-md-10 d-flex">
-                <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 5%;'>Create Quiz</h1>
+                <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 5%;'>Edit Quiz</h1>
             </div>
         </div>
         <br>
@@ -33,8 +33,12 @@
                 <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
             </div>
             <div class="mb-3">
-                <label for="totalQuestions" class="form-label">Total Questions</label>
-                <input type="number" class="form-control" id="totalQuestions" name="totalQuestions" required>
+                <label for="totalQuestions" class="form-label">Total Questions (Fixed)</label>
+                <input type="number" style="background-color: rgb(167, 167, 167);" class="form-control" id="totalQuestions" name="totalQuestions" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="totalMarks" class="form-label">Total Marks (Fixed)</label>
+                <input type="number" style="background-color: rgb(167, 167, 167);"   class="form-control" id="totalMarks" name="totalMarks" readonly>
             </div>
             <div class="mb-3">
                 <label for="duration" class="form-label">Duration (in minutes)</label>
@@ -44,14 +48,15 @@
                 <label for="maxAttempts" class="form-label">Max Attempts</label>
                 <input type="number" class="form-control" id="maxAttempts" name="maxAttempts" required>
             </div>
-            <button class="btn" type="submit" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Create Quiz</button>
+            <button class="btn" type="submit" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Save Changes</button>
+            <button class="btn" type="button" id="editQuestionsBtn" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Edit Questions</button>
         </form>
     </main>
     
     <div class="footer-placeholder"></div>
 
     <script src="./scripts/common.js"></script>
-    <script src="./scripts/create-quiz.js"></script>
+    <script src="./scripts/edit-quiz.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 </body>
