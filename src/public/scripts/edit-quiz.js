@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search);
     const quizId = params.get('quizId');
 
-    // Fetch existing quiz data
     try {
         const response = await fetch(`/quizzes/${quizId}`, {
             headers: {
@@ -18,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('title').value = quiz.title;
         document.getElementById('description').value = quiz.description;
         document.getElementById('totalQuestions').value = quiz.totalQuestions;
-        document.getElementById('totalMarks').value = quiz.totalMarks; // This will be updated automatically
+        document.getElementById('totalMarks').value = quiz.totalMarks; 
         document.getElementById('duration').value = quiz.duration;
         document.getElementById('maxAttempts').value = quiz.maxAttempts;
     } catch (error) {
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             title: formData.get('title'),
             description: formData.get('description'),
             totalQuestions: parseInt(formData.get('totalQuestions')),
-            totalMarks: parseInt(formData.get('totalQuestions')) * 10, // Ensure totalMarks is always totalQuestions * 10
+            totalMarks: parseInt(formData.get('totalQuestions')) * 10, 
             duration: parseInt(formData.get('duration')),
             maxAttempts: parseInt(formData.get('maxAttempts'))
         };
@@ -69,7 +68,28 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
-    document.getElementById('editQuestionsBtn').addEventListener('click', function() {
-        window.location.href = `edit-questions.html?quizId=${quizId}`;
+    document.getElementById('editQuestionsBtn').addEventListener('click', async function() {
+        try {
+            const response = await fetch(`/quizzes/${quizId}/checkAttempts`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const { hasAttempts } = await response.json();
+
+            if (hasAttempts) {
+                alert('Cannot edit questions for quiz that has already been attempted by user. Try other quizzes with no attempts.');
+            } else {
+                window.location.href = `edit-questions.html?quizId=${quizId}`;
+            }
+        } catch (error) {
+            console.error('Error checking quiz attempts:', error);
+            alert('Error checking quiz attempts. Please try again.');
+        }
     });
 });

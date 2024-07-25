@@ -72,7 +72,7 @@ const getAllQuizzes = async (req, res) => {
         console.error(error);
         res.status(500).send("Error retrieving quizzes");
     }
-}
+};
 
 const getQuizById = async (req, res) => {
     const id = parseInt(req.params.quizId);
@@ -86,7 +86,7 @@ const getQuizById = async (req, res) => {
         console.error(error);
         res.status(500).send("Error retrieving quiz");
     }
-}
+};
 
 const getQuizQuestions = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
@@ -111,7 +111,7 @@ const submitQuizAnswers = async (req, res) => {
         console.error(error);
         res.status(500).send("Error submitting quiz answers");
     }
-}
+};
 
 const getQuizResult = async (req, res) => {
     const quizId = parseInt(req.params.quizId);
@@ -125,7 +125,7 @@ const getQuizResult = async (req, res) => {
         console.error(`Error fetching quiz result for quizId ${quizId} and resultId ${resultId}:`, error);
         res.status(500).send("Error fetching quiz result");
     }
-}
+};
 
 const canAttemptQuiz = async (req, res) => {
     const userId = req.user.userId; // Get userId from the JWT token
@@ -140,6 +140,17 @@ const canAttemptQuiz = async (req, res) => {
     }
 };
 
+const checkQuizAttempts = async (req, res) => {
+    const quizId = parseInt(req.params.quizId);
+    try {
+        const attempts = await Quiz.checkQuizAttempts(quizId);
+        res.json({ hasAttempts: attempts > 0 });
+    } catch (error) {
+        console.error('Error checking quiz attempts:', error);
+        res.status(500).send("Error checking quiz attempts");
+    }
+};
+
 const getUserQuizResults = async (req, res) => {
     const userId = req.user.userId; // Get userId from the JWT token
 
@@ -151,6 +162,7 @@ const getUserQuizResults = async (req, res) => {
         res.status(500).send("Error fetching user quiz results");
     }
 };
+
 const updateQuiz = async (req, res) => {
     try {
         const quizId = parseInt(req.params.quizId);
@@ -211,7 +223,7 @@ const deleteQuiz = async (req, res) => {
         console.error(error);
         res.status(500).send("Error deleting quiz");
     }
-}
+};
 
 module.exports = {
     getAllQuizzes,
@@ -220,6 +232,7 @@ module.exports = {
     submitQuizAnswers,
     getQuizResult,
     canAttemptQuiz,
+    checkQuizAttempts,
     getUserQuizResults,
     deleteQuiz,
     createQuiz,
