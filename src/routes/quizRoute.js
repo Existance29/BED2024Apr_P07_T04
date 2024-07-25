@@ -9,6 +9,7 @@ const quizRoute = (app) => {
     app.get("/quizzes/:quizId/results/:resultId", authenticateToken, quizController.getQuizResult);
     app.get('/quizzes/attempt/:quizId', authenticateToken, quizController.canAttemptQuiz);
     app.get('/user/results', authenticateToken, quizController.getUserQuizResults);
+    app.delete("/quizzes/:id", authenticateToken, quizController.deleteQuiz);
 }
 
 module.exports = quizRoute;
