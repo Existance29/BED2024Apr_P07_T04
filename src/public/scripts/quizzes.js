@@ -8,6 +8,15 @@ const role = sessionStorage.getItem("role") || localStorage.getItem("role");
 
 console.log('Role:', role); // Debugging log
 
+document.addEventListener('DOMContentLoaded', () => {
+    if (role === 'lecturer') {
+        document.getElementById('uploadQuizBtn').style.display = 'inline';
+        document.getElementById('uploadQuizBtn').addEventListener('click', () => {
+            window.location.href = 'create-quiz.html';
+        });
+    }
+});
+
 async function fetchQuizzes() {
     try {
         const response = await get('http://localhost:3000/quizzes');
@@ -30,7 +39,7 @@ function displayQuizzes(quizzes) {
 
         const deleteButton = (role === 'lecturer') ? `
         <button class="delete-btn btn section-text" type="button" onclick="confirmDeleteQuiz('${quiz.id}')" style="border-radius: 25px; margin-top: 10px; background-color: red; color: white;">
-            Delete
+           <img src="assets/lectures/delete.png" alt="Delete" style="width: 25px; height: 25px;">
         </button>
         ` : '';
 
@@ -44,6 +53,7 @@ function displayQuizzes(quizzes) {
                 </div>
                 <div class="col-md-2 text-end">
                     <a href="quizDetails.html?quizId=${quiz.id}" class="quiz-btn btn section-text" type="button" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Start</a>
+                    <br>
                     ${deleteButton}
                 </div>
             </div>
