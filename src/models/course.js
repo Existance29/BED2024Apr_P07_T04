@@ -91,6 +91,30 @@ class Course {
         );
     }
 
+    static async getCourseByIdWithoutVideo(courseID) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `SELECT CourseID, Title, Thumbnail, Description, Details, Caption, Category, TotalRate, Ratings FROM Courses WHERE CourseID = @courseID`;
+        const request = connection.request();
+        request.input("courseID", sql.Int, courseID);  // Changed this line to explicitly set the type
+        const result = await request.query(sqlQuery);
+
+        connection.close();
+        if (result.recordset.length === 0) {
+            return null;
+        }
+        return new Course(
+            result.recordset[0].CourseID,
+            result.recordset[0].Title,
+            result.recordset[0].Thumbnail,
+            result.recordset[0].Description,
+            result.recordset[0].Details,
+            result.recordset[0].Caption,
+            result.recordset[0].Category,
+            result.recordset[0].TotalRate,
+            result.recordset[0].Ratings,
+        );
+    }
+
     static async updateCourse(courseID, newCourseData) {
         const connection = await sql.connect(dbConfig);
     

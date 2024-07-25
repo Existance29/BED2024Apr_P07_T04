@@ -29,7 +29,12 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage: storage });
+// Set file size limit to 50MB
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
+});
+
 
 //load frontend
 const staticMiddleware = express.static("public")
@@ -42,6 +47,17 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //for property inheritance swagger
 //setup routes
 route(app, upload)
+
+// Error handling middleware for Multer errors
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+      return res.status(400).json({ message: 'File size exceeds the 50MB limit. Please upload a smaller file.' });
+  } else if (err) {
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+  }
+  next();
+});
 
 app.listen(port, async () => {
   try {
