@@ -268,8 +268,8 @@ class User {
         const result  = (await this.query("SELECT AVG(s) AS score, SUM(q) AS questions FROM (SELECT MAX((score + 0.0)/(totalMarks + 0.0)) AS s, MAX(totalQuestions) AS q FROM Results WHERE userId = @id GROUP BY quizId) AS hi;", params)).recordset[0]
         
         //default to 0
-        let quizAccuracy = result ? result.score : 0
-        let questionsCompleted = result ? result.questions : 0
+        let quizAccuracy = result.score ? result.score : 0
+        let questionsCompleted = result.questions? result.questions : 0
         return {
             quiz_accuracy: quizAccuracy,
             questions_completed: questionsCompleted,

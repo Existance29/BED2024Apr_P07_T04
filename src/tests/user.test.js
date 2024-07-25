@@ -405,7 +405,11 @@ describe("User.getQuizOverall", () => {
   })
 
   it("should handle cases where there are no quiz stats", async () => {
-    const mockData = []
+    const mockData = [
+      {
+        
+      }
+    ]
 
     const expectedResult = {
       quiz_accuracy: 0,
