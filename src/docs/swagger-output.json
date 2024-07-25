@@ -3450,6 +3450,41 @@
         }
 
       }
+    },
+    "/comments": {
+      "get": {
+        "description": "Get all comments",
+        "tags": ["Comments"],
+        "responses": {
+          "200": {
+            "description": "Success, returns an array of comments",
+            "schema": {
+              "type": "array",
+              "example": [
+                {
+                    "commentID": 1,
+                    "message": "The lecture was very informative and well-structured.",
+                    "rating": "5"
+                },
+                {
+                    "commentID": 2,
+                    "message": "I appreciated the clear explanations and examples.",
+                    "rating": "4"
+                },
+                {
+                    "commentID": 3,
+                    "message": "The pacing was perfect and kept me engaged throughout.",
+                    "rating": "5"
+                }
+              ]
+            }  
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+
+      }
     }
   }
 }
