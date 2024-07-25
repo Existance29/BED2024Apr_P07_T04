@@ -56,7 +56,7 @@
         height: 400px;
     }
 </style>
-<body> 
+<body>
     <!-- Navbar -->
     <div class="nav-placeholder"></div>
 
@@ -82,13 +82,11 @@
             </div>
         </div>
         <!-- YouTube Search and Video Player -->
-        <div class="d-flex" style="margin-top: 5vw;">
-            <div style="width: 100%; color: white;">
-                <h4 class="exo-semibold" style="font-size: 0.95vw; margin-bottom: 1vw;">YouTube Search</h4>
-                <input type="text" id="youtube-search" placeholder="Search YouTube">
-                <div id="videos" class="video-player"></div>
-                <div id="youtube-player" class="video-player"></div> <!-- Correct ID for video player -->
-            </div>
+        <div class="youtube-search-container">
+            <h4 class="exo-semibold">Here are some relevant videos about the Course</h4>
+            <input type="text" id="youtube-search" placeholder="Search YouTube">
+            <div id="videos"></div>
+            <div id="youtube-player" class="video-player"></div>
         </div>
     </main>
     <!-- Edit Lecture Modal -->

@@ -1,5 +1,4 @@
 const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
-const role = sessionStorage.getItem("role") || localStorage.getItem("role");
 
 async function handleSubmit(event) {
     event.preventDefault();
