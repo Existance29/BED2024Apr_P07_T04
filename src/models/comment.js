@@ -58,3 +58,5 @@ class Comment {
         return this.getCommentById(commentID);
     }
 }
+
+module.exports = Comment

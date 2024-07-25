@@ -29,6 +29,11 @@ a{
     padding-top: 4vw;
 }
 
+.full-bg{
+    background-color: #32CB94;
+    background-image: url('../assets/general/pattern-bg-full.png');
+}
+
 /*setup classes for font types*/
 .poppins-regular {
     font-family: "Poppins", sans-serif;
@@ -83,4 +88,26 @@ a{
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
+}
+
+/*css for loading animation*/
+#loading-screen {
+    background: white; /* Sets a white background for the loading screen */
+    position: absolute; /* Positions the loading screen absolutely within its container */
+    top: 0; left: 0; /* Aligns the loading screen to the top left corner */
+    width: 100%; /* Loading screen width spans the full width of its container */
+    height: 100vh; /* Loading screen height spans the full height of the viewport */
+}
+
+.loading-animation {
+    position: absolute; /* Positions the animation absolutely within its container */
+    top: 50%; left: 50%; /* Centers the animation */
+    transform: translate(-50%, -50%); /* Adjusts the animation's position to be truly centered */
+    width: 10%; /* Sets the width of the animation to 10% of its container */
+}
+
+/*content to be loaded*/
+#loading-main{
+    display: none; /*hide by default*/
+    min-height: 100vh;
 }

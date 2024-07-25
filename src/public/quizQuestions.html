@@ -1,108 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Take Quiz</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
-            font-size: 2em;
-        }
-        .question {
-            margin-bottom: 20px;
-        }
-        .question h2 {
-            margin: 0;
-        }
-        .question p {
-            margin: 5px 0;
-        }
-        .question label {
-            display: block;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 1em;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <link href="./styles/common.css" rel="stylesheet">
+    <link href="./styles/quiz-questions.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Take Quiz</h1>
-    <div id="quizContainer"></div>
-    <button onclick="submitQuiz()">Submit Quiz</button>
+    <div class="nav-placeholder"></div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const quizId = urlParams.get('quizId');
-        let questions = [];
+    <main class="background-img long-bg">
+        <div id="quizTitle" class="d-flex" style="margin-left: 17%; color: white; width: 65%; height: 2vw;"></div>
+        <br>
+        <div id="timer" class="d-flex" style="margin-left: 17%; color: white; width: 65%; height: 2vw;">00:00</div>
+        <div class="quiz">
+            <div id="quizContainer"></div>
+            <button onclick="submitQuiz()" class="quiz-btn btn section-text" type="button" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: #245D51; color: white;">Submit</button>
+        </div>
+    </main>
 
-        async function fetchQuizQuestions() {
-            try {
-                const response = await fetch(`http://localhost:3000/quizzes/${quizId}/questions`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                questions = await response.json();
-                displayQuestions();
-            } catch (error) {
-                console.error('Error fetching quiz questions:', error);
-            }
-        }
-
-        function displayQuestions() {
-            const container = document.getElementById('quizContainer');
-            container.innerHTML = '';
-            questions.forEach((question, index) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'question';
-                questionDiv.innerHTML = `
-                    <h2>Question ${index + 1}</h2>
-                    <p>${question.text}</p>
-                    ${question.options.map((option, i) => `
-                        <label>
-                            <input type="radio" name="question-${question.id}" value="${i}"> ${option}
-                        </label><br>
-                    `).join('')}
-                `;
-                container.appendChild(questionDiv);
-            });
-        }
-
-        async function submitQuiz() {
-            const answers = questions.map(question => {
-                const selectedOption = document.querySelector(`input[name="question-${question.id}"]:checked`);
-                return {
-                    questionId: question.id,
-                    answer: selectedOption ? parseInt(selectedOption.value) : null
-                };
-            });
-
-            try {
-                const response = await fetch(`http://localhost:3000/quizzes/${quizId}/submit`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ quizId, answers })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const result = await response.json();
-                alert(`Quiz submitted successfully`);
-                window.location.href = `quizResults.html?quizId=${quizId}&resultId=${result.resultId}`;
-            } catch (error) {
-                console.error('Error submitting quiz:', error);
-            }
-        }
-
-        fetchQuizQuestions();
-    </script>
+    <div class="footer-placeholder"></div>
+    
+    <script src="./scripts/common.js"></script>
+    <script src="./scripts/quiz-questions.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 </body>
 </html>

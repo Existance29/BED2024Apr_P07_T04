@@ -5,6 +5,16 @@ const dbConfig = require("./dbConfig");
 
 // SQL data for seeding the database
 const seedSQL = `
+declare @sql nvarchar(max) = (
+    select 
+        'alter table ' + quotename(schema_name(schema_id)) + '.' +
+        quotename(object_name(parent_object_id)) +
+        ' drop constraint '+quotename(name) + ';'
+    from sys.foreign_keys
+    for xml path('')
+);
+exec sp_executesql @sql;
+
 -- Drop foreign key constraints
 IF OBJECT_ID('FK_CourseLectures_CourseID', 'F') IS NOT NULL
   ALTER TABLE CourseLectures DROP CONSTRAINT FK_CourseLectures_CourseID;
@@ -30,6 +40,16 @@ IF OBJECT_ID('FK_IncorrectQuestions_ResultID', 'F') IS NOT NULL
   ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_ResultID;
 IF OBJECT_ID('FK_IncorrectQuestions_QuestionID', 'F') IS NOT NULL
   ALTER TABLE IncorrectQuestions DROP CONSTRAINT FK_IncorrectQuestions_QuestionID;
+IF OBJECT_ID('FK_UserQuizAttempts_UserID', 'F') IS NOT NULL
+  ALTER TABLE UserQuizAttempts DROP CONSTRAINT FK_UserQuizAttempts_UserID;
+IF OBJECT_ID('FK_UserQuizAttempts_QuizID', 'F') IS NOT NULL
+  ALTER TABLE UserQuizAttempts DROP CONSTRAINT FK_UserQuizAttempts_QuizID;
+IF OBJECT_ID('FK_Results_UserID', 'F') IS NOT NULL
+  ALTER TABLE Results DROP CONSTRAINT FK_Results_UserID;
+IF OBJECT_ID('FK_User_Sub_Lectures_UserID', 'F') IS NOT NULL
+  ALTER TABLE Results DROP CONSTRAINT FK_User_Sub_Lectures_UserID;
+IF OBJECT_ID('FK_User_Sub_Lectures_SubLectureID', 'F') IS NOT NULL
+  ALTER TABLE Results DROP CONSTRAINT FK_User_Sub_Lectures_SubLectureID;
 
 -- Drop all tables if they exist
 IF OBJECT_ID('UserCourses', 'U') IS NOT NULL DROP TABLE UserCourses;
@@ -45,9 +65,14 @@ IF OBJECT_ID('Results', 'U') IS NOT NULL DROP TABLE Results;
 IF OBJECT_ID('IncorrectQuestions', 'U') IS NOT NULL DROP TABLE IncorrectQuestions;
 IF OBJECT_ID('Quizzes', 'U') IS NOT NULL DROP TABLE Quizzes;
 IF OBJECT_ID('Profile_Pictures', 'U') IS NOT NULL DROP TABLE Profile_Pictures;
-
+IF OBJECT_ID('User_Sub_Lectures', 'U') IS NOT NULL DROP TABLE User_Sub_Lectures;
+IF OBJECT_ID('UserQuizAttempts', 'U') IS NOT NULL DROP TABLE UserQuizAttempts;
+IF OBJECT_ID('User_Completed_Courses', 'U') IS NOT NULL DROP TABLE User_Completed_Courses;
+IF OBJECT_ID('Comments', 'U') IS NOT NULL DROP TABLE Comments;
 
 -- Create tables
+
+
 CREATE TABLE Users (
   id INT PRIMARY KEY IDENTITY,
   first_name VARCHAR(40) NOT NULL,
@@ -55,7 +80,10 @@ CREATE TABLE Users (
   email VARCHAR(50) NOT NULL UNIQUE,
   password VARCHAR(100) NOT NULL,
   about_me VARCHAR(250) NOT NULL,
-  country VARCHAR(100) NOT NULL
+  country VARCHAR(100) NOT NULL,
+  join_date DATE NOT NULL,
+  job_title VARCHAR(100) NOT NULL,
+  role VARCHAR(8) NOT NULL, CHECK (role = 'student' OR role = 'lecturer')
 );
 
 CREATE TABLE Profile_Pictures (
@@ -86,12 +114,6 @@ CREATE TABLE Lectures (
   Duration INT NOT NULL,
 );
 
-CREATE TABLE Comments (
-  CommentID INT PRIMARY KEY IDENTITY(1,1),
-  Message NVARCHAR(MAX) NOT NULL,
-  Rating NVARCHAR(MAX) NOT NULL,
-);
-
 CREATE TABLE SubLectures (
   SubLectureID INT PRIMARY KEY IDENTITY(1,1),
   LectureID INT,
@@ -100,6 +122,32 @@ CREATE TABLE SubLectures (
   Description NVARCHAR(MAX) NOT NULL,
   Duration INT NOT NULL,
   Video VARBINARY(MAX) NOT NULL
+);
+
+CREATE TABLE Comments (
+  UserID INT NOT NULL,
+  CommentID INT PRIMARY KEY IDENTITY(1,1),
+  Message NVARCHAR(MAX) NOT NULL,
+  Rating NVARCHAR(MAX) NOT NULL,
+  sub_lecture_id INT NOT NULL,
+  FOREIGN KEY (UserID) REFERENCES Users(id),
+  FOREIGN KEY (sub_lecture_id) REFERENCES SubLectures(SubLectureID)
+);
+
+
+CREATE TABLE User_Sub_Lectures (
+  user_id INT NOT NULL,
+  sub_lecture_id INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES Users(id),
+  FOREIGN KEY (sub_lecture_id) REFERENCES SubLectures(SubLectureID)
+);
+
+ CREATE TABLE User_Completed_Courses (
+  user_id INT NOT NULL,
+  course_id INT NOT NULL,
+  date_completed DATE,
+  FOREIGN KEY (user_id) REFERENCES Users(id),
+  FOREIGN KEY (course_id) REFERENCES Courses(CourseID)
 );
 
 CREATE TABLE CourseLectures (
@@ -116,7 +164,8 @@ CREATE TABLE Quizzes (
   description VARCHAR(500) NOT NULL,
   totalQuestions INT NOT NULL,
   totalMarks INT NOT NULL,
-  duration INT NOT NULL
+  duration INT NOT NULL,
+  maxAttempts INT NOT NULL DEFAULT 2
 );
 
 CREATE TABLE Questions (
@@ -140,13 +189,15 @@ CREATE TABLE Answers (
 CREATE TABLE Results (
   id INT PRIMARY KEY IDENTITY,
   quizId INT NOT NULL,
+  userId INT NOT NULL,
   score INT NOT NULL,
   totalQuestions INT NOT NULL,
   correctAnswers INT NOT NULL,
   timeTaken INT NOT NULL,
   totalMarks INT NOT NULL,
   grade VARCHAR(2) NOT NULL,
-  FOREIGN KEY (quizId) REFERENCES Quizzes(id)
+  FOREIGN KEY (quizId) REFERENCES Quizzes(id),
+  FOREIGN KEY (userId) REFERENCES Users(id)
 );
 
 CREATE TABLE IncorrectQuestions (
@@ -160,6 +211,15 @@ CREATE TABLE IncorrectQuestions (
   FOREIGN KEY (questionId) REFERENCES Questions(id)
 );
 
+CREATE TABLE UserQuizAttempts (
+    id INT PRIMARY KEY IDENTITY,
+    userId INT NOT NULL,
+    quizId INT NOT NULL,
+    attempts INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (userId) REFERENCES Users(id),
+    FOREIGN KEY (quizId) REFERENCES Quizzes(id)
+);
+
 `;
 
 // Course data with their respective lectures and sub-lectures
@@ -171,7 +231,7 @@ const systemData = [
       "description": "A JavaScript-based open-source front-end web framework for developing single-page applications.",
       "details": "Learn the fundamentals of Angular JS, a powerful JavaScript-based open-source front-end web framework. This course will take you through the essentials of developing single-page applications using Angular's MVC architecture. You will understand the core concepts such as modules, controllers, services, and directives. The course provides a hands-on approach to mastering Angular JS, ensuring you can build dynamic and responsive web applications. \nJoin industry experts as they guide you through practical exercises and real-world scenarios to apply your knowledge. By the end of the course, you will have a solid foundation in Angular JS, enabling you to develop robust applications. Whether you are a beginner or looking to enhance your skills, this course is designed to cater to your needs.",
       "caption": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "front-end,framework",
       "totalRate": 2000,
       "ratings": 500,
       "video": "ads_video.mp4"
@@ -183,9 +243,9 @@ const systemData = [
         "category": "education", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Angular Basics", "description": "Learn the basics of Angular.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Angular Setup", "description": "Setup your Angular environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Angular First App", "description": "Build your first Angular app.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Angular Basics", "description": "Learn the basics of Angular.", "duration": 10, "video": "Angular/Angular01/Angular Basics.mp4" },
+          { "name": "Angular Setup", "description": "Setup your Angular environment.", "duration": 10, "video": "Angular/Angular01/Angular Setup.mp4" },
+          { "name": "Angular First App", "description": "Build your first Angular app.", "duration": 10, "video": "Angular/Angular01/Angular First App.mp4" }
         ]
       },
       { 
@@ -194,9 +254,9 @@ const systemData = [
         "category": "education", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Template Syntax", "description": "Learn about template syntax.", "duration": 15, "video": "test.mp4" },
-          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "Angular/Angular02/Component Basics.mp4" },
+          { "name": "Template Syntax", "description": "Learn about template syntax.", "duration": 15, "video": "Angular/Angular02/Template Syntax.mp4" },
+          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "Angular/Angular02/Component Interaction.mp4" }
         ]
       },
       { 
@@ -205,9 +265,9 @@ const systemData = [
         "category": "education", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Binding Basics", "description": "Learn the basics of data binding.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Property Binding", "description": "Understand property binding.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Event Binding", "description": "Handle events with event binding.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Binding Basics", "description": "Learn the basics of data binding.", "duration": 15, "video": "Angular/Angular03/Binding Basics.mp4" },
+          { "name": "Property Binding", "description": "Understand property binding.", "duration": 15, "video": "Angular/Angular03/Property Binding.mp4" },
+          { "name": "Event Binding", "description": "Handle events with event binding.", "duration": 15, "video": "Angular/Angular03/Event Binding.mp4" }
         ]
       },
       { 
@@ -216,9 +276,9 @@ const systemData = [
         "category": "education", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Service Basics", "description": "Learn the basics of services.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Dependency Injection", "description": "Understand dependency injection.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Using Services", "description": "Use services in your application.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Service Basics", "description": "Learn the basics of services.", "duration": 15, "video": "Angular/Angular04/Service Basics.mp4" },
+          { "name": "Dependency Injection", "description": "Understand dependency injection.", "duration": 15, "video": "Angular/Angular04/Dependency Injection.mp4" },
+          { "name": "Using Services", "description": "Use services in your application.", "duration": 15, "video": "Angular/Angular04/Using Services.mp4" }
         ]
       }
     ]
@@ -230,7 +290,7 @@ const systemData = [
       "description": "AWS Coaching and Certification helps you build and validate your skills so you can get more out of the cloud.",
       "details": "AWS (Amazon Web Services) Coaching and Certification course is designed to help you build and validate your cloud skills. This comprehensive course covers the essentials of AWS, including computing, storage, database, and networking. You will learn how to deploy and manage applications on the AWS platform, ensuring they are scalable, secure, and cost-effective. \nThroughout the course, you will engage in hands-on labs and real-world projects that simulate the AWS environment. Our expert instructors will guide you through the best practices for using AWS services and tools. By the end of the course, you will be well-prepared for the AWS certification exams, enhancing your career prospects in the cloud computing domain.",
       "caption": "Master AWS with expert training.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "cloud computing",
       "totalRate": 1200,
       "ratings": 500,
       "video": "ads_video.mp4"
@@ -242,9 +302,9 @@ const systemData = [
         "category": "cloud", 
         "duration": 30, 
         "subLectures": [
-          { "name": "AWS Basics", "description": "Learn the basics of AWS.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "AWS Setup", "description": "Setup your AWS environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "AWS First App", "description": "Build your first AWS app.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "AWS Basics", "description": "Learn the basics of AWS.", "duration": 10, "video": "AWS/AWS01/AWS Basics.mp4" },
+          { "name": "AWS Setup", "description": "Setup your AWS environment.", "duration": 10, "video": "AWS/AWS01/AWS Setup.mp4" },
+          { "name": "AWS First App", "description": "Build your first AWS app.", "duration": 10, "video": "AWS/AWS01/AWS First App.mp4" }
         ]
       },
       { 
@@ -253,9 +313,9 @@ const systemData = [
         "category": "cloud", 
         "duration": 45, 
         "subLectures": [
-          { "name": "EC2 Basics", "description": "Understand the basics of EC2.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "EC2 Setup", "description": "Setup your EC2 environment.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "EC2 Management", "description": "Manage EC2 instances.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "EC2 Basics", "description": "Understand the basics of EC2.", "duration": 15, "video": "AWS/AWS02/EC2 Basics.mp4" },
+          { "name": "EC2 Setup", "description": "Setup your EC2 environment.", "duration": 15, "video": "AWS/AWS02/EC2 Setup.mp4" },
+          { "name": "EC2 Management", "description": "Manage EC2 instances.", "duration": 15, "video": "AWS/AWS02/EC2 Management.mp4" }
         ]
       },
       { 
@@ -264,9 +324,9 @@ const systemData = [
         "category": "cloud", 
         "duration": 40, 
         "subLectures": [
-          { "name": "S3 Basics", "description": "Learn the basics of S3.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "S3 Setup", "description": "Setup your S3 environment.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "S3 Management", "description": "Manage S3 buckets.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "S3 Basics", "description": "Learn the basics of S3.", "duration": 15, "video": "AWS/AWS03/S3 Basics.mp4" },
+          { "name": "S3 Setup", "description": "Setup your S3 environment.", "duration": 15, "video": "AWS/AWS03/S3 Setup.mp4" },
+          { "name": "S3 Management", "description": "Manage S3 buckets.", "duration": 15, "video": "AWS/AWS03/S3 Management.mp4" }
         ]
       },
       { 
@@ -275,9 +335,9 @@ const systemData = [
         "category": "cloud", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Lambda Basics", "description": "Learn the basics of Lambda.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Lambda Setup", "description": "Setup your Lambda environment.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Lambda Functions", "description": "Build your first Lambda function.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Lambda Basics", "description": "Learn the basics of Lambda.", "duration": 15, "video": "AWS/AWS04/Lambda Basics.mp4" },
+          { "name": "Lambda Setup", "description": "Setup your Lambda environment.", "duration": 15, "video": "AWS/AWS04/Lambda Setup.mp4" },
+          { "name": "Lambda Functions", "description": "Build your first Lambda function.", "duration": 15, "video": "AWS/AWS04/Lambda Functions.mp4" }
         ]
       }
     ]
@@ -289,7 +349,7 @@ const systemData = [
       "description": "An open-source model-view–viewmodel front end JavaScript framework for building user interfaces & single-page applications.",
       "details": "This course offers an in-depth exploration of Vue JS, an open-source model-view–viewmodel front-end JavaScript framework. You will learn how to build user interfaces and single-page applications using Vue's declarative rendering, component system, and reactivity mechanisms. The course emphasizes practical application, guiding you through the creation of complex and dynamic web applications. \nGain insights from industry professionals on how to effectively use Vue's ecosystem, including Vue Router and Vuex for state management. By the end of this course, you will have a thorough understanding of Vue JS and the skills needed to create high-performance web applications.",
       "caption": "Get started with Vue JS.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "front-end,framework",
       "totalRate": 1000,
       "ratings": 500,
       "video": "ads_video.mp4"
@@ -301,9 +361,9 @@ const systemData = [
         "category": "education", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Vue Basics", "description": "Learn the basics of Vue.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Vue Setup", "description": "Setup your Vue environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Vue First App", "description": "Build your first Vue app.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Vue Basics", "description": "Learn the basics of Vue.", "duration": 10, "video": "Vue/Vue01/Vue Basics.mp4" },
+          { "name": "Vue Setup", "description": "Setup your Vue environment.", "duration": 10, "video": "Vue/Vue01/Vue Setup.mp4" },
+          { "name": "Vue First App", "description": "Build your first Vue app.", "duration": 10, "video": "Vue/Vue01/Vue First App.mp4" }
         ]
       },
       { 
@@ -312,9 +372,9 @@ const systemData = [
         "category": "education", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Template Syntax", "description": "Learn about template syntax.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "Vue/Vue02/Component Basics.mp4" },
+          { "name": "Template Syntax", "description": "Learn about template syntax.", "duration": 15, "video": "Vue/Vue02/Template Syntax.mp4" },
+          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "Vue/Vue02/Component Interaction.mp4" }
         ]
       },
       { 
@@ -323,9 +383,9 @@ const systemData = [
         "category": "education", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Directive Basics", "description": "Learn the basics of directives.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Custom Directives", "description": "Create custom directives.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Directive Usage", "description": "Use directives in your application.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Directive Basics", "description": "Learn the basics of directives.", "duration": 15, "video": "Vue/Vue03/Directive Basics.mp4" },
+          { "name": "Custom Directives", "description": "Create custom directives.", "duration": 15, "video": "Vue/Vue03/Custom Directives.mp4" },
+          { "name": "Directive Usage", "description": "Use directives in your application.", "duration": 15, "video": "Vue/Vue03/Directive Usage.mp4" }
         ]
       },
       { 
@@ -334,9 +394,9 @@ const systemData = [
         "category": "education", 
         "duration": 35, 
         "subLectures": [
-          { "name": "CLI Basics", "description": "Learn the basics of Vue CLI.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "CLI Setup", "description": "Setup your Vue CLI environment.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "CLI Projects", "description": "Create projects with Vue CLI.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "CLI Basics", "description": "Learn the basics of Vue CLI.", "duration": 15, "video": "Vue/Vue04/CLI Basics.mp4" },
+          { "name": "CLI Setup", "description": "Setup your Vue CLI environment.", "duration": 15, "video": "Vue/Vue04/CLI Setup.mp4" },
+          { "name": "CLI Projects", "description": "Create projects with Vue CLI.", "duration": 15, "video": "Vue/Vue04/CLI Projects.mp4" }
         ]
       }
     ]
@@ -345,10 +405,10 @@ const systemData = [
     course: {
       "title": "Python",
       "thumbnail": "python.png",
-      "description": "Python is an interpreted high-level general-purpose programming language.",
+      "description": "Python is an interpreted high-level general-purpose programming-language.",
       "details": "Python programming language is known for its simplicity and versatility. This course covers Python from the basics to advanced topics, providing a comprehensive understanding of the language. You will start with syntax and basic programming constructs, then move on to more complex topics such as object-oriented programming, data structures, and web development with Django and Flask. \nThe course includes numerous coding exercises and projects to reinforce your learning. By the end of the course, you will be proficient in Python, capable of developing various types of applications and scripts. This course is ideal for beginners as well as experienced programmers looking to enhance their Python skills.",
       "caption": "Python programming made easy.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "programming language",
       "totalRate": 400,
       "ratings": 200,
       "video": "ads_video.mp4"
@@ -360,9 +420,9 @@ const systemData = [
         "category": "programming", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Python Basics", "description": "Learn the basics of Python.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Python Setup", "description": "Setup your Python environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Python First Script", "description": "Write your first Python script.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Python Basics", "description": "Learn the basics of Python.", "duration": 10, "video": "Python/Python01/Python Basics.mp4" },
+          { "name": "Python Setup", "description": "Setup your Python environment.", "duration": 10, "video": "Python/Python01/Python Setup.mp4" },
+          { "name": "Python First Script", "description": "Write your first Python script.", "duration": 10, "video": "Python/Python01/Python First Script.mp4" }
         ]
       },
       { 
@@ -371,9 +431,9 @@ const systemData = [
         "category": "programming", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Data Type Basics", "description": "Learn the basics of data types.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Complex Data Types", "description": "Understand complex data types.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Data Type Operations", "description": "Perform operations on data types.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Data Type Basics", "description": "Learn the basics of data types.", "duration": 15, "video": "Python/Python02/Data Type Basics.mp4" },
+          { "name": "Complex Data Types", "description": "Understand complex data types.", "duration": 15, "video": "Python/Python02/Complex Data Types.mp4" },
+          { "name": "Data Type Operations", "description": "Perform operations on data types.", "duration": 15, "video": "Python/Python02/Data Type Operations.mp4" }
         ]
       },
       { 
@@ -382,9 +442,9 @@ const systemData = [
         "category": "programming", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Function Basics", "description": "Learn the basics of functions.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Lambda Functions", "description": "Understand lambda functions.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Function Usage", "description": "Use functions in your scripts.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Function Basics", "description": "Learn the basics of functions.", "duration": 15, "video": "Python/Python03/Function Basics.mp4" },
+          { "name": "Lambda Functions", "description": "Understand lambda functions.", "duration": 15, "video": "Python/Python03/Lambda Functions.mp4" },
+          { "name": "Function Usage", "description": "Use functions in your scripts.", "duration": 15, "video": "Python/Python03/Function Usage.mp4" }
         ]
       },
       { 
@@ -393,9 +453,9 @@ const systemData = [
         "category": "programming", 
         "duration": 35, 
         "subLectures": [
-          { "name": "OOP Basics", "description": "Learn the basics of OOP.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Classes and Objects", "description": "Understand classes and objects.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "OOP Principles", "description": "Learn OOP principles.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "OOP Basics", "description": "Learn the basics of OOP.", "duration": 15, "video": "Python/Python04/OOP Basics.mp4" },
+          { "name": "Classes and Objects", "description": "Understand classes and objects.", "duration": 15, "video": "Python/Python04/Classes and Objects.mp4" },
+          { "name": "OOP Principles", "description": "Learn OOP principles.", "duration": 15, "video": "Python/Python04/OOP Principles.mp4" }
         ]
       }
     ]
@@ -407,7 +467,7 @@ const systemData = [
       "description": "React is a free and open-source front-end JavaScript library for building user interfaces based on UI components.",
       "details": "React JS is a popular JavaScript library for building user interfaces. This course will guide you through the process of developing dynamic web applications using React's component-based architecture. You will learn about JSX, state management, props, and the lifecycle methods of React components. \nThe course provides hands-on experience through projects that cover practical use cases. By the end of the course, you will be able to build and deploy complex React applications. This course is suitable for both beginners and those looking to deepen their knowledge of React.",
       "caption": "React JS for beginners.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "front-end,framework",
       "totalRate": 3000,
       "ratings": 5000,
       "video": "ads_video.mp4"
@@ -419,9 +479,9 @@ const systemData = [
         "category": "education", 
         "duration": 30, 
         "subLectures": [
-          { "name": "React Basics", "description": "Learn the basics of React.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "React Setup", "description": "Setup your React environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "React First App", "description": "Build your first React app.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "React Basics", "description": "Learn the basics of React.", "duration": 10, "video": "React/React01/React Basics.mp4" },
+          { "name": "React Setup", "description": "Setup your React environment.", "duration": 10, "video": "React/React01/React Setup.mp4" },
+          { "name": "React First App", "description": "Build your first React app.", "duration": 10, "video": "React/React01/React First App.mp4" }
         ]
       },
       { 
@@ -430,9 +490,9 @@ const systemData = [
         "category": "education", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "JSX Syntax", "description": "Learn about JSX syntax.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Component Basics", "description": "Understand the basics of components.", "duration": 15, "video": "React/React02/Component Basics.mp4" },
+          { "name": "JSX Syntax", "description": "Learn about JSX syntax.", "duration": 15, "video": "React/React02/JSX Syntax.mp4" },
+          { "name": "Component Interaction", "description": "Manage interaction between components.", "duration": 15, "video": "React/React02/Component Interaction.mp4" }
         ]
       },
       { 
@@ -441,9 +501,9 @@ const systemData = [
         "category": "education", 
         "duration": 40, 
         "subLectures": [
-          { "name": "State Basics", "description": "Learn the basics of state.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Props Usage", "description": "Use props in components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "State Management", "description": "Manage state in React.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "State Basics", "description": "Learn the basics of state.", "duration": 15, "video": "React/React03/State Basics.mp4" },
+          { "name": "Props Usage", "description": "Use props in components.", "duration": 15, "video": "React/React03/Props Usage.mp4" },
+          { "name": "State Management", "description": "Manage state in React.", "duration": 15, "video": "React/React03/State Management.mp4" }
         ]
       },
       { 
@@ -452,9 +512,9 @@ const systemData = [
         "category": "education", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Hooks Basics", "description": "Learn the basics of React Hooks.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Custom Hooks", "description": "Create custom hooks.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Using Hooks", "description": "Use hooks in your application.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Hooks Basics", "description": "Learn the basics of React Hooks.", "duration": 15, "video": "React/React04/Hooks Basics.mp4" },
+          { "name": "Custom Hooks", "description": "Create custom hooks.", "duration": 15, "video": "React/React04/Custom Hooks.mp4" },
+          { "name": "Using Hooks", "description": "Use hooks in your application.", "duration": 15, "video": "React/React04/Using Hooks.mp4" }
         ]
       }
     ]
@@ -466,7 +526,7 @@ const systemData = [
       "description": "The process of evaluating and verifying that a software product or application does what it is supposed to do.",
       "details": "Software testing is a crucial aspect of the development process. This course covers the fundamentals of software testing, including manual and automated testing techniques. You will learn how to design test cases, execute tests, and analyze results to ensure software quality. \nThe course includes practical exercises and real-world scenarios to help you understand different types of testing, such as unit testing, integration testing, system testing, and acceptance testing. By the end of the course, you will have the skills to effectively test software applications, ensuring they meet the required standards and specifications.",
       "caption": "Become an expert in software testing.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "software development",
       "totalRate": 6000,
       "ratings": 2000,
       "video": "ads_video.mp4"
@@ -478,9 +538,9 @@ const systemData = [
         "category": "testing", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Testing Basics", "description": "Learn the basics of software testing.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Testing Setup", "description": "Setup your testing environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "First Test Case", "description": "Write your first test case.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Testing Basics", "description": "Learn the basics of software testing.", "duration": 10, "video": "Software/Software01/Testing Basics.mp4" },
+          { "name": "Testing Setup", "description": "Setup your testing environment.", "duration": 10, "video": "Software/Software01/Testing Setup.mp4" },
+          { "name": "First Test Case", "description": "Write your first test case.", "duration": 10, "video": "Software/Software01/First Test Case.mp4" }
         ]
       },
       { 
@@ -489,9 +549,9 @@ const systemData = [
         "category": "testing", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Manual Testing Basics", "description": "Learn the basics of manual testing.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Writing Test Cases", "description": "Write effective test cases.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Executing Test Cases", "description": "Execute test cases.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Manual Testing Basics", "description": "Learn the basics of manual testing.", "duration": 15, "video": "Software/Software02/Manual Testing Basics.mp4" },
+          { "name": "Writing Test Cases", "description": "Write effective test cases.", "duration": 15, "video": "Software/Software02/Writing Test Cases.mp4" },
+          { "name": "Executing Test Cases", "description": "Execute test cases.", "duration": 15, "video": "Software/Software02/Executing Test Cases.mp4" }
         ]
       },
       { 
@@ -500,9 +560,9 @@ const systemData = [
         "category": "testing", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Automated Testing Basics", "description": "Learn the basics of automated testing.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Using Testing Tools", "description": "Use automated testing tools.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Creating Automated Tests", "description": "Create automated tests.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Automated Testing Basics", "description": "Learn the basics of automated testing.", "duration": 15, "video": "Software/Software03/Automated Testing Basics.mp4" },
+          { "name": "Using Testing Tools", "description": "Use automated testing tools.", "duration": 15, "video": "Software/Software03/Using Testing Tools.mp4" },
+          { "name": "Creating Automated Tests", "description": "Create automated tests.", "duration": 15, "video": "Software/Software03/Creating Automated Tests.mp4" }
         ]
       },
       { 
@@ -511,9 +571,9 @@ const systemData = [
         "category": "testing", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Tool Basics", "description": "Learn the basics of testing tools.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Selecting Tools", "description": "Select the right tools for your needs.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Using Tools", "description": "Effectively use testing tools.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Tool Basics", "description": "Learn the basics of testing tools.", "duration": 15, "video": "Software/Software04/Tools Basics.mp4" },
+          { "name": "Selecting Tools", "description": "Select the right tools for your needs.", "duration": 15, "video": "Software/Software04/Selecting Tools.mp4" },
+          { "name": "Using Tools", "description": "Effectively use testing tools.", "duration": 15, "video": "Software/Software04/Using Tools.mp4" }
         ]
       }
     ]
@@ -525,7 +585,7 @@ const systemData = [
       "description": "Learn the fastest way to build a modern dashboard for any platforms, browser, or device.",
       "details": "Core UI course focuses on building modern dashboards and user interfaces for any platform, browser, or device. You will learn how to use Core UI components to create responsive and interactive dashboards. The course covers the use of Bootstrap and other frameworks to enhance your UI development skills. \nThroughout the course, you will work on projects that require you to apply your knowledge in real-world scenarios. By the end of the course, you will be proficient in developing modern user interfaces that are both functional and aesthetically pleasing.",
       "caption": "Core UI development.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "front-end",
       "totalRate": 6000,
       "ratings": 3000,
       "video": "ads_video.mp4"
@@ -537,9 +597,9 @@ const systemData = [
         "category": "ui", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Core UI Basics", "description": "Learn the basics of Core UI.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Core UI Setup", "description": "Setup your Core UI environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "First Core UI Project", "description": "Create your first Core UI project.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Core UI Basics", "description": "Learn the basics of Core UI.", "duration": 10, "video": "Core/Core01/Core UI Basics.mp4" },
+          { "name": "Core UI Setup", "description": "Setup your Core UI environment.", "duration": 10, "video": "Core/Core01/Core UI Setup.mp4" },
+          { "name": "First Core UI Project", "description": "Create your first Core UI project.", "duration": 10, "video": "Core/Core01/First Core UI Project.mp4" }
         ]
       },
       { 
@@ -548,9 +608,9 @@ const systemData = [
         "category": "ui", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Component Basics", "description": "Understand the basics of Core UI components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Advanced Components", "description": "Learn about advanced Core UI components.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Component Integration", "description": "Integrate Core UI components into your project.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Component Basics", "description": "Understand the basics of Core UI components.", "duration": 15, "video": "Core/Core02/Component Basics.mp4" },
+          { "name": "Advanced Components", "description": "Learn about advanced Core UI components.", "duration": 15, "video": "Core/Core02/Advanced Components.mp4" },
+          { "name": "Component Integration", "description": "Integrate Core UI components into your project.", "duration": 15, "video": "Core/Core02/Component Integration.mp4" }
         ]
       },
       { 
@@ -559,9 +619,9 @@ const systemData = [
         "category": "ui", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Dashboard Basics", "description": "Learn the basics of building dashboards.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Dashboard Design", "description": "Design effective dashboards.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Advanced Dashboards", "description": "Create advanced dashboards.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Dashboard Basics", "description": "Learn the basics of building dashboards.", "duration": 15, "video": "Core/Core03/Dashboard Basics.mp4" },
+          { "name": "Dashboard Design", "description": "Design effective dashboards.", "duration": 15, "video": "Core/Core03/Dashboard Design.mp4" },
+          { "name": "Advanced Dashboards", "description": "Create advanced dashboards.", "duration": 15, "video": "Core/Core03/Advanced Dashboards.mp4" }
         ]
       },
       { 
@@ -570,9 +630,9 @@ const systemData = [
         "category": "ui", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Advanced UI Techniques", "description": "Learn advanced UI techniques.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Performance Optimization", "description": "Optimize the performance of your UI.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "UI Testing", "description": "Test your UI for functionality and performance.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Advanced UI Techniques", "description": "Learn advanced UI techniques.", "duration": 15, "video": "Core/Core04/Advanced UI Techniques.mp4" },
+          { "name": "Performance Optimization", "description": "Optimize the performance of your UI.", "duration": 15, "video": "Core/Core04/Performance Optimization.mp4" },
+          { "name": "UI Testing", "description": "Test your UI for functionality and performance.", "duration": 15, "video": "Core/Core04/UI Testing.mp4" }
         ]
       }
     ]
@@ -584,7 +644,7 @@ const systemData = [
       "description": "An interactive data visualization software developed by Microsoft with primary focus on business intelligence.",
       "details": "Power BI is an interactive data visualization software developed by Microsoft. This course covers the essentials of using Power BI for business intelligence. You will learn how to connect to various data sources, transform and clean data, and create interactive reports and dashboards. \nThe course includes hands-on labs and projects that simulate real-world data analysis scenarios. You will gain insights into best practices for data visualization and storytelling with data. By the end of the course, you will be able to leverage Power BI to make data-driven decisions and present data in a compelling way.",
       "caption": "Power BI for data visualization.",
-      "category": "commercial, office, shop, educate, academy, single family home, studio, university",
+      "category": "data,software",
       "totalRate": 8000,
       "ratings": 7000,
       "video": "ads_video.mp4"
@@ -596,9 +656,9 @@ const systemData = [
         "category": "data", 
         "duration": 30, 
         "subLectures": [
-          { "name": "Power BI Basics", "description": "Learn the basics of Power BI.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "Power BI Setup", "description": "Setup your Power BI environment.", "duration": 10, "video": "ads_video.mp4" },
-          { "name": "First Power BI Report", "description": "Create your first Power BI report.", "duration": 10, "video": "ads_video.mp4" }
+          { "name": "Power BI Basics", "description": "Learn the basics of Power BI.", "duration": 10, "video": "Power/Power01/Power BI Basics.mp4" },
+          { "name": "Power BI Setup", "description": "Setup your Power BI environment.", "duration": 10, "video": "Power/Power01/Power BI Setup.mp4" },
+          { "name": "First Power BI Report", "description": "Create your first Power BI report.", "duration": 10, "video": "Power/Power01/First Power BI Report.mp4" }
         ]
       },
       { 
@@ -607,9 +667,9 @@ const systemData = [
         "category": "data", 
         "duration": 45, 
         "subLectures": [
-          { "name": "Data Source Basics", "description": "Understand the basics of data sources.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Connecting Data Sources", "description": "Connect to different data sources.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Managing Data Sources", "description": "Manage and transform data sources.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Data Source Basics", "description": "Understand the basics of data sources.", "duration": 15, "video": "Power/Power02/Data Source Basics.mp4" },
+          { "name": "Connecting Data Sources", "description": "Connect to different data sources.", "duration": 15, "video": "Power/Power02/Connecting Data Sources.mp4" },
+          { "name": "Managing Data Sources", "description": "Manage and transform data sources.", "duration": 15, "video": "Power/Power02/Managing Data Sources.mp4" }
         ]
       },
       { 
@@ -618,9 +678,9 @@ const systemData = [
         "category": "data", 
         "duration": 40, 
         "subLectures": [
-          { "name": "Report Basics", "description": "Learn the basics of creating reports.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Advanced Reports", "description": "Create advanced reports.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Report Customization", "description": "Customize your reports.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Report Basics", "description": "Learn the basics of creating reports.", "duration": 15, "video": "Power/Power03/Report Basics.mp4" },
+          { "name": "Advanced Reports", "description": "Create advanced reports.", "duration": 15, "video": "Power/Power03/Advanced Reports.mp4" },
+          { "name": "Report Customization", "description": "Customize your reports.", "duration": 15, "video": "Power/Power03/Report Customization.mp4" }
         ]
       },
       { 
@@ -629,9 +689,9 @@ const systemData = [
         "category": "data", 
         "duration": 35, 
         "subLectures": [
-          { "name": "Advanced Data Visualization", "description": "Learn advanced data visualization techniques.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Data Analysis", "description": "Perform data analysis in Power BI.", "duration": 15, "video": "ads_video.mp4" },
-          { "name": "Power BI Automation", "description": "Automate tasks in Power BI.", "duration": 15, "video": "ads_video.mp4" }
+          { "name": "Advanced Data Visualization", "description": "Learn advanced data visualization techniques.", "duration": 15, "video": "Power/Power04/Advanced Data Visualization.mp4" },
+          { "name": "Data Analysis", "description": "Perform data analysis in Power BI.", "duration": 15, "video": "Power/Power04/Data Analysis.mp4" },
+          { "name": "Power BI Automation", "description": "Automate tasks in Power BI.", "duration": 15, "video": "Power/Power04/Power BI Automation.mp4" }
         ]
       }
     ]
@@ -722,7 +782,8 @@ async function insertQuizzes(connection) {
       "description": "Test your knowledge on the basics of Angular JS.",
       "totalQuestions": 5,
       "totalMarks": 50,
-      "duration": 30,
+      "duration": 1,
+      "maxAttempts": 2,
       "questions": [
         {
           "text": "What is Angular JS?",
@@ -757,6 +818,7 @@ async function insertQuizzes(connection) {
       "totalQuestions": 5,
       "totalMarks": 50,
       "duration": 30,
+      "maxAttempts": 2,
       "questions": [
         {
           "text": "What is Vue JS primarily used for?",
@@ -791,6 +853,7 @@ async function insertQuizzes(connection) {
       "totalQuestions": 5,
       "totalMarks": 50,
       "duration": 30,
+      "maxAttempts": 2,
       "questions": [
         {
           "text": "What does EC2 stand for?",
@@ -825,6 +888,7 @@ async function insertQuizzes(connection) {
       "totalQuestions": 5,
       "totalMarks": 50,
       "duration": 30,
+      "maxAttempts": 2,
       "questions": [
         {
           "text": "What is the correct file extension for Python files?",
@@ -862,33 +926,86 @@ async function insertQuizzes(connection) {
       .input('totalQuestions', sql.Int, quiz.totalQuestions)
       .input('totalMarks', sql.Int, quiz.totalMarks)
       .input('duration', sql.Int, quiz.duration)
+      .input('maxAttempts', sql.Int, quiz.maxAttempts)
       .query(`
-        INSERT INTO Quizzes (title, description, totalQuestions, totalMarks, duration)
-        VALUES (@title, @description, @totalQuestions, @totalMarks, @duration);
+        INSERT INTO Quizzes (title, description, totalQuestions, totalMarks, duration, maxAttempts)
+        VALUES (@title, @description, @totalQuestions, @totalMarks, @duration, @maxAttempts);
         SELECT SCOPE_IDENTITY() AS id;
       `);
 
-      const quizId = result.recordset[0].id;
+    const quizId = result.recordset[0].id;
 
-      for (const question of quiz.questions) {
-          await connection.request()
-              .input('quizId', sql.Int, quizId)
-              .input('text', sql.VarChar, question.text)
-              .input('options', sql.NVarChar, question.options)
-              .input('correctAnswer', sql.Int, question.correctAnswer)
-              .query(`
-                  INSERT INTO Questions (quizId, text, options, correctAnswer)
-                  VALUES (@quizId, @text, @options, @correctAnswer);
-              `);
-      }
+    for (const question of quiz.questions) {
+      await connection.request()
+        .input('quizId', sql.Int, quizId)
+        .input('text', sql.VarChar, question.text)
+        .input('options', sql.NVarChar, question.options)
+        .input('correctAnswer', sql.Int, question.correctAnswer)
+        .query(`
+          INSERT INTO Questions (quizId, text, options, correctAnswer)
+          VALUES (@quizId, @text, @options, @correctAnswer);
+        `);
+    }
   }
-} 
+}
+
+async function insertUsers(connection){
+  //insert user info, completed courses and quiz results
+  await connection.request().query(`
+    INSERT INTO Users
+    VALUES ('Toby', 'Dean', 'toby@noom.com', '$2a$10$EOx5JueXvEFefFQQm63YC.v2SwPOyZMKqcPcXY9HAW253JijH3/IO', 'Maxing out mastermindz', 'United States', '2022-06-04', 'University Student', 'student');
+    SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO Users
+    VALUES ('Sarah', 'Lee', 'sarah@noom.com', '$2a$10$EOx5JueXvEFefFQQm63YC.v2SwPOyZMKqcPcXY9HAW253JijH3/IO', 'Hi there stranger! Im Sarah. A idiot who likes doggos and fun', 'Singapore', '2024-06-04', 'Web Developer', 'student');
+    SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO Users
+    VALUES ('George', 'Wilson', 'george@noom.com', '$2a$10$EOx5JueXvEFefFQQm63YC.v2SwPOyZMKqcPcXY9HAW253JijH3/IO', '01/04/2024. Published over 5 courses on mastermindz', 'United Kingdom', '2023-05-20', 'Full Stack Engineer', 'lecturer');
+    SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO User_Completed_Courses VALUES (1,1,'2022-06-08');
+    INSERT INTO User_Completed_Courses VALUES (1,2,'2022-07-11');
+    INSERT INTO User_Completed_Courses VALUES (1,3,'2023-01-09');
+    INSERT INTO User_Completed_Courses VALUES (1,4,'2023-05-12');
+    INSERT INTO User_Completed_Courses VALUES (1,5,'2023-05-16');
+    INSERT INTO User_Completed_Courses VALUES (1,6,'2023-08-23');
+    INSERT INTO User_Completed_Courses VALUES (1,7,'2023-10-04');
+    INSERT INTO User_Completed_Courses VALUES (1,8,'2023-10-08');
+
+    INSERT INTO User_Completed_Courses VALUES (2,3,'2024-07-01');
+	INSERT INTO User_Completed_Courses VALUES (2,5,'2024-07-03');
+
+    INSERT INTO Results VALUES (1,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (2,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (3,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (4,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO Results VALUES (1,2,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (3,2,10,5,1,10,50,'F'); SELECT SCOPE_IDENTITY() AS id;
+
+    INSERT INTO Results VALUES (2,3,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
+    INSERT INTO Results VALUES (3,3,30,5,3,10,50,'B'); SELECT SCOPE_IDENTITY() AS id;
+  `)
+  
+  //insert profile imgs
+  const profileImgs = ["profile-img-seed-1.png","profile-img-seed-2.jpg","profile-img-seed-3.jpg"]
+  for (let i = 0; i < profileImgs.length; i++){
+    const imgBase64 = fs.readFileSync(`../src/public/assets/profile/${profileImgs[i]}`, {encoding: 'base64'})
+    await connection.request()
+    .input("user_id", i+1)
+    .input("img", imgBase64)
+    .query("INSERT INTO Profile_Pictures (user_id,img) VALUES (@user_id, @img); SELECT SCOPE_IDENTITY() AS id;")
+  }
+
+  
+}
 
 // Load the SQL and run the seed process
 async function run() {
+  const connection = await sql.connect(dbConfig);
   try {
     // Make sure that any items are correctly URL encoded in the connection string
-    const connection = await sql.connect(dbConfig);
     const request = connection.request();
     await request.query(seedSQL);
     console.log("Database reset and tables created");
@@ -901,10 +1018,15 @@ async function run() {
     await insertQuizzes(connection);
     console.log("Quizzes inserted");
 
+    // Insert user data
+    await insertUsers(connection);
+    console.log("Users inserted");
+
     connection.close();
     console.log("Seeding completed");
   } catch (err) {
     console.log("Seeding error:", err);
+    connection.close()
   }
 }
 

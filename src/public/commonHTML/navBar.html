@@ -17,38 +17,45 @@
         <!-- Other options-->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0 ms-auto" style="margin-right: 10%;">
-            <li class="nav-item">
-                <a class="nav-link" href="../index.html" style="color: black;">Home</a>
-            </li>
+            
             <!-- home link-->
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="../courses.html" style="color: #000000;" onclick="loadCourses()">Course</a>
+            <li class="nav-item search-bar-hide">
+                <a class="nav-link active" aria-current="page" href="./courses.html" style="color: #000000;" onclick="loadCourses()">Courses</a>
             </li>
              <!-- How it works link-->
-            <li class="nav-item">
-                <a class="nav-link" href="#" style="color: black;">About Us</a>
+            <li class="nav-item search-bar-hide">
+                <a class="nav-link" href="./about-us.html" style="color: black;">About Us</a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#" style="color: black;">Contact</a>
+            <li class="nav-item search-bar-hide">
+                <a class="nav-link" href="./contact.html" style="color: black;">Contact</a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="../quiz.html" style="color: black;">Quizzes</a>
+            <li class="nav-item search-bar-hide">
+                <a class="nav-link" href="./quiz.html" style="color: black;">Quizzes</a>
             </li>
 
-            <li class="nav-item d-flex align-items-center">
-                <img src="../assets/navbar/search-icon.png" alt="Logo" height = 14 class="d-inline-block">
+            <li class="nav-item align-items-center search-bar-hide" onclick = "searchBar()" style="cursor: pointer; display: flex;">
+                <img src="./assets/navbar/search-icon.png" alt="Logo" height = 16 class="d-inline-block">
             </li>
+
+            <!--Search bar (hidden by default)-->
+            <form class="form-inline my-2 my-lg-0" id = "nav-search-bar-form">
+                <div class = "form-control mr-sm-2 d-flex align-items-center" id = "nav-search-bar" style="color: black;">
+                    <input type="text" placeholder="Search.." style="all: unset; width: 100%;">
+                    <img src = "../assets/navbar/close.png" style="object-fit: contain; cursor: pointer;width: 2.8%; aspect-ratio: 1/1;" onclick="hideSearchBar()">
+                </div>
+            </form>
+
             <!--Hide login and profile buttons by default, show with js-->
             <li class="nav-item" id = "login" style="display: none;">
                 <a class="btn nav-login-btn" href="../login.html" role="button">Login</a>
             </li>
 
             <li class="nav-item dropdown" id = "profile" style="display: none;">
-                <img src="../assets/profile/default-profile-picture.jpg" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" height= "40" width = "40" style="border-radius: 50%; object-fit: cover;" id="nav-profile-img">
+                <img src="./assets/profile/default-profile-picture.jpg" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" height= "40" width = "40" style="border-radius: 50%; object-fit: cover;" id="nav-profile-img">
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Profile</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="goToProfile()">My Profile</a></li>
                   <li><a class="dropdown-item" href="../settings.html">Settings</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#" onclick="logout()">Log out</a></li>

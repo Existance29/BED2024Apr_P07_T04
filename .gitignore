@@ -1,4 +1,4 @@
 node_modules
 src/database/dbConfig.js
-/dbConfig.js
+dbConfig.js
 .DS_Store

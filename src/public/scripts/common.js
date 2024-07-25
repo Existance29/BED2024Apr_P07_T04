@@ -11,10 +11,18 @@ $(".footer-placeholder").load("./commonHTML/footer.html")
 //load the header for course-view pages
 $(".course-header-placeholder").load("./commonHTML/course-header.html")
 
+// Get the access token and role
+const accessToken = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+const userRole =  localStorage.getItem("role") || sessionStorage.getItem("role");
+
+
+
+console.log(accessToken)
 //returns a string with title-casing
 function title(str) {
     return str.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
+
 
 //get the value of the url parameter of the current address
 function getUrlParameter(sParam){
@@ -36,7 +44,8 @@ async function post(url, jsondata){
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "cache-control": "no-cache"
+        "cache-control": "no-cache",
+        "authorization": `Bearer ${accessToken}`
       },
   
       body: JSON.stringify(jsondata)
@@ -48,11 +57,9 @@ async function post(url, jsondata){
 async function get(url){
     let settings = {
       method: "GET",
-      crossDomain: true,
       headers: {
         "content-type": "application/json",
-        "cache-control": "no-cache",
-        
+        "authorization": `Bearer ${accessToken}`
       }
     }
     return await fetch(url, settings)
@@ -61,12 +68,11 @@ async function get(url){
 
 async function put(url, jsondata){
   let settings = {
-    keepalive: true,
-    crossDomain: true,
     method: "PUT",
     headers: {
       "content-type": "application/json",
-      "cache-control": "no-cache"
+      "cache-control": "no-cache",
+      "authorization": `Bearer ${accessToken}`
     },
     body: JSON.stringify(jsondata)
   }
@@ -76,24 +82,41 @@ async function put(url, jsondata){
 }
 
 //check if user is logged in 
-function isLoggedIn(){
-    //check both local and session storage
-    var localUser = localStorage.userid
-    var sessionUser = sessionStorage.userid
-    //if localuser or sessionuser exist, user is logged in
-    return !(localUser == null && sessionUser === undefined && sessionUser == null && sessionUser === undefined)
+async function isLoggedIn(){
+  if (accessToken === null) return false
+  //make sure the jwt is valid
+  const response = await get("/users/decodejwt")
+  return (response.status == 200)
+}
+
+//ensures the user is logged in before accessing the page, else they get redirected to login page
+async function guardLoginPage(){
+  if (!await isLoggedIn()) location.href = "login.html"
+}
+
+//opposite of guardLoginPage, redirect user to home (course) page if they are logged in
+async function guardAlreadyLoginPage(){
+  if (await isLoggedIn()) location.href = "courses.html"
 }
 
 //returns the user id stored in local/session storage
 function getUserID(){
-  if (sessionStorage.userid != null){
-    return sessionStorage.userid
+  //a jwt is split into three parts seperated by a .
+  //the json object is stored in the 2nd part
+  //so split by ., get the json object and use atob to decode it (since its in base64)
+  //use json.parse to turn it into an object and return its userId
 
-  } else if (localStorage.userid != null){
-    return localStorage.userid
-  } 
+  //ensure that accessToken exists
+  if (!accessToken) return null
+  return  
+}
 
-  return null
+
+//to be called when content is done loading
+//shows the content and hides the loading animation
+function loadContent(){
+  document.getElementById("loading-main").style.display = "block"
+  document.getElementById("loading-screen").style.display = "none"
 }
 
 //prevent reloading page when form submitted

@@ -13,7 +13,7 @@
     <div class="nav-placeholder"></div>
 
     <!--background-->
-    <main class = "background-img d-flex justify-content-center">
+    <main class = "background-img full-bg d-flex justify-content-center">
       <!--login frame-->
       <div class = "frame d-flex flex-column">
         <div style="text-align: center; font-size: 1.6vw;" class = "poppins-bold">Create An Account</div>
@@ -52,7 +52,16 @@
               Error message
             </div>
           </div>
-          <button type="submit" class="poppins-medium login-btn" style="margin-top: 3vw;" onclick="signUp()">Sign Up</button>
+
+          <div class="form-group">
+            <label for = "role" class="poppins-medium" style="font-size: 0.95vw; margin-top: 1.7vw;">I am a...</label>
+            <select class = "poppins-regular" style="width: 100%; border-radius: 5px; border-width: 2px; margin-top: 0.5vw; font-size: 0.95vw; padding: 0.2vw;" id = "role">
+              <option value="student">Student</option>
+              <option value="lecturer">Lecturer</option>
+            </select>
+          </div>
+
+          <button type="submit" class="poppins-medium login-btn" style="margin-top: 2vw;" onclick="signUp()">Sign Up</button>
         </form>
 
         <div class="d-flex justify-content-center poppins-medium" style="font-size: 0.9vw; margin-top: 2.5vw;">

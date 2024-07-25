@@ -30,3 +30,41 @@ li{
 .dropdown-menu{
     --bs-dropdown-link-active-bg: none;
 }
+
+#nav-search-bar-form{
+    display: none; 
+    align-items: center; 
+    margin-right: 1vw;
+    width: 25vw;
+}
+
+#nav-search-bar {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    font-size: 0.95vw;
+    background-color: white;
+    background-repeat: no-repeat;
+}
+
+/*keyframe animation to reveal right to left. Its associated to a class so it can be trigger via js*/
+#nav-search-bar.active {
+    animation: reveal 0.2s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes reveal {
+    from {
+        clip-path: inset(0 0 0 100%);
+    }
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+#nav-search-bar::-webkit-search-cancel-button{
+    position:relative;
+    right:20px;    
+}

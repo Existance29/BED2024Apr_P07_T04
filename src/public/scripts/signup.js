@@ -2,6 +2,7 @@ const first_nameInput = document.getElementById("first-name")
 const last_nameInput = document.getElementById("last-name")
 const emailInput = document.getElementById("email")
 const passwordInput = document.getElementById("password")
+const roleInput = document.getElementById("role")
 
 first_nameInput.addEventListener("input", inputChanged)
 last_nameInput.addEventListener("input", inputChanged)
@@ -10,7 +11,7 @@ passwordInput.addEventListener("input", inputChanged)
 
 
 //redirect to home is logged in
-if (isLoggedIn()) location.href = "./courses.html"
+guardAlreadyLoginPage()
 
 //hide the error message when the input field is changed
 function inputChanged(e){
@@ -28,14 +29,22 @@ function hideErrors(){
 
 
 async function signUp(){
-    hideErrors()
+    hideErrors() 
+    //create object for the user's data
+    let country = "United States"
+    try{
+        country = (await (await get("http://ip-api.com/json")).json()).country //auto detect the user's country, defaults to US if it fails
+    }catch(e){}
+    
     const user = {
         "first_name": first_nameInput.value,
         "last_name": last_nameInput.value,
         "email": emailInput.value,
         "password": passwordInput.value,
         "about_me": "",
-        "country": (await (await get("http://ip-api.com/json")).json()).country //auto-detect the user's country
+        "country": country,
+        "job_title": "", //default to blank
+        "role": roleInput.value
     }
     //update database
     const response = await post("/users", user)
@@ -45,7 +54,7 @@ async function signUp(){
         //iterate through all errors, display the error message
         for (var i = 0; i < body.errors.length; i++){
             const x  = body.errors[i]
-            console.log(x[0])
+            console.log(x)
             const errorEle = document.getElementById(`${x[0]}-error`) //get the error messasge element associated with the error
             errorEle.innerText = x[1].replaceAll("_"," ").replaceAll('"','') //do a bit of formatting to make the message more readable
             errorEle.style.display = "block"
@@ -54,8 +63,9 @@ async function signUp(){
     }
 
     //valid input
-    //save the user id to session storage
-    sessionStorage.userid = body.id
+    //save the jwt token to session storage
+    sessionStorage.accessToken = body.accessToken
+    sessionStorage.role = body.role
     //redirect user to courses
     window.location.href = "../courses.html"
     
