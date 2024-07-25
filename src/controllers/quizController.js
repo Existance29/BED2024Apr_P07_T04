@@ -88,6 +88,20 @@ const getUserQuizResults = async (req, res) => {
     }
 };
 
+const deleteQuiz = async (req, res) => {
+    const id = parseInt(req.params.id);
+    try {
+        const success = await Quiz.deleteQuiz(id);
+        if (!success) {
+            return res.status(404).send("Quiz not found");
+        }
+        res.status(204).send();
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error deleting quiz");
+    }
+}
+
 module.exports = {
     getAllQuizzes,
     getQuizById,
@@ -95,5 +109,6 @@ module.exports = {
     submitQuizAnswers,
     getQuizResult,
     canAttemptQuiz,
-    getUserQuizResults 
+    getUserQuizResults,
+    deleteQuiz 
 };

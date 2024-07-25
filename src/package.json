@@ -1,7 +1,7 @@
 {
   "name": "src",
   "version": "1.0.0",
-  "description": "",
+  "description": "run ``npm install``",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
@@ -31,5 +31,9 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "supertest": "^7.0.0"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
   }
 }
