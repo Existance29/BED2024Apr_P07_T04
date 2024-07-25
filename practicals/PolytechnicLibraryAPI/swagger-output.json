@@ -1,8 +1,13 @@
 {
   "swagger": "2.0",
   "info": {
+<<<<<<< HEAD
+    "title": "My API",
+    "description": "Description of your API",
+=======
     "title": "Polytechnic Library API",
     "description": "API for the polytechnic's library system",
+>>>>>>> c02ef7e5f23e1d3848eed0ef8052aa7b947b545f
     "version": "1.0.0"
   },
   "host": "localhost:3000",
@@ -79,6 +84,8 @@
           }
         }
       }
+<<<<<<< HEAD
+=======
     },
     "/books/{bookId}/availability": {
       "put": {
@@ -131,6 +138,7 @@
           }
         }
       }
+>>>>>>> c02ef7e5f23e1d3848eed0ef8052aa7b947b545f
     }
   }
 }
