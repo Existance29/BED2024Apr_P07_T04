@@ -5,10 +5,9 @@ const role = sessionStorage.getItem("role") || localStorage.getItem("role");
 
 console.log('Role:', role); // Debugging log
 
-// Fetch courses from the server
 let editMode = false;
 
-// Function to toggle edit mode 
+// Function to toggle edit mode
 function toggleEditMode() {
     editMode = !editMode;
     loadCourses();
@@ -43,12 +42,12 @@ async function loadCourses() {
     const grid = document.getElementById("system-grid"); // Clear grid
     grid.innerHTML = "";
 
-    // Also get the total number of ratings for each course and the course categories
+    // Update rating count and course categories
     courses.forEach(course => {
         const rating = Math.round(course.totalRate / course.ratings);
-        ratings[rating] += 1; // Update rating count obj
+        ratings[rating] += 1;
 
-        const cats = course.category.split(","); // Assuming Category is a comma-separated string
+        const cats = course.category.split(",");
         cats.forEach(c => {
             if (categories[c]) {
                 categories[c] += 1;
@@ -126,6 +125,7 @@ function filterSection(title) {
     return `<h4 class="exo-semibold" style="font-size: 0.95vw; margin-bottom: 1vw; margin-top: 2.5vw;">${title}</h4>`;
 }
 
+// Load filters based on course categories and ratings
 async function loadFilters() {
     const courses = await fetchCourses();
     const categoryDiv = document.getElementById("filters"); // Get div
@@ -182,6 +182,7 @@ async function loadFilters() {
     categoryDiv.innerHTML += out;
 }
 
+// Function to execute when the page loads
 async function topicOnLoad() {
     console.log('Role inside topicOnLoad:', role); // Debugging log
     const userRole = role;
@@ -197,7 +198,7 @@ async function topicOnLoad() {
     await loadFilters();
 }
 
-// Filter systems
+// Filter courses based on search and filter criteria
 function search() {
     // Get all checkboxes
     // Store the enabled checkbox's ids and use those to filter
@@ -250,6 +251,7 @@ function search() {
     }
 }
 
+// Redirect to the course chapters page
 function goCourse(courseID) {
     window.location.href = `course-chapters.html?courseID=${courseID}`;
 }
