@@ -10,6 +10,7 @@ const courseRoute = (app, upload) => {
     app.get("/courses/:id", courseController.getCourseById);
     app.put("/courses/:id", authenticateToken, courseController.updateCourse); //HAVENT IMPLEMENT IN FRONT END!!
     app.delete("/courses/:id",authenticateToken, courseController.deleteCourse);
+    app.get('/courses/youtube-search/:query', courseController.searchYouTubeVideos); // Updated route to use path parameter
 };
 
 module.exports = courseRoute;

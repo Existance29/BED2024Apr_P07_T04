@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const Course = require("../models/course");
+require('dotenv').config(); // Make sure to load environment variables at the top of your file
+
 
 const createCourse = async (req, res) => {
     // #swagger.tags = ['Courses']
@@ -294,6 +296,34 @@ const searchCourses = async (req, res) => {
     }
 };
 
+const searchYouTubeVideos = async (req, res) => {
+    try {
+        const fetch = (await import('node-fetch')).default;
+        const query = encodeURIComponent(req.params.query); // Extract query from path parameter
+        const apiKey = process.env.YOUTUBE_API_KEY;
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}+summary&type=video&maxResults=5&key=${apiKey}`;
+
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+
+        if (data.items) {
+            const videos = data.items.map(item => ({
+                videoId: item.id.videoId,
+                thumbnail: item.snippet.thumbnails.default.url,
+                title: item.snippet.title
+            }));
+            res.json(videos);
+        } else {
+            res.status(404).json({ message: 'No results found' });
+        }
+    } catch (error) {
+        console.error('Error fetching YouTube videos:', error);
+        res.status(500).json({ message: 'Error fetching YouTube videos', error: error.message });
+    }
+};
+
 module.exports = {
     createCourse,
     getAllCourses,
@@ -302,4 +332,5 @@ module.exports = {
     updateCourse,
     deleteCourse,
     searchCourses,
+    searchYouTubeVideos,
 };
