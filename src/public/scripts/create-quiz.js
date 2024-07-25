@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title: formData.get('title'),
             description: formData.get('description'),
             totalQuestions: parseInt(formData.get('totalQuestions')),
-            totalMarks: parseInt(formData.get('totalMarks')),
+            totalMarks: parseInt(formData.get('totalQuestions')) * 10,
             duration: parseInt(formData.get('duration')),
             maxAttempts: parseInt(formData.get('maxAttempts'))
         };
