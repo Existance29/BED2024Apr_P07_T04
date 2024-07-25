@@ -200,7 +200,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Update successful, returns the updated user data",
             "schema": {
               "type": "object",
@@ -277,8 +277,11 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success, but sublecture is already viewed"
+          },
           "201": {
-            "description": "Success, sublecture is marked as viewed."
+            "description": "Success, sublecture is marked as viewed"
           },
           "401": {
             "description": "Unauthorized"
@@ -542,7 +545,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Success, returns the id of the profile picture, the user's id and the new base64 encoded picture",
             "schema": {
               "type": "object",
@@ -960,7 +963,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Update successful, returns the new password",
             "schema": {
               "type": "object",
