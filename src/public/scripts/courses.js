@@ -272,7 +272,7 @@ async function editCourse(courseID) {
 // Fetch course details by ID
 async function fetchCourseById(courseID) {
     try {
-        const response = await fetch(`/courses/${courseID}`);
+        const response = await fetch(`/courses/${courseID}/without-video`);
         const course = await response.json();
         return course;
     } catch (error) {
