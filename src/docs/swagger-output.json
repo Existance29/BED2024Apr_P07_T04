@@ -3403,6 +3403,53 @@
         }
 
       }
+    },
+    "/quizzes/{:quizId}/checkAttempts": {
+      "get": {
+        "description": "Check if a quiz has been attempted by users before. Limited to logged in users",
+        "tags": ["Quizzes"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          },
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "id of the quiz to check"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns a json with true/false",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hasAttempts": {
+                  "example": true
+                }
+              }
+            }  
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+
+      }
     }
   }
 }
