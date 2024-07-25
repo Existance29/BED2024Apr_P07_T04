@@ -16,7 +16,7 @@ class Comment {
         connection.close();
 
         return result.recordset.map(
-            (row) => new Course(row.CommentID, row.Message, row.Rating)
+            (row) => new Comment(row.CommentID, row.Message, row.Rating)
         );
     }
 
