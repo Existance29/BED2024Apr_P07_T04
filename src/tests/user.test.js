@@ -555,3 +555,57 @@ describe("User.getUserByEmail", () => {
     expect(result).toBeNull()
   });
 })
+
+describe("User.searchUsers", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should retrieve multiple users from the database", async () => {
+    const mockData = [
+        {
+          "first_name": "John",
+          "last_name": "Doe",
+          "about_me": "Hi! My name is John Doe",
+          "country": "United States",
+          "join_date": "2022-06-04T00:00:00.000Z",
+          "job_title": "UI/UX Designer",
+          "role": "student",
+          "email": "johndoe@gmail.com"
+        },
+        {
+            "first_name": "Sig",
+            "last_name": "Ma",
+            "about_me": "Grindset",
+            "country": "New Zealand",
+            "join_date": "2024-01-04T00:00:00.000Z",
+            "job_title": "",
+            "role": "student",
+            "email": "sig@gmail.com"
+          }
+      ]
+
+    //mock the query to return the mssql results
+    User.exceptSelectQuery = jest.fn().mockResolvedValue({recordset: mockData})
+
+    const result = await User.searchUsers(1) //get the output from the test function
+
+    //check the results
+    expect(User.exceptSelectQuery).toHaveBeenCalled()
+    expect(result).toEqual(mockData)
+  })
+
+  it("should return empty array when no user is not found", async () => {
+    const mockData = []
+
+    //mock the query to return the mssql results
+    User.exceptSelectQuery = jest.fn().mockResolvedValue({recordset: mockData})
+
+    const result = await User.searchUsers(1) //get the output from the test function
+
+    //check the results
+    expect(User.exceptSelectQuery).toHaveBeenCalled()
+    expect(result).toHaveLength(0)
+    expect(result).toEqual([])
+  });
+})
