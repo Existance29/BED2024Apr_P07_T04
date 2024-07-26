@@ -21,6 +21,21 @@ class Course {
     static async createCourse(newCourseData) {
         try {
             const connection = await sql.connect(dbConfig);  // Connect to the database using the provided configuration
+    
+            // Check if the title already exists
+            const checkTitleQuery = `SELECT COUNT(*) as count FROM Courses WHERE Title = @title`;
+            const checkTitleRequest = connection.request();
+            checkTitleRequest.input("title", sql.NVarChar, newCourseData.title);
+            const titleResult = await checkTitleRequest.query(checkTitleQuery);
+    
+            if (titleResult.recordset[0].count > 0) {
+                connection.close();
+                const error = new Error("Course title already exists. Please choose a different title.");
+                error.statusCode = 400;  // Set status code for duplicate title
+                throw error;
+            }
+    
+            // If the title does not exist, proceed with insertion
             const sqlQuery = `
                 INSERT INTO Courses (Title, Thumbnail, Description, Details, Caption, Category, Video)
                 VALUES (@title, @thumbnail, @description, @details, @caption, @category, @video);
@@ -34,14 +49,14 @@ class Course {
             request.input("caption", sql.NVarChar, newCourseData.caption);  // Set caption input parameter
             request.input("category", sql.NVarChar, newCourseData.category);  // Set category input parameter
             request.input("video", sql.VarBinary, newCourseData.video);  // Set video input parameter
-
+    
             const result = await request.query(sqlQuery);  // Execute the SQL query
             connection.close();  // Close the database connection
 
             return this.getCourseById(result.recordset[0].CourseID);  // Retrieve and return the newly created course by its ID
         } catch (error) {
             console.error("Database error:", error);  // Log any database errors
-            throw new Error("Error inserting course data");  // Throw an error if the insert operation fails
+            throw new Error(error.message || "Error inserting course data");  // Throw an error if the insert operation fails
         }
     }
 

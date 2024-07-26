@@ -88,7 +88,7 @@ const createCourse = async (req, res) => {
         res.status(201).json(createdCourse);  // Respond with the newly created course
     } catch (error) {
         console.error("Error creating course:", error);  // Log any errors
-        res.status(500).json({ message: "Error creating course", error: error.message });  // Respond with an error message
+        res.status(error.statusCode || 500).json({ message: error.message });  // Respond with an error message and the correct status code
     }
 };
 
