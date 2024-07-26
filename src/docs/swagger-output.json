@@ -200,7 +200,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Update successful, returns the updated user data",
             "schema": {
               "type": "object",
@@ -277,8 +277,11 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success, but sublecture is already viewed"
+          },
           "201": {
-            "description": "Success, sublecture is marked as viewed."
+            "description": "Success, sublecture is marked as viewed"
           },
           "401": {
             "description": "Unauthorized"
@@ -542,7 +545,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Success, returns the id of the profile picture, the user's id and the new base64 encoded picture",
             "schema": {
               "type": "object",
@@ -960,7 +963,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Update successful, returns the new password",
             "schema": {
               "type": "object",
@@ -2543,6 +2546,101 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Quizzes"
+        ],
+        "description": "Create a quiz. Limited to lecturers only",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample schema to add new quiz",
+            "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Javascript Basics"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Test your understanding on the basics of Javascript."
+                  },
+                  "totalQuestions": {
+                    "type": "number",
+                    "example": 10
+                  },
+                  "totalMarks": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 110
+                  },
+                  "maxAttempts": {
+                    "type": "number",
+                    "example": 2
+                  }
+                }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success, returns the created quiz object",
+            "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Javascript Basics"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Test your understanding on the basics of Javascript."
+                  },
+                  "totalQuestions": {
+                    "type": "number",
+                    "example": 10
+                  },
+                  "totalMarks": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 110
+                  },
+                  "maxAttempts": {
+                    "type": "number",
+                    "example": 2
+                  }
+                }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
     "/quizzes/{quizId}": {
@@ -2607,6 +2705,101 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "put": {
+        "tags": [
+          "Quizzes"
+        ],
+        "description": "Update a quiz. Limited to lecturers only",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample schema to add new quiz",
+            "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Javascript Basics"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Test your understanding on the basics of Javascript."
+                  },
+                  "totalQuestions": {
+                    "type": "number",
+                    "example": 10
+                  },
+                  "totalMarks": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 120
+                  },
+                  "maxAttempts": {
+                    "type": "number",
+                    "example": 2
+                  }
+                }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns the created quiz object",
+            "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Javascript Basics"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Test your understanding on the basics of Javascript."
+                  },
+                  "totalQuestions": {
+                    "type": "number",
+                    "example": 10
+                  },
+                  "totalMarks": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 120
+                  },
+                  "maxAttempts": {
+                    "type": "number",
+                    "example": 2
+                  }
+                }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
     "/quizzes/{quizId}/questions": {
@@ -2666,6 +2859,212 @@
                 "name": "main"
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Quizzes"
+        ],
+        "description": "Add a question to a existing quiz. Limited to lecturers only",
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the quiz"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample schema to add a question",
+            "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "example": "To detect changes in the angular 2 project which of the following is used?"
+                  },
+                  "options": {
+                    "type": "array",
+                    "example": [
+                      "zone.js",
+                      "scope.js",
+                      "zones.js",
+                      "zone$,js"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "correctAnswer": {
+                    "type": "number",
+                    "example": 0
+                  }
+                  
+                }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success, returns the created quiz question",
+            "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 15
+                  },
+                  "quizId": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "text": {
+                    "type": "string",
+                    "example": "To detect changes in the angular 2 project which of the following is used?"
+                  },
+                  "options": {
+                    "type": "array",
+                    "example": [
+                      "zone.js",
+                      "scope.js",
+                      "zones.js",
+                      "zone$,js"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "correctAnswer": {
+                    "type": "number",
+                    "example": 0
+                  }
+                  
+                }
+            }
+          },
+          "400": {
+            "description": "Missing required fields"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Quizzes"
+        ],
+        "description": "Update quiz questions. Limited to lecturers only",
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "int",
+            "description": "The id of the quiz"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Sample schema to update questions",
+            "schema": {
+                "type": "object",
+                "properties": {
+                  "questions": {
+                    "example": [
+                      {
+                        "text": "To detect changes in the angular 2 project which of the following is used?",
+                        "options": [
+                            "zone.js",
+                            "scope.js",
+                            "zones.js",
+                            "zone$,js"
+                          ],
+                        "correctAnswer": 3
+                      },
+                      {
+                        "text": "What is Angular JS?",
+                        "options": [
+                          "A framework",
+                          "A library",
+                          "A language",
+                          "An IDE"
+                        ],
+                        "correctAnswer": 0
+                      }
+                    ]
+                  }
+                  
+                }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns the updated quiz question",
+            "schema": {
+                "type": "object",
+                "properties": {
+                  "questions": {
+                    "example": [
+                      {
+                        "text": "To detect changes in the angular 2 project which of the following is used?",
+                        "options": [
+                            "zone.js",
+                            "scope.js",
+                            "zones.js",
+                            "zone$,js"
+                          ],
+                        "correctAnswer": 3
+                      },
+                      {
+                        "text": "What is Angular JS?",
+                        "options": [
+                          "A framework",
+                          "A library",
+                          "A language",
+                          "An IDE"
+                        ],
+                        "correctAnswer": 0
+                      }
+                    ]
+                  }
+                  
+                }
+            }
+          },
+          "400": {
+            "description": "Missing required fields"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "500": {
             "description": "Internal Server Error"
@@ -2745,6 +3144,12 @@
                 "name": "main"
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "500": {
             "description": "Internal Server Error"
@@ -2837,6 +3242,12 @@
                 "name": "main"
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "500": {
             "description": "Internal Server Error"
@@ -2942,6 +3353,12 @@
               }
             }  
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -2979,6 +3396,88 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+
+      }
+    },
+    "/quizzes/{:quizId}/checkAttempts": {
+      "get": {
+        "description": "Check if a quiz has been attempted by users before. Limited to logged in users",
+        "tags": ["Quizzes"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "Format: 'Bearer (jwt)'",
+            "type": "string"
+          },
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "id of the quiz to check"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success, returns a json with true/false",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hasAttempts": {
+                  "example": true
+                }
+              }
+            }  
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+
+      }
+    },
+    "/comments": {
+      "get": {
+        "description": "Get all comments",
+        "tags": ["Comments"],
+        "responses": {
+          "200": {
+            "description": "Success, returns an array of comments",
+            "schema": {
+              "type": "array",
+              "example": [
+                {
+                    "commentID": 1,
+                    "message": "The lecture was very informative and well-structured.",
+                    "rating": "5"
+                },
+                {
+                    "commentID": 2,
+                    "message": "I appreciated the clear explanations and examples.",
+                    "rating": "4"
+                },
+                {
+                    "commentID": 3,
+                    "message": "The pacing was perfect and kept me engaged throughout.",
+                    "rating": "5"
+                }
+              ]
+            }  
           },
           "500": {
             "description": "Internal Server Error"
