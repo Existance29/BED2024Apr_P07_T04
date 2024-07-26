@@ -15,6 +15,20 @@ class Lecture {
     // Method to create a new lecture in the database
     static async createLecture(newLectureData) {
         const connection = await sql.connect(dbConfig);  // Connect to the database
+
+        // Check if the lecture name already exists
+        const checkNameQuery = `SELECT COUNT(*) as count FROM Lectures WHERE Name = @name`;
+        const checkNameRequest = connection.request();
+        checkNameRequest.input("name", sql.NVarChar, newLectureData.name);
+        const nameResult = await checkNameRequest.query(checkNameQuery);
+
+        if (nameResult.recordset[0].count > 0) {
+            connection.close();
+            const error = new Error("Lecture name already exists. Please choose a different name.");
+            error.statusCode = 400;  // Set status code for duplicate name
+            throw error;
+        }
+
         const sqlQuery = `
             INSERT INTO Lectures (Name, Description, Category, Duration)
             VALUES (@name, @description, @category, @duration);
@@ -36,6 +50,20 @@ class Lecture {
     // Method to create a new sub-lecture in the database
     static async createSubLecture(newSubLectureData) {
         const connection = await sql.connect(dbConfig);  // Connect to the database
+
+        // Check if the sub-lecture name already exists in the entire SubLectures table
+        const checkNameQuery = `SELECT COUNT(*) as count FROM SubLectures WHERE Name = @name`;
+        const checkNameRequest = connection.request();
+        checkNameRequest.input("name", sql.NVarChar, newSubLectureData.name);
+        const nameResult = await checkNameRequest.query(checkNameQuery);
+
+        if (nameResult.recordset[0].count > 0) {
+            connection.close();
+            const error = new Error("Sub-lecture name already exists. Please choose a different name.");
+            error.statusCode = 400;  // Set status code for duplicate name
+            throw error;
+        }
+
         const sqlQuery = `
             INSERT INTO SubLectures (LectureID, Name, Description, Duration, Video)
             VALUES (@lectureID, @name, @description, @duration, @video);

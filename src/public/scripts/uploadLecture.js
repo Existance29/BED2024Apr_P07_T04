@@ -42,7 +42,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!lectureResponse.ok) {
                 const errorData = JSON.parse(responseText); // Parse the error response
                 console.error('Error response from server:', errorData); // Log the error
-                alert(`Error uploading lecture: ${errorData.message}`); // Display an alert with the error message
+                if (errorData.message.includes("Lecture name already exists")) {
+                    alert("Lecture name already exists. Please choose a different name.");
+                } else {
+                    alert(`Error uploading lecture: ${errorData.message}`);  // Display an alert with the error message
+                }
                 return;
             }
 
@@ -92,7 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!subLectureResponse.ok) {
                 const errorData = JSON.parse(responseText); // Parse the error response
                 console.error('Error response from server:', errorData); // Log the error
-                alert(`Error uploading sub-lecture: ${errorData.message}`); // Display an alert with the error message
+                if (errorData.message.includes("Sub-lecture name already exists")) {
+                    alert("Sub-lecture name already exists for this lecture. Please choose a different name.");
+                } else {
+                    alert(`Error uploading sub-lecture: ${errorData.message}`); // Display an alert with the error message
+                }
                 return;
             }
 

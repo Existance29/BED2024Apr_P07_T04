@@ -63,7 +63,7 @@ const createLecture = async (req, res) => {
         res.status(201).json(createdLecture);  // Respond with the newly created lecture
     } catch (error) {
         console.error("Error creating lecture:", error);
-        res.status(500).json({ message: "Error creating lecture", error: error.message });  // Respond with an error message
+        res.status(error.statusCode || 500).json({ message: error.message });  // Respond with an error message
     }
 };
 
@@ -123,7 +123,6 @@ const createSubLecture = async (req, res) => {
             return res.status(400).json({ message: "Missing required fields in sub-lecture" });
         }
 
-        // Create a new sub-lecture data object
         const newSubLectureData = {
             lectureID: parseInt(lectureID),
             name,
@@ -143,7 +142,7 @@ const createSubLecture = async (req, res) => {
         res.status(201).json(createdSubLecture);  // Respond with the newly created sub-lecture
     } catch (error) {
         console.error("Error creating sub-lecture:", error);
-        res.status(500).json({ message: "Error creating sub-lecture", error: error.message });  // Respond with an error message
+        res.status(error.statusCode || 500).json({ message: error.message });  // Respond with an error message
     }
 };
             
