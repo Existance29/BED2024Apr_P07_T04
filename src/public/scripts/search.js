@@ -44,14 +44,12 @@ async function getResults(){
     let userResultsHTML = ''
     userResults.forEach(x => {
         userResultsHTML +=`
-            <div class="user-result" style="margin-top: 1vw;" onclick = "window.location.href='./profile.html?user=${x.id}'">
-                <div class="d-flex align-content-center">
-                    <img src="data:image/png;base64,${x.img}">
-                    <div class="poppins-medium" style="margin-left: 1vw; font-size: 1.1vw; display: flex; align-items: center;">${x.first_name} ${x.last_name}</div>
+            <div class="card" onclick = "window.location.href='./profile.html?user=${x.id}'">
+                <div class="avatar">
+                    <img src="data:image/png;base64,${x.img}" alt="${x.first_name} ${x.last_name}" class="avatarImage">
                 </div>
-                <div class="poppins-regular" style="margin-top: 1.3vw; font-size: 1vw;">${title(x.role)}</div>
-                <div class="poppins-regular" style="font-size: 1vw; color: #272727;">${x.job_title}</div>
-                <div class="poppins-regular" style="font-size: 1vw; color: #272727;">${x.country}</div>
+                <div class="cardTitle">${x.first_name} ${x.last_name}</div>
+                <div class="cardDescription">${title(x.role)} - ${x.country}</div>
             </div>
         `
     })
@@ -66,7 +64,7 @@ async function getResults(){
         const rating = Math.round(x.totalRate / x.ratings)
         //the way stars are display are just if-else statements
         courseResultsHTML +=`
-            <div class="course-result" onclick = "location.href = 'course-chapters.html?courseID=${x.courseID}'">
+            <div class="card" onclick = "location.href = 'course-chapters.html?courseID=${x.courseID}'">
                 <div class="d-flex align-content-center">
                     <img class = "course-img" src="data:image/png;base64,${arrayBufferToBase64(x.thumbnail)}">
                     <div style="margin-left: 1.5vw;">
