@@ -254,7 +254,7 @@ const updateLecture = async (req, res) => {
         res.json(updatedLecture);  // Respond with the updated lecture
     } catch (error) {
         console.error(error);  // Log any errors
-        res.status(500).send("Error updating lecture");  // Respond with an error message
+        res.status(error.statusCode || 500).json({ message: error.message });   // Respond with an error message
     }
 };
             
@@ -315,7 +315,7 @@ const updateSubLecture = async (req, res) => {
         res.json(updatedSubLecture);  // Respond with the updated sub-lecture
     } catch (error) {
         console.error(error);  // Log any errors
-        res.status(500).send("Error updating sub-lecture");  // Respond with an error message
+        res.status(error.statusCode || 500).json({ message: error.message });   // Respond with an error message
     }
 };
 

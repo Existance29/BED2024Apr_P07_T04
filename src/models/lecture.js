@@ -136,6 +136,19 @@ class Lecture {
     // Method to update a lecture in the database
     static async updateLecture(lectureID, newLectureData) {
         const connection = await sql.connect(dbConfig);  // Connect to the database
+
+        // Check if the lecture name already exists
+        const checkNameQuery = `SELECT COUNT(*) as count FROM Lectures WHERE Name = @name`;
+        const checkNameRequest = connection.request();
+        checkNameRequest.input("name", sql.NVarChar, newLectureData.name);
+        const nameResult = await checkNameRequest.query(checkNameQuery);
+
+        if (nameResult.recordset[0].count > 0) {
+            connection.close();
+            const error = new Error("Lecture name already exists. Please choose a different name.");
+            error.statusCode = 400;  // Set status code for duplicate name
+            throw error;
+        }
         const sqlQuery = `
             UPDATE Lectures SET
                 Name = @name,
@@ -161,6 +174,18 @@ class Lecture {
     // Method to update a sub-lecture in the database
     static async updateSubLecture(lectureID, subLectureID, newSubLectureData) {
         const connection = await sql.connect(dbConfig);  // Connect to the database
+        // Check if the sub-lecture name already exists in the entire SubLectures table
+        const checkNameQuery = `SELECT COUNT(*) as count FROM SubLectures WHERE Name = @name`;
+        const checkNameRequest = connection.request();
+        checkNameRequest.input("name", sql.NVarChar, newSubLectureData.name);
+        const nameResult = await checkNameRequest.query(checkNameQuery);
+
+        if (nameResult.recordset[0].count > 0) {
+            connection.close();
+            const error = new Error("Sub-lecture name already exists. Please choose a different name.");
+            error.statusCode = 400;  // Set status code for duplicate name
+            throw error;
+        }
         const sqlQuery = `
             UPDATE SubLectures SET
                 Name = @name,

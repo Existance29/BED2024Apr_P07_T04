@@ -320,8 +320,14 @@ async function updateCourse(event) {
             loadCourses();
             closeUpdateCourseModal();
         } else {
-            console.error('Error updating course:', response.statusText);
-        }
+            const errorData = await response.json(); // Parse the error response
+            console.error('Error response from server:', errorData); // Log the error
+            if (errorData.message.includes("Course title already exists")) {
+                alert("Course title already exists. Please choose a different title."); // Display an alert for duplicate title
+            } else {
+                alert(`Error uploading course: ${errorData.message}`); // Display an alert with the error message
+            }
+            return;        }
     } catch (error) {
         console.error('Error updating course:', error);
     }
