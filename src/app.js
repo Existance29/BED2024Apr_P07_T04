@@ -1,15 +1,16 @@
 const express = require("express");
-const app = express()
-const port = process.env.PORT || 3000
-const dbConfig = require("./database/dbConfig")
-const sql = require("mssql")
-const route = require("./routes/routes")
-const bodyParser = require("body-parser")
-const multer = require('multer')
-const path = require('path')
-const fs = require('fs')
+const app = express();
+const port = process.env.PORT || 3000;
+const dbConfig = require("./database/dbConfig");
+const sql = require("mssql");
+const route = require("./routes/routes");
+const bodyParser = require("body-parser");
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./docs/swagger-output.json"); // Import generated spec
+const session = require('express-session');
 
 // Serve the Swagger UI at a specific route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -35,18 +36,24 @@ const upload = multer({
     limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
 });
 
+// Load frontend
+const staticMiddleware = express.static("public");
+app.use(staticMiddleware);
 
-//load frontend
-const staticMiddleware = express.static("public")
-app.use(staticMiddleware)
+// Use session middleware before setting up routes
+app.use(session({
+    secret: 'secret-key', // Replace with a secure key
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Change to true if using HTTPS
+}));
 
-//use parse middlewares
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+// Use parse middlewares
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-//for property inheritance swagger
-//setup routes
-route(app, upload)
+// Setup routes
+route(app, upload);
 
 // Error handling middleware for Multer errors
 app.use((err, req, res, next) => {
@@ -62,12 +69,12 @@ app.use((err, req, res, next) => {
 app.listen(port, async () => {
   try {
     // Connect to the database
-    await sql.connect(dbConfig)
-    console.log("Connected to database successfully")
+    await sql.connect(dbConfig);
+    console.log("Connected to database successfully");
   } catch (err) {
-    console.error("Database connection error:", err)
+    console.error("Database connection error:", err);
     // Terminate app
-    process.exit(1)
+    process.exit(1);
   }
 
   console.log(`Server listening on port ${port}`);
@@ -75,8 +82,8 @@ app.listen(port, async () => {
 
 // Close the connection pool on SIGINT signal
 process.on("SIGINT", async () => {
-  console.log("Server is shutting down")
-  await sql.close()
-  console.log("Database connection closed")
-  process.exit(0) 
+  console.log("Server is shutting down");
+  await sql.close();
+  console.log("Database connection closed");
+  process.exit(0);
 });

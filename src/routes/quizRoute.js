@@ -15,6 +15,9 @@ const quizRoute = (app) => {
     app.get("/quizzes/:quizId/checkAttempts", authenticateToken, quizController.checkQuizAttempts);
     app.get('/user/results', authenticateToken, quizController.getUserQuizResults);
     app.delete("/quizzes/:id", authenticateToken, quizController.deleteQuiz);
-}
+    app.get("/api/questions", quizController.getQuizzesAPI);
+    app.post("/random-quizzes/submit", authenticateToken, quizController.submitRandomQuiz);
+    app.get("/random-quizzes/results", authenticateToken, quizController.getRandomQuizResult);
+};
 
 module.exports = quizRoute;
