@@ -1,6 +1,6 @@
 /*apply the select effect for the filter with the active class*/
 #search-filters .active{
-    border-radius: 15px;
+    border-radius: 10px;
     background-color: #FFFFFF85;
 }
 
@@ -13,7 +13,7 @@
 }
 
 .course-img{
-    width: 6.5%;
+    width: 5%;
     object-fit: contain;
 }
 
@@ -42,8 +42,8 @@
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 16px;
-    cursor: pointer;
-    margin-top: 1vw;
+    cursor: pointer; /*added for hover effect*/
+    margin-top: 1.5vw; /*added for spacing between elements. Doesnt affect actual element*/
 }
 .avatar {
     display: flex;
