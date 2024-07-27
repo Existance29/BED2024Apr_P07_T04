@@ -89,4 +89,12 @@ async function getResults(){
     if (!courseResults.length && userResults.length) switchCategory(document.getElementById('user-filter'))
 }
 
+document.getElementById("search-form").addEventListener('submit', event => {
+    //stop reloading behaviour
+    event.preventDefault()
+    //redirect to search page with query
+    window.location.href = `./search.html?q=${document.getElementById("search-bar").value}`
+    return false
+})
+
 getResults()

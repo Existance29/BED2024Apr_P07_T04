@@ -18,7 +18,10 @@
     <!--background-->
     <main class="background-img long-bg" style="min-height: 100vh; padding: 5vw 10%">
         <!--Display query-->
-        <div class = "poppins-medium" style="font-size: 1.5vw; color: white;">Search Results for "<span id = "search-query"></span>"</div>
+        <div class = "poppins-medium" style="font-size: 1.5vw; color: white; margin-bottom: 1.5vw;">Search Results for "<span id = "search-query"></span>"</div>
+        <form id = "search-form">
+            <input type="text" placeholder="Search..." value="" id = "search-bar">
+        </form>
         <!--Filters-->
         <div class="d-flex justify-content-between align-items-center poppins-medium" style="font-size: 1.1vw; margin-top: 5vw; margin-bottom: 3vw; width: 30%; color: white;" id = "search-filters">
             <div id = "course-filter" class="active" style="cursor: pointer;" onclick = "switchCategory(this)">Courses</div>

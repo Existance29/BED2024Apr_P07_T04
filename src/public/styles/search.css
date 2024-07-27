@@ -38,6 +38,14 @@
 }
 
 /*gignite stuff*/
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    margin-bottom: 32px;
+}
+
 .card {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
