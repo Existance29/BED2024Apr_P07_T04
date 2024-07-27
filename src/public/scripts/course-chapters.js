@@ -382,6 +382,42 @@ function hideButtonsIfNotLecturer() {
     }
 }
 
+// Function to create a new sub-lecture
+async function createNewSubLecture() {
+    const name = document.getElementById('newSubLectureName').value;
+    const description = document.getElementById('newSubLectureDescription').value;
+    const duration = document.getElementById('newSubLectureDuration').value;
+    const video = document.getElementById('newSubLectureVideo').files[0];
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('duration', duration);
+    formData.append('video', video);
+    formData.append('lectureID', currentLectureID);
+
+    try {
+        const response = await fetch(`/lectures/${currentLectureID}/sublectures`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            $('#createSubLectureModal').modal('hide');
+            loadCourseDetails(); // Reload course details
+        } else {
+            const errorData = await response.json();
+            alert(`Error creating sub-lecture: ${errorData.message}`);
+        }
+    } catch (error) {
+        console.error('Error creating sub-lecture:', error);
+        alert('Failed to create sub-lecture: ' + error.message);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     hideButtonsIfNotLecturer(); // Hide buttons if the user is not a lecturer
     loadCourseDetails(); // Load course details
@@ -396,5 +432,16 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#editSubLectureForm').submit(async function(event) {
         event.preventDefault();
         await editSubLecture(); // Update sub-lecture details
+    });
+
+    // Show the create new sub-lecture modal
+    document.getElementById('createNewSubLectureButton').addEventListener('click', () => {
+        $('#createSubLectureModal').modal('show');
+    });
+
+    // Handle new sub-lecture form submission
+    $('#newSubLectureForm').submit(async function(event) {
+        event.preventDefault();
+        await createNewSubLecture(); // Create new sub-lecture
     });
 });

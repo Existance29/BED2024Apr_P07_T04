@@ -55,6 +55,14 @@
         width: 100%;
         height: 400px;
     }
+    .modal-lg-custom {
+        max-width: 60%; /* Adjust the width as needed */
+    }
+
+    .modal-body-custom {
+        max-height: 80vh; /* Adjust the height as needed */
+        overflow-y: auto;
+    }
 </style>
 <body>
     <!-- Navbar -->
@@ -119,6 +127,7 @@
                             <input type="number" class="form-control" id="editLectureDuration" name="duration" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" id="createNewSubLectureButton">Create New Sub-Lecture</button>
                     </form>
                 </div>
             </div>
@@ -153,6 +162,40 @@
             </div>
         </div>
     </div>
+    <!-- Create Sub-Lecture Modal -->
+    <div class="modal fade" id="createSubLectureModal" tabindex="-1" aria-labelledby="createSubLectureModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-lg-custom">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createSubLectureModalLabel">Create Sub-Lecture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body modal-body-custom">
+                    <form id="newSubLectureForm">
+                        <div class="mb-3">
+                            <label for="newSubLectureName" class="form-label">Sub-Lecture Name</label>
+                            <input type="text" class="form-control" id="newSubLectureName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newSubLectureDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="newSubLectureDescription" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newSubLectureDuration" class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" id="newSubLectureDuration" name="duration" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newSubLectureVideo" class="form-label">Video</label>
+                            <input type="file" class="form-control-file" id="newSubLectureVideo" name="video" accept="video/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Sub-Lecture</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <!-- Footer -->
     <div class="footer-placeholder"></div>
