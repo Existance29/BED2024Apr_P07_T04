@@ -1,3 +1,4 @@
+const OpenAI = require('openai');
 const Quiz = require("../models/quiz");
 
 const createQuiz = async (req, res) => {
@@ -200,7 +201,7 @@ const updateQuizQuestions = async (req, res) => {
     }
 
     try {
-        console.log('Received questions for updating:', questions); // Log received questions
+        console.log('Received questions for updating:', questions); 
         await Quiz.updateQuizQuestions(quizId, questions);
         res.status(200).json({ message: 'Questions updated successfully' });
     } catch (error) {
@@ -225,6 +226,109 @@ const deleteQuiz = async (req, res) => {
     }
 };
 
+const getQuizzesAPI = async (req, res) => {
+    try {
+        const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+        const openai = new OpenAI(OPENAI_API_KEY);
+        const aiModel = "gpt-4o";
+
+        const messages = [
+            {
+                role: "system",
+                content: `You are a quiz master of ITMastermindz, an educational website focused on teaching IT related topics like Python, AngularJS, VueJS, AWS, ReactJS, SoftwareTesting, CoreUI, PowerBI. Create a quiz about Python, AngularJS, VueJS, AWS, ReactJS, SoftwareTesting, CoreUI, PowerBI, with 5 multiple choice questions. Each question should have 4 options labeled as A, B, C, and D. Indicate the correct answer. totalMarks must be fixed to totalQuestions * 10. duration must be 5, and maxAttempts must be 2. Format the response as JSON in the following structure: { "title": "Quiz Title", "description": "Quiz description", "totalQuestions": 5, "totalMarks": 50, "duration": 30, "maxAttempts": 3, "questions": [ { "text": "Question 1?", "options": ["Option A", "Option B", "Option C", "Option D"], "correctAnswer": 1 }, { "text": "Question 2?", "options": ["Option A", "Option B", "Option C", "Option D"], "correctAnswer": 3 } ] } This is an example of an existing python quiz: { "title": "Python Programming", "description": "Test your knowledge on Python programming.", "totalQuestions": 5, "totalMarks": 50, "duration": 30, "maxAttempts": 2, "questions": [ { "text": "What is the correct file extension for Python files?", "options": [".python", ".pyth", ".py", ".pyt"], "correctAnswer": 2 }, { "text": "Which keyword is used to create a function in Python?", "options": ["function", "def", "fun", "define"], "correctAnswer": 1 }, { "text": "How do you create a list in Python?", "options": ["list = {}", "list = []", "list = ()", "list = ||"], "correctAnswer": 1 }, { "text": "Which method is used to add an element to the end of a list in Python?", "options": ["add()", "append()", "insert()", "push()"], "correctAnswer": 1 }, { "text": "How do you start a for loop in Python?", "options": ["for x in y:", "for(x in y)", "for x in y", "for x:y"], "correctAnswer": 0 } ] }`
+            },
+            {
+                role: "user",
+                content: `Create a random quiz about any of these topics: Python, AngularJS, VueJS, AWS, ReactJS, SoftwareTesting, CoreUI, PowerBI, with 5 multiple choice questions.`
+            }
+
+        ];
+
+        const completion = await openai.chat.completions.create({
+            model: aiModel,
+            response_format: {"type": "json_object"},
+            messages,
+            temperature: 0.7, 
+            max_tokens: 700,
+            top_p: 0.9, 
+            frequency_penalty: 0,
+            presence_penalty: 0,
+        });
+
+        const aiResponse = completion.choices[0].message.content;
+        const quizData = JSON.parse(aiResponse);
+
+        res.status(201).json(quizData);
+    } catch (error) {
+        console.error('Error creating quiz via OpenAI:', error);
+        res.status(500).json({ message: 'Error creating quiz via OpenAI', error: error.message });
+    }
+};
+
+const calculateGrade = (score, totalMarks) => {
+    const percentage = (score / totalMarks) * 100;
+    if (percentage >= 90) return "A+";
+    if (percentage >= 80) return "A";
+    if (percentage >= 70) return "B";
+    if (percentage >= 60) return "C";
+    if (percentage >= 50) return "D";
+    return "F";
+};
+
+const submitRandomQuiz = async (req, res) => {
+    const { answers, duration, questions } = req.body; 
+
+    const totalQuestions = answers.length;
+    const totalMarks = totalQuestions * 10;
+    let score = 0;
+    let correctAnswersCount = 0;
+    let incorrectQuestions = [];
+
+    for (const [index, answer] of answers.entries()) {
+        const correctAnswer = questions[index].correctAnswer;
+        if (answer.answer === correctAnswer) {
+            score += 10;
+            correctAnswersCount++;
+        } else {
+            incorrectQuestions.push({
+                questionId: index,
+                text: questions[index].text,
+                userAnswer: answer.answer,
+                correctAnswer: correctAnswer,
+                options: questions[index].options 
+            });
+        }
+    }
+
+    const grade = calculateGrade(score, totalMarks);
+
+    const result = {
+        score,
+        totalQuestions,
+        correctAnswers: correctAnswersCount,
+        incorrectQuestions, 
+        duration,
+        totalMarks,
+        grade
+    };
+
+ 
+    req.session.randomQuizResult = result;
+    res.json(result);
+};
+
+
+
+const getRandomQuizResult = async (req, res) => {
+    const result = req.session.randomQuizResult;
+    if (!result) {
+        return res.status(404).send("No quiz result found");
+    }
+
+    res.json(result);
+};
+
+
 module.exports = {
     getAllQuizzes,
     getQuizById,
@@ -238,5 +342,8 @@ module.exports = {
     createQuiz,
     createQuizQuestion ,
     updateQuiz,
-    updateQuizQuestions
+    updateQuizQuestions,
+    getQuizzesAPI,
+    submitRandomQuiz,
+    getRandomQuizResult
 };

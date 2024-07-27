@@ -30,7 +30,10 @@ const authenticateToken = (req,res,next) => {
             
             'DELETE /quizzes/:id': ['lecturer'],  
             'POST /quizzes': ['lecturer'],
-            'POST /quizzes/:quizID/questions': ['lecturer']
+            'POST /quizzes/:quizID/questions': ['lecturer'],
+            'PUT /quizzes': ['lecturer'],
+            'PUT /quizzes/:quizID/questions': ['lecturer']
+
         };
         
         const userRole = user.role;

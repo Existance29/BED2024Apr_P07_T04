@@ -140,6 +140,19 @@ class Course {
     // Method to update a course in the database
     static async updateCourse(courseID, newCourseData) {
         const connection = await sql.connect(dbConfig);  // Connect to the database
+
+        // Check if the title already exists
+        const checkTitleQuery = `SELECT COUNT(*) as count FROM Courses WHERE Title = @title`;
+        const checkTitleRequest = connection.request();
+        checkTitleRequest.input("title", sql.NVarChar, newCourseData.title);
+        const titleResult = await checkTitleRequest.query(checkTitleQuery);
+
+        if (titleResult.recordset[0].count > 0) {
+            connection.close();
+            const error = new Error("Course title already exists. Please choose a different title.");
+            error.statusCode = 400;  // Set status code for duplicate title
+            throw error;
+        }
     
         const setFields = [];  // Array to hold fields to be updated
         const request = connection.request();
