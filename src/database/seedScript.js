@@ -916,6 +916,146 @@ async function insertQuizzes(connection) {
           "correctAnswer": 0
         }
       ]
+    },
+    {
+      "title": "ReactJS Basics",
+      "description": "Test your knowledge on the basics of ReactJS.",
+      "totalQuestions": 5,
+      "totalMarks": 50,
+      "duration": 30,
+      "maxAttempts": 2,
+      "questions": [
+        {
+          "text": "What is ReactJS?",
+          "options": JSON.stringify(["A library for building user interfaces", "A framework for backend development", "A database management tool", "A styling framework"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which method is used to create components in React?",
+          "options": JSON.stringify(["React.component()", "React.createComponent()", "React.createElement()", "React.makeComponent()"]),
+          "correctAnswer": 2
+        },
+        {
+          "text": "How do you pass data to a React component?",
+          "options": JSON.stringify(["Using state", "Using props", "Using context", "Using functions"]),
+          "correctAnswer": 1
+        },
+        {
+          "text": "What is JSX?",
+          "options": JSON.stringify(["A JavaScript syntax extension", "A type of React component", "A state management tool", "A routing library"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which hook is used to manage state in a functional component?",
+          "options": JSON.stringify(["useState", "useEffect", "useReducer", "useContext"]),
+          "correctAnswer": 0
+        }
+      ]
+    },
+    {
+      "title": "Software Testing Fundamentals",
+      "description": "Test your knowledge on the basics of Software Testing.",
+      "totalQuestions": 5,
+      "totalMarks": 50,
+      "duration": 30,
+      "maxAttempts": 2,
+      "questions": [
+        {
+          "text": "What is the purpose of software testing?",
+          "options": JSON.stringify(["To find bugs", "To create software", "To design software", "To manage projects"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which type of testing is done without executing the code?",
+          "options": JSON.stringify(["Static testing", "Dynamic testing", "Regression testing", "Integration testing"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "What is unit testing?",
+          "options": JSON.stringify(["Testing individual components", "Testing the complete system", "Testing the integration of components", "Testing the user interface"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which tool is commonly used for version control in software testing?",
+          "options": JSON.stringify(["Git", "Selenium", "JIRA", "Postman"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "What is a test case?",
+          "options": JSON.stringify(["A document specifying inputs, expected results, and execution conditions", "A tool for managing tests", "A type of software bug", "A phase in the software development lifecycle"]),
+          "correctAnswer": 0
+        }
+      ]
+    },
+    {
+      "title": "CoreUI Essentials",
+      "description": "Test your knowledge on the basics of CoreUI.",
+      "totalQuestions": 5,
+      "totalMarks": 50,
+      "duration": 30,
+      "maxAttempts": 2,
+      "questions": [
+        {
+          "text": "What is CoreUI?",
+          "options": JSON.stringify(["An open-source UI component library", "A backend framework", "A database management system", "A version control tool"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which language is primarily used to style CoreUI components?",
+          "options": JSON.stringify(["CSS", "JavaScript", "Python", "PHP"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "How do you include CoreUI in a web project?",
+          "options": JSON.stringify(["Using npm or yarn", "Using pip", "Using composer", "Using gem"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "What is a feature of CoreUI?",
+          "options": JSON.stringify(["Responsive layout", "Server-side rendering", "Database management", "Unit testing"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which framework is CoreUI compatible with?",
+          "options": JSON.stringify(["React", "Angular", "Vue", "All of the above"]),
+          "correctAnswer": 3
+        }
+      ]
+    },
+    {
+      "title": "PowerBI Basics",
+      "description": "Test your knowledge on the basics of PowerBI.",
+      "totalQuestions": 5,
+      "totalMarks": 50,
+      "duration": 30,
+      "maxAttempts": 2,
+      "questions": [
+        {
+          "text": "What is PowerBI used for?",
+          "options": JSON.stringify(["Data visualization and business intelligence", "Web development", "Mobile app development", "Database management"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "Which language is used for data manipulation in PowerBI?",
+          "options": JSON.stringify(["DAX", "Python", "JavaScript", "SQL"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "What is a PowerBI dashboard?",
+          "options": JSON.stringify(["A single-page interface displaying key metrics", "A backend service for data processing", "A tool for writing queries", "A mobile app for data entry"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "How can you share PowerBI reports?",
+          "options": JSON.stringify(["By publishing to the PowerBI service", "By sending a screenshot", "By sharing the source file", "By exporting to Excel"]),
+          "correctAnswer": 0
+        },
+        {
+          "text": "What is a PowerBI dataset?",
+          "options": JSON.stringify(["A collection of data used for creating reports", "A script for automating tasks", "A type of visual element", "A user role in PowerBI"]),
+          "correctAnswer": 0
+        }
+      ]
     }
   ];
 
@@ -975,17 +1115,7 @@ async function insertUsers(connection){
 
     INSERT INTO User_Completed_Courses VALUES (2,3,'2024-07-01');
 	INSERT INTO User_Completed_Courses VALUES (2,5,'2024-07-03');
-
-    INSERT INTO Results VALUES (1,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
-    INSERT INTO Results VALUES (2,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
-    INSERT INTO Results VALUES (3,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
-    INSERT INTO Results VALUES (4,1,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
-
-    INSERT INTO Results VALUES (1,2,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
-    INSERT INTO Results VALUES (3,2,10,5,1,10,50,'F'); SELECT SCOPE_IDENTITY() AS id;
-
-    INSERT INTO Results VALUES (2,3,50,5,5,10,50,'A'); SELECT SCOPE_IDENTITY() AS id;
-    INSERT INTO Results VALUES (3,3,30,5,3,10,50,'B'); SELECT SCOPE_IDENTITY() AS id;
+  
   `)
   
   //insert profile imgs
