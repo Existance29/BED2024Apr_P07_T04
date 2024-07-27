@@ -266,7 +266,14 @@ async function editLecture() {
             $('#editLectureModal').modal('hide'); // Hide the modal
             loadCourseDetails(); // Reload course details
         } else {
-            console.error('Error updating lecture:', response.statusText);
+            const errorData = await response.json(); // Parse the error response
+            console.error('Error response from server:', errorData); // Log the error
+            if (errorData.message.includes("Lecture name already exists")) {
+                alert("Lecture name already exists. Please choose a different name.");
+            } else {
+                alert(`Error uploading lecture: ${errorData.message}`);  // Display an alert with the error message
+            }
+            return;
         }
     } catch (error) {
         console.error('Error updating lecture:', error);
@@ -300,7 +307,14 @@ async function editSubLecture() {
             $('#editSubLectureModal').modal('hide'); // Hide the modal
             loadCourseDetails(); // Reload course details
         } else {
-            console.error('Error updating sub-lecture:', response.statusText);
+            const errorData = await response.json(); // Parse the error response
+                console.error('Error response from server:', errorData); // Log the error
+                if (errorData.message.includes("Sub-lecture name already exists")) {
+                    alert("Sub-lecture name already exists for this lecture. Please choose a different name.");
+                } else {
+                    alert(`Error uploading sub-lecture: ${errorData.message}`); // Display an alert with the error message
+                }
+                return;
         }
     } catch (error) {
         console.error('Error updating sub-lecture:', error);

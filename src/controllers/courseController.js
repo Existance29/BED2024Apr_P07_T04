@@ -265,7 +265,7 @@ const updateCourse = async (req, res) => {
         res.json(updatedCourse);  // Respond with the updated course
     } catch (error) {
         console.error(error);  // Log any errors
-        res.status(500).send("Error updating course");  // Respond with an error message
+        res.status(error.statusCode || 500).json({ message: error.message });  // Respond with an error message
     }
 };
 

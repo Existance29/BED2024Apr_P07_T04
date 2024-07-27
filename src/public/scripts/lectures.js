@@ -237,3 +237,12 @@ document.getElementById('lectures-list').addEventListener('click', async (event)
         loadLectureVideo(lectureID, courseID);
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const courseID = params.get('courseID');
+    if (courseID) {
+        const backButton = document.querySelector('.btn.section-text');
+        backButton.href = `./course-chapters.html?courseID=${courseID}`;
+    }
+});
