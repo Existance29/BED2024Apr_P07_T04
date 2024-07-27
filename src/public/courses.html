@@ -11,6 +11,7 @@
 </head>
 
 <style>
+    /* Styling for the upload button */
     .upload-button {
         background-color: #F1F1F1;
         border: none;
@@ -23,10 +24,13 @@
         justify-content: center;
         font-weight: bold;
     }
+
+    /* Styling for the course card */
     .course-card {
         position: relative;
     }
 
+    /* Styling for the edit and delete buttons on the course card */
     .edit-delete-buttons {
         position: absolute;
         top: 15px;
@@ -41,6 +45,7 @@
         cursor: pointer;
     }
 
+    /* Styling for form controls */
     .form-control, .form-control-file {
         margin-bottom: 1rem;
     }
@@ -61,6 +66,8 @@
         margin-top: -10px;
         margin-bottom: 10px;
     }
+
+    /* Styling for the modal */
     .modal-lg {
         max-width: 60%;
     }
@@ -85,16 +92,16 @@
 </style>
 
 <body>
-    <!--navbar-->
+    <!-- Placeholder for the navigation bar -->
     <div class="nav-placeholder"></div>
 
-    <!--background-->
+    <!-- Background image and main content -->
     <main class="background-img long-bg">
         <div class="d-flex" style="margin-left: 17%; color: white; width: 65%; height: 2vw;">
-            <!-- Title-->
+            <!-- Title of the page -->
             <h1 class="exo-semibold" style='font-size: 1.8vw; margin-right: 30%;'>Courses</h1>
 
-            <!-- Search bar-->
+            <!-- Search bar -->
             <div class="d-flex">
                 <input class="search-field" type="search" placeholder="Search" id="search" onkeyup="search()">
                 <span class="input-group-append">
@@ -104,12 +111,13 @@
                 </span>
             </div>
 
-            <!-- View options (grid/list)-->
+            <!-- View options (grid/list) -->
             <div class="d-flex" style="margin-left: -1vw;">
                 <img src="assets/lectures/grid-view-icon.png" style="margin-top: 0.2vw; width: 28px; height: 28px; cursor: pointer;" onclick="loadCourses()">
             </div>
             <img src="assets/lectures/edit-button.png" style="margin-left: 0.9vw; cursor: pointer;" onclick="toggleEditMode()">
 
+            <!-- Upload button -->
             <div class="d-flex" style="margin-left: 1vw;">
                 <button class="btn upload-button" id="upload-button" onclick="window.location.href='course-upload.html'">
                     Upload
@@ -118,10 +126,10 @@
         </div>
 
         <div class="d-flex" style="margin-top: 5vw;">
-            <!-- Display systems-->
+            <!-- Display systems (courses) -->
             <div id="system-grid"></div>
 
-            <!--Filter options-->
+            <!-- Filter options -->
             <div style="width: 17%; color: white; margin-left: 5%;">
                 <h4 class="exo-semibold" style="font-size: 0.95vw; margin-bottom: 1vw;">Course Category</h4>
                 <table>
@@ -143,6 +151,7 @@
                     <form id="updateCourseForm" onsubmit="updateCourse(event)">
                         <input type="hidden" id="updateCourseID" name="courseID">
 
+                        <!-- Form fields for updating course details -->
                         <div class="mb-3">
                             <label for="updateTitle" class="form-label">Title</label>
                             <input type="text" class="form-control" id="updateTitle" name="title" required>
@@ -173,6 +182,7 @@
                             <div id="updateCategory-error" class="field-error">Please enter a valid category</div>
                         </div>
 
+                        <!-- Submit button for updating course details -->
                         <button type="submit" class="btn btn-primary">Update Course</button>
                     </form>
                 </div>
@@ -180,7 +190,7 @@
         </div>
     </div>
 
-    <!--footer-->
+    <!-- Placeholder for the footer -->
     <div class="footer-placeholder"></div>
 
     <script src="./scripts/common.js"></script>

@@ -551,7 +551,7 @@ describe("userController.updateProfilePic", () => {
       jest.spyOn(console, 'error').mockImplementation(jest.fn())
     });
   
-    it("should update the user's profile picture and return a success message with status 201", async () => {
+    it("should update the user's profile picture and return a success message with status 200", async () => {
       //mock User.getUserById
       User.getUserById.mockResolvedValue(true)
       // Mock the model function (null)
@@ -569,7 +569,7 @@ describe("userController.updateProfilePic", () => {
       await userController.updateProfilePic(req, res)
 
       expect(res.send).toHaveBeenCalledWith("Profile picture updated successfully"); // Check the response body
-      expect(res.status).toHaveBeenCalledWith(201)
+      expect(res.status).toHaveBeenCalledWith(200)
     })
 
     it("should handle case where no file is uploaded and return a error message with status 400", async () => {
@@ -632,7 +632,7 @@ describe("userController.updateUser", () => {
       jest.spyOn(console, 'error').mockImplementation(jest.fn())
     });
   
-    it("should update the user's account info and return a json with status 201", async () => {
+    it("should update the user's account info and return a json with status 200", async () => {
         mockData = {
             "first_name": "John",
             "last_name": "Doe",
@@ -652,7 +652,7 @@ describe("userController.updateUser", () => {
         await userController.updateUser(req, res)
 
         expect(res.json).toHaveBeenCalledWith(mockData); // Check the response body
-        expect(res.status).toHaveBeenCalledWith(201)
+        expect(res.status).toHaveBeenCalledWith(200)
     })
   
     it("should handle errors and return a 500 status with error message", async () => {
@@ -687,7 +687,7 @@ describe("userController.updatePassword", () => {
       jest.spyOn(console, 'error').mockImplementation(jest.fn())
     });
   
-    it("should update the user's password and return a json with status 201", async () => {
+    it("should update the user's password and return a json with status 200", async () => {
         mockData = {
             password: "hashed-new-password"
         }
@@ -702,7 +702,7 @@ describe("userController.updatePassword", () => {
         await userController.updatePassword(req, res)
 
         expect(res.json).toHaveBeenCalledWith(mockData); // Check the response body
-        expect(res.status).toHaveBeenCalledWith(201)
+        expect(res.status).toHaveBeenCalledWith(200)
     })
   
     it("should handle errors and return a 500 status with error message", async () => {
@@ -798,7 +798,7 @@ describe("userController.addSubLecture", () => {
         //Mock user has not viewed sublecture
         User.hasViewedSubLecture.mockResolvedValue(false)
         // Mock the add sublecture model function (returns null)
-        User.addSubLecture(null)
+        User.addSubLecture.mockResolvedValue(null)
 
         const res = {
             status: jest.fn().mockReturnThis(),
@@ -807,9 +807,25 @@ describe("userController.addSubLecture", () => {
 
         await userController.addSubLecture(req, res);
         expect(User.hasViewedSubLecture).toHaveBeenCalledTimes(1); // Check if model was called
-        expect(User.addSubLecture).toHaveBeenCalledTimes(2); // Check if model was called
-        expect(res.send).toHaveBeenCalledWith("success"); // Check the response body
+        expect(User.addSubLecture).toHaveBeenCalledTimes(1); // Check if model was called
+        expect(res.send).toHaveBeenCalledWith("success"); // Check the response
     });
+
+    it("should handle cases where user has already viewed a sublecture return a sucess message with status 200", async () => {
+            
+      //Mock user has viewed sublecture
+      User.hasViewedSubLecture.mockResolvedValue(true)
+
+      const res = {
+          status: jest.fn().mockReturnThis(),
+          send: jest.fn() // Mock the res.json function
+      };
+
+      await userController.addSubLecture(req, res);
+      expect(User.hasViewedSubLecture).toHaveBeenCalledTimes(1); // Check if model was called
+      expect(User.addSubLecture).toHaveBeenCalledTimes(0); // Check if model was NOT called
+      expect(res.send).toHaveBeenCalledWith("user already viewed sub lecture"); // Check the response
+  });
 
     it("should handle cases where user does not exist and return a 404 status with a error message", async () => {
         // Mock the model function to be null

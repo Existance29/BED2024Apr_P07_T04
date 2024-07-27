@@ -1,23 +1,23 @@
-//Check if user is logged in before loading content
-//if user is not logged in, redirect them to login screen
+// Check if the user is logged in before loading content
+// If the user is not logged in, redirect them to the login screen
 guardLoginPage();
 
-const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
-const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken"); // Get the access token from session or local storage
+const role = sessionStorage.getItem("role") || localStorage.getItem("role"); // Get the user role from session or local storage
 
-console.log('Role:', role); // Debugging log
+console.log('Role:', role); // Debugging log to check the user role
 
 // Change the font color of the sublecture description to gray
-function viewSubLecture(id){
+function viewSubLecture(id) {
     document.getElementById(`desc-${id}`).style.color = "#7F7F7F";
 }
 
 // Fetch course details including lectures
 async function fetchCourseDetailsWithLectures(courseID) {
     try {
-        const response = await fetch(`/courses/${courseID}/lectures`);
+        const response = await fetch(`/courses/${courseID}/lectures`); // Fetch course details with lectures from the server
         if (!response.ok) throw new Error('Failed to fetch course details with lectures');
-        const courseWithLectures = await response.json();
+        const courseWithLectures = await response.json(); // Parse the response JSON
         console.log('Course with Lectures:', courseWithLectures);  // Log for debugging
         return courseWithLectures[0]; // Access the first course in the array
     } catch (error) {
@@ -29,13 +29,13 @@ async function fetchCourseDetailsWithLectures(courseID) {
 // Fetch lecture or sub-lecture details
 async function fetchLectureDetails(lectureID, subLectureID = null) {
     try {
-        let url = `/lectures/${lectureID}`;
+        let url = `/lectures/${lectureID}`; // Base URL for fetching lecture details
         if (subLectureID) {
-            url += `/sublectures/${subLectureID}`;
+            url += `/sublectures/${subLectureID}`; // Append sub-lecture ID to URL if provided
         }
-        const response = await fetch(url);
+        const response = await fetch(url); // Fetch lecture or sub-lecture details from the server
         if (!response.ok) throw new Error('Failed to fetch lecture details');
-        const lecture = await response.json();
+        const lecture = await response.json(); // Parse the response JSON
         console.log('Lecture:', lecture);  // Log for debugging
         return lecture;
     } catch (error) {
@@ -47,20 +47,20 @@ async function fetchLectureDetails(lectureID, subLectureID = null) {
 // Normalize the video property name
 function normalizeVideoProperty(lecture) {
     if (lecture.video && lecture.video.data) {
-        return lecture.video.data;
+        return lecture.video.data; // Return video data if property name is 'video'
     }
     if (lecture.Video && lecture.Video.data) {
-        return lecture.Video.data;
+        return lecture.Video.data; // Return video data if property name is 'Video'
     }
     return null;
 }
 
 // Load course and lecture details
 async function loadCourseAndLectureDetails() {
-    const params = new URLSearchParams(window.location.search);
-    const courseID = params.get('courseID');
-    const lectureID = params.get('lectureID');
-    const subLectureID = params.get('subLectureID'); // Fetch subLectureID from URL
+    const params = new URLSearchParams(window.location.search); // Parse URL parameters
+    const courseID = params.get('courseID'); // Get course ID from URL
+    const lectureID = params.get('lectureID'); // Get lecture ID from URL
+    const subLectureID = params.get('subLectureID'); // Get sub-lecture ID from URL
 
     if (!courseID || !lectureID) {
         console.error('No course ID or lecture ID found in URL');
@@ -121,18 +121,18 @@ async function loadCourseAndLectureDetails() {
                     ${subLectureHTML}
                 </div>`;
             
-            lecturesList.innerHTML += lectureHTML;
+            lecturesList.innerHTML += lectureHTML; // Add lecture HTML to the lectures list
         });
     } else {
         console.error('Lectures data is not an array:', course.lectures);
         document.getElementById('course-details-text').innerText = 'No course details available';
     }
 
-    //indicate the sublectures that have been viewed
+    // Indicate the sublectures that have been viewed
     const viewedSubLectures = await (await get(`/users/courses/sublectures/${courseID}`)).json();
     viewedSubLectures.forEach((x) => viewSubLecture(x));
 
-    //finished loading, show the content
+    // Finished loading, show the content
     loadContent();
 
     // Load the initial video
@@ -145,8 +145,8 @@ async function loadCourseAndLectureDetails() {
 
 // Function to load lecture video
 async function loadLectureVideo(lectureID, courseID) {
-    const lecture = await fetchLectureDetails(lectureID);
-    const videoData = normalizeVideoProperty(lecture);
+    const lecture = await fetchLectureDetails(lectureID); // Fetch lecture details
+    const videoData = normalizeVideoProperty(lecture); // Normalize video property name
 
     // Highlight the selected lecture
     const lectureItems = document.querySelectorAll('.lecture-item');
@@ -171,22 +171,22 @@ async function loadSubLectureVideo(subLectureID, lectureID, courseID) {
         headers: {
             'Authorization': `Bearer ${token}`
         }
-    }); //add the viewed sublecture to the database
+    }); // Add the viewed sublecture to the database
 
-    const subLecture = await fetchLectureDetails(lectureID, subLectureID);
-    const videoData = normalizeVideoProperty(subLecture);
+    const subLecture = await fetchLectureDetails(lectureID, subLectureID); // Fetch sub-lecture details
+    const videoData = normalizeVideoProperty(subLecture); // Normalize video property name
 
     if (!subLecture || !videoData) {
         console.error('Failed to load sub-lecture video');
         return;
     }
 
-    const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(videoData)}`;
+    const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(videoData)}`; // Convert video data to base64 string
     const lectureVideoElement = document.getElementById('lecture-video');
     lectureVideoElement.src = videoSrc;
     lectureVideoElement.load();
 
-    //if updating the user's viewed sublecture database was successful, show view indicator
+    // If updating the user's viewed sublecture database was successful, show view indicator
     if (viewSubLectureResponse.status == 201) { 
         viewSubLecture(subLectureID);
     }
@@ -216,10 +216,10 @@ function arrayBufferToBase64(buffer) {
     for (let i = 0; i < len; i++) {
         binary += String.fromCharCode(bytes[i]);
     }
-    return window.btoa(binary);
+    return window.btoa(binary); // Convert binary data to base64 string
 }
 
-document.addEventListener('DOMContentLoaded', loadCourseAndLectureDetails);
+document.addEventListener('DOMContentLoaded', loadCourseAndLectureDetails); // Load course and lecture details when the document is ready
 
 // Event delegation for lecture items
 document.getElementById('lectures-list').addEventListener('click', async (event) => {

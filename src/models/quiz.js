@@ -380,6 +380,12 @@ class Quiz {
         }
     }
 
+    static async checkQuizAttempts(quizId) {
+        const params = { "quizId": quizId };
+        const result = await this.query("SELECT COUNT(*) as attempts FROM UserQuizAttempts WHERE quizId = @quizId", params);
+        return result.recordset[0].attempts;
+    }
+
     static async getUserQuizResults(userId) {
         try {
             const userResults = await this.query(`
