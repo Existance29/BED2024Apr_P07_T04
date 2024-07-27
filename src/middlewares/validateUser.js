@@ -98,7 +98,7 @@ const validateUpdate = async (req,res,next) => {
   const schema = Joi.object({
     first_name: Joi.string().min(1).max(40).required(),
     last_name: Joi.string().min(1).max(40).required(),
-    email: Joi.string().min(3).max(50).required().email().external((value,helper) => uniqueUpdateEmail(req.body.id,value,helper)),
+    email: Joi.string().min(3).max(50).required().email().external((value,helper) => uniqueUpdateEmail(req.user.userId,value,helper)),
     about_me: Joi.string().max(250).required().allow(''),
     country: Joi.string().max(100).required(),
     job_title: Joi.string().max(100).required().allow('')
