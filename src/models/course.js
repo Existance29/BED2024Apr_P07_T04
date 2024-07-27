@@ -142,9 +142,10 @@ class Course {
         const connection = await sql.connect(dbConfig);  // Connect to the database
 
         // Check if the title already exists
-        const checkTitleQuery = `SELECT COUNT(*) as count FROM Courses WHERE Title = @title`;
+        const checkTitleQuery = `SELECT COUNT(*) as count FROM Courses WHERE Title = @title AND CourseID != @courseID`;
         const checkTitleRequest = connection.request();
         checkTitleRequest.input("title", sql.NVarChar, newCourseData.title);
+        checkTitleRequest.input("courseID", sql.Int, courseID);
         const titleResult = await checkTitleRequest.query(checkTitleQuery);
 
         if (titleResult.recordset[0].count > 0) {
