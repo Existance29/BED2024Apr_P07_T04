@@ -20,7 +20,7 @@ const userRoute = (app, upload) => {
     app.get("/users/:id", usersController.getUserById) //get the user's data. Publicly available. No sensitive data like password or email
     app.put("/users/pic", authenticateToken, upload.single('pic'), usersController.updateProfilePic) // Update profile picture. using multer for uploading profile pictures
     app.put("/users", authenticateToken, validateUser.validateUpdate, usersController.updateUser) //update data in the user table
-    app.put("/users/password", validateUser.validateNewPassword, authenticateToken, usersController.updatePassword) //update passwords
+    app.put("/users/password", authenticateToken, validateUser.validateNewPassword, usersController.updatePassword) //update passwords
 };
 
 module.exports = userRoute;

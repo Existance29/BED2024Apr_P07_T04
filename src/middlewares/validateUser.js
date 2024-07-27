@@ -37,6 +37,7 @@ const validateSchema = async (req,res,schema) =>{
   try{
     await schema.validateAsync(req.body, { abortEarly: false })
   }catch(err){
+    console.log(err)
     //get the field and the error message
     const errors = err.details.map((error) => [error.path[0], error.message])
     res.status(400).json({ message: "Validation error", errors }) //add the validation errors to the json
@@ -109,13 +110,15 @@ const validateUpdate = async (req,res,next) => {
 
 //validate if the current password entered by the user matches their password in the database
 const isPasswordCorrect = async (id,password,helper) => {
-  const user = await User.getUserById(id)
+  const user = await User.getPrivateUserById(id)
   //if result exists, then password is valid
   if (user == null){
     return helper.message('could not find user') //this in theory should never trigger, but a fail safe is nice
   }
+  //call the getUserByEmail to get the password
+  const privateUser = await User.getUserByEmail(user.email)
   //check if password is valid
-  if (!bcrypt.compareSync(password,user.password)){
+  if (!bcrypt.compareSync(password,privateUser.password)){
     return helper.message("password is incorrect")
   }
   return password
@@ -134,7 +137,7 @@ const validateNewPassword = async (req,res,next) => {
     } */
 
   const schema = Joi.object({
-    current_password: Joi.string().required().external((value,helper) => isPasswordCorrect(req.params.id,value,helper)), //make sure current password is correct
+    current_password: Joi.string().required().external((value,helper) => isPasswordCorrect(req.user.userId,value,helper)), //make sure current password is correct
     new_password: Joi.string().min(5).max(100).required(), //ensure new password matches the basic password req (min 5 chars)
     //check that repeat new password matches with the new password
     repeat_new_password: Joi.string().required().external((value,helper) => (req.body.new_password == value)? value : helper.message('password does not match the new password')),
