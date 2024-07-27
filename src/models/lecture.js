@@ -137,10 +137,11 @@ class Lecture {
     static async updateLecture(lectureID, newLectureData) {
         const connection = await sql.connect(dbConfig);  // Connect to the database
 
-        // Check if the lecture name already exists
-        const checkNameQuery = `SELECT COUNT(*) as count FROM Lectures WHERE Name = @name`;
+        // Check if the lecture name already exists excluding the current lecture
+        const checkNameQuery = `SELECT COUNT(*) as count FROM Lectures WHERE Name = @name AND LectureID != @lectureID`;
         const checkNameRequest = connection.request();
         checkNameRequest.input("name", sql.NVarChar, newLectureData.name);
+        checkNameRequest.input("lectureID", sql.Int, lectureID);
         const nameResult = await checkNameRequest.query(checkNameQuery);
 
         if (nameResult.recordset[0].count > 0) {
@@ -174,10 +175,11 @@ class Lecture {
     // Method to update a sub-lecture in the database
     static async updateSubLecture(lectureID, subLectureID, newSubLectureData) {
         const connection = await sql.connect(dbConfig);  // Connect to the database
-        // Check if the sub-lecture name already exists in the entire SubLectures table
-        const checkNameQuery = `SELECT COUNT(*) as count FROM SubLectures WHERE Name = @name`;
+        // Check if the sub-lecture name already exists excluding the current sub-lecture
+        const checkNameQuery = `SELECT COUNT(*) as count FROM SubLectures WHERE Name = @name AND SubLectureID != @subLectureID`;
         const checkNameRequest = connection.request();
         checkNameRequest.input("name", sql.NVarChar, newSubLectureData.name);
+        checkNameRequest.input("subLectureID", sql.Int, subLectureID);
         const nameResult = await checkNameRequest.query(checkNameQuery);
 
         if (nameResult.recordset[0].count > 0) {
