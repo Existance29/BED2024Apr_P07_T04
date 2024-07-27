@@ -1,8 +1,3 @@
-// Event listener for when the DOM content is fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    fetchYouTubeVideos('course summary'); // Fetch YouTube videos with the query 'course summary' by default
-});
-
 // Variable to store the debounce timeout ID
 let debounceTimeout;
 
