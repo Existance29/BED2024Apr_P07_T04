@@ -1114,7 +1114,19 @@ async function insertUsers(connection){
     INSERT INTO User_Completed_Courses VALUES (1,8,'2023-10-08');
 
     INSERT INTO User_Completed_Courses VALUES (2,3,'2024-07-01');
-	INSERT INTO User_Completed_Courses VALUES (2,5,'2024-07-03');
+	  INSERT INTO User_Completed_Courses VALUES (2,5,'2024-07-03');
+
+    INSERT INTO Results VALUES (1,1,50,5,5,10,50,'A');
+    INSERT INTO Results VALUES (2,1,50,5,5,10,50,'A');
+    INSERT INTO Results VALUES (3,1,50,5,5,10,50,'A');
+    INSERT INTO Results VALUES (4,1,50,5,5,10,50,'A');
+    INSERT INTO Results VALUES (5,1,50,5,5,10,50,'A');
+    INSERT INTO Results VALUES (6,1,50,5,5,10,50,'A');
+    INSERT INTO Results VALUES (7,1,50,5,5,10,50,'A');
+    INSERT INTO Results VALUES (8,1,50,5,5,10,50,'A');
+
+    INSERT INTO Results VALUES (1,2,40,5,5,10,50,'A');
+    INSERT INTO Results VALUES (2,2,30,5,5,10,50,'B');
   
   `)
   
