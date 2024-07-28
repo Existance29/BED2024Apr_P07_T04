@@ -4,7 +4,7 @@ const loggedInUserID = getUserID()
 const tooltipDesc = {
     "accuracy": "Users that answer quiz questions correctly",
     "versatility": "Users that are versatile and\ncomplete courses from different categories",
-    "activity": "Users that are active and frequently\ncomment and rate courses"
+    "activity": "Users that are active and frequently\ncomment"
 }
 
 function roundToTwo(num) {
@@ -84,7 +84,7 @@ async function loadProfile(){
 
     //get courses
     const courses = await (await get("/courses/without-video")).json()
-
+    console.log(courses)
     //display completed courses
     //check if completed_courses is null (user has not completed any courses)
     const completedCourses = document.getElementById("course-section")
@@ -95,20 +95,26 @@ async function loadProfile(){
         //there are courses to display
         completedCourses.innerHTML += `<div class = "course-seperator"></div>`
         data.completed_courses.forEach((completedCourse) => {
-            const course = courses[completedCourse.course_id-1]
-            const html = `
-            <div id = "course" style="width: 100%">
-                <div class = "d-flex course-content" onclick = "location.href = 'course-chapters.html?courseID=${completedCourse.course_id}'">
-                    <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
-                    <div class = "d-flex flex-column justify-content-between" style = "margin-left: 2vw;">
-                        <div class = "poppins-medium course-title">${course.title}</div>
-                        <div class = "poppins-medium course-complete-date">Completed on: ${readableDate(completedCourse.date_completed)}</div>
+            //match course by id
+            const course = courses.filter(x => x.courseID === completedCourse.course_id)[0]
+            //if course doesnt exist, skip it
+            //in theory this should never happen
+            //TODO: switch to regular loop instead of forEach, use (!course) continue instead of nesting it in the if statement
+            if (course){
+                const html = `
+                <div id = "course" style="width: 100%">
+                    <div class = "d-flex course-content" onclick = "location.href = 'course-chapters.html?courseID=${completedCourse.course_id}'">
+                        <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
+                        <div class = "d-flex flex-column justify-content-between" style = "margin-left: 2vw;">
+                            <div class = "poppins-medium course-title">${course.title}</div>
+                            <div class = "poppins-medium course-complete-date">Completed on: ${readableDate(completedCourse.date_completed)}</div>
+                        </div>
                     </div>
+                    <div class = "course-seperator"></div>
                 </div>
-                <div class = "course-seperator"></div>
-            </div>
-            `
-            completedCourses.innerHTML += html
+                `
+                completedCourses.innerHTML += html
+            }
         })
     }
 

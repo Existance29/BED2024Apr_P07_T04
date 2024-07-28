@@ -17,6 +17,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 //use parse middlewares
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //routes
 app.post("/register",validateSchema.validateRegistration, userController.registerUser)

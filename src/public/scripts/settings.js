@@ -115,6 +115,7 @@ async function saveAccount(){
         }
         return
     }
+    if (!response.ok) return
     //display success message
     success("Account settings saved")
     //also update the navbar profile img
@@ -149,6 +150,7 @@ async function savePassword(){
         }
         return
     }
+    if (!response.ok) return
     //display success message
     success("New password saved")
     clearPasswordFields()

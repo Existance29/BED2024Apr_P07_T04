@@ -39,6 +39,48 @@ class Quiz {
         const result = await request.query(queryString);
         return result;
     }
+    
+    static async createQuiz(newQuizData) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `
+            INSERT INTO Quizzes (title, description, totalQuestions, totalMarks, duration, maxAttempts)
+            VALUES (@title, @description, @totalQuestions, @totalMarks, @duration, @maxAttempts);
+            SELECT SCOPE_IDENTITY() AS id;
+        `;
+
+        const request = connection.request();
+        request.input("title", sql.VarChar, newQuizData.title);
+        request.input("description", sql.VarChar, newQuizData.description);
+        request.input("totalQuestions", sql.Int, newQuizData.totalQuestions);
+        request.input("totalMarks", sql.Int, newQuizData.totalMarks);
+        request.input("duration", sql.Int, newQuizData.duration);
+        request.input("maxAttempts", sql.Int, newQuizData.maxAttempts);
+
+        const result = await request.query(sqlQuery);
+        connection.close();
+
+        return this.getQuizById(result.recordset[0].id);
+    }
+
+    static async createQuizQuestion(newQuizQuestionData) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `
+            INSERT INTO Questions (quizId, text, options, correctAnswer)
+            VALUES (@quizId, @text, @options, @correctAnswer);
+            SELECT SCOPE_IDENTITY() AS id;
+        `;
+
+        const request = connection.request();
+        request.input("quizId", sql.Int, newQuizQuestionData.quizId);
+        request.input("text", sql.VarChar, newQuizQuestionData.text);
+        request.input("options", sql.NVarChar, newQuizQuestionData.options);
+        request.input("correctAnswer", sql.Int, newQuizQuestionData.correctAnswer);
+
+        const result = await request.query(sqlQuery);
+        connection.close();
+
+        return this.getQuizQuestions(result.recordset[0].id);
+    }
 
     static async getAllQuizzes() {
         const result = (await this.query("SELECT * FROM Quizzes")).recordset;
@@ -55,6 +97,118 @@ class Quiz {
         const params = { "quizId": id };
         const result = (await this.query("SELECT * FROM Questions WHERE quizId = @quizId", params)).recordset;
         return result.length ? result.map((x) => this.toQuestionObj(x)) : [];
+    }
+
+    static async updateQuiz(quizId, updatedQuizData) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `
+            UPDATE Quizzes
+            SET title = @title, description = @description, totalQuestions = @totalQuestions, totalMarks = @totalMarks, duration = @duration, maxAttempts = @maxAttempts
+            WHERE id = @quizId;
+        `;
+    
+        const request = connection.request();
+        request.input("quizId", sql.Int, quizId);
+        request.input("title", sql.VarChar, updatedQuizData.title);
+        request.input("description", sql.VarChar, updatedQuizData.description);
+        request.input("totalQuestions", sql.Int, updatedQuizData.totalQuestions);
+        request.input("totalMarks", sql.Int, updatedQuizData.totalMarks);
+        request.input("duration", sql.Int, updatedQuizData.duration);
+        request.input("maxAttempts", sql.Int, updatedQuizData.maxAttempts);
+    
+        await request.query(sqlQuery);
+        connection.close();
+    
+        return this.getQuizById(quizId);
+    }
+
+    static async updateQuizQuestions(quizId, questions) {
+    const connection = await sql.connect(dbConfig);
+    const transaction = new sql.Transaction(connection);
+
+    try {
+        // Start a transaction
+        await transaction.begin();
+        const request = transaction.request();
+
+        // Delete existing questions for the quiz
+        await request.input("quizId", sql.Int, quizId);
+        await request.query(`DELETE FROM Questions WHERE quizId = @quizId`);
+
+        // Insert new questions
+        for (const question of questions) {
+            const sqlQuery = `
+                INSERT INTO Questions (quizId, text, options, correctAnswer)
+                VALUES (@quizId, @text, @options, @correctAnswer);
+            `;
+
+            const request = transaction.request();
+            request.input("quizId", sql.Int, quizId);
+            request.input("text", sql.VarChar, question.text);
+            request.input("options", sql.NVarChar, JSON.stringify(question.options));
+            request.input("correctAnswer", sql.Int, question.correctAnswer);
+
+            await request.query(sqlQuery);
+        }
+
+        // Commit the transaction
+        await transaction.commit();
+    } catch (error) {
+        // If there's an error, rollback the transaction
+        if (transaction) {
+            await transaction.rollback();
+        }
+        throw error;
+    } finally {
+        connection.close();
+    }
+}
+
+
+    static async deleteQuiz(quizId) {
+        const connection = await sql.connect(dbConfig);
+        const transaction = new sql.Transaction(connection);
+
+        try {
+            // Start a transaction
+            await transaction.begin();
+            const request = transaction.request();
+
+            // Delete all entries in UserQuizAttempts associated with the quiz
+            await request.input("quizId", sql.Int, quizId);
+            await request.query(`DELETE FROM UserQuizAttempts WHERE quizId = @quizId`);
+
+            // Delete all entries in IncorrectQuestions associated with the quiz
+            await request.query(`
+                DELETE FROM IncorrectQuestions
+                WHERE questionId IN (SELECT id FROM Questions WHERE quizId = @quizId)
+            `);
+
+            // Delete all entries in Answers associated with the quiz
+            await request.query(`DELETE FROM Answers WHERE quizId = @quizId`);
+
+            // Delete all entries in Results associated with the quiz
+            await request.query(`DELETE FROM Results WHERE quizId = @quizId`);
+
+            // Delete all questions associated with the quiz
+            await request.query(`DELETE FROM Questions WHERE quizId = @quizId`);
+
+            // Finally, delete the quiz itself
+            await request.query(`DELETE FROM Quizzes WHERE id = @quizId`);
+
+            // Commit the transaction
+            await transaction.commit();
+
+            return true;
+        } catch (error) {
+            // If there's an error, rollback the transaction
+            if (transaction) {
+                await transaction.rollback();
+            }
+            throw error;
+        } finally {
+            connection.close();
+        }
     }
 
     static async submitQuizAnswers(quizId, userId, answers, duration) {
