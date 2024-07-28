@@ -1,10 +1,11 @@
+//
 async function fetchComments() {
-    const response = await fetch("/comments"); // Replace with your API endpoint
-    const data = await response.json();
-  
-    console.log(data)
+  const response = await fetch("/comments"); // Replace with your API endpoint
+  const data = await response.json();
 
-    const commentList = document.getElementById("comment-list");
+  console.log(data)
+
+  const commentList = document.getElementById("comment-list");
   
     data.forEach((comment) => {
       const commentItem = document.createElement("div");
@@ -27,4 +28,22 @@ async function fetchComments() {
     });
   }
   
-  fetchComments(); // Call the function to fetch and display comment data
+fetchComments(); // Call the function to fetch and display comment data
+
+async function displayComments(comments) {
+  const response = await fetch("/comments");
+    const data = await response.json();
+    const commentList = document.getElementById("comment-list");
+    commentList.innerHTML = '';
+    data.forEach(comment => {
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'comment';
+      commentDiv.innerHTML = `
+        <div class="review">
+          <h2>${comment.commentID}</h2>
+          <p>${comment.message}</p>
+        </div>
+      `;
+      commentList.appendChild(commentsDiv);
+    });
+}
