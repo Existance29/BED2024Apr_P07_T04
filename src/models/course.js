@@ -212,69 +212,79 @@ class Course {
 
     // Method to delete a course from the database
     static async deleteCourse(courseID) {
-    const connection = await sql.connect(dbConfig);  // Connect to the database
-    const transaction = new sql.Transaction(connection);  // Begin a new transaction
+        const connection = await sql.connect(dbConfig);  // Connect to the database
+        const transaction = new sql.Transaction(connection);  // Begin a new transaction
 
-    try {
-        await transaction.begin();  // Start the transaction
-        const request = transaction.request();
+        try {
+            await transaction.begin();  // Start the transaction
+            const request = transaction.request();
 
-        // Delete all comments associated with the sub-lectures of the course
-        await request.input("courseID", sql.Int, courseID);
-        await request.query(`
-            DELETE FROM Comments
-            WHERE subLectureID IN (
-                SELECT SubLectureID FROM SubLectures
-                WHERE LectureID IN (SELECT LectureID FROM CourseLectures WHERE CourseID = @courseID)
-            )
-        `);
-
-        // Delete all entries in User_Sub_Lectures associated with the sub-lectures of the course
-        await request.query(`
-            DELETE FROM User_Sub_Lectures
-            WHERE sub_lecture_id IN (
-                SELECT SubLectureID FROM SubLectures
-                WHERE LectureID IN (SELECT LectureID FROM CourseLectures WHERE CourseID = @courseID)
-            )
-        `);
-
-        // Delete all sub-lectures associated with the lectures of the course
-        await request.query(`
-            DELETE FROM SubLectures
-            WHERE LectureID IN (
+            // Fetch all LectureIDs associated with the course
+            await request.input("courseID", sql.Int, courseID);
+            const lectureIdsResult = await request.query(`
                 SELECT LectureID FROM CourseLectures WHERE CourseID = @courseID
-            )
-        `);
+            `);
+            const lectureIds = lectureIdsResult.recordset.map(row => row.LectureID);
 
-        // Delete all entries in User_Completed_Courses associated with the course
-        await request.query(`DELETE FROM User_Completed_Courses WHERE course_id = @courseID`);
+            if (lectureIds.length > 0) {
+                // Convert lecture IDs to a comma-separated string
+                const lectureIdsString = lectureIds.join(',');
 
-        // Delete all entries in CourseLectures associated with the course
-        await request.query(`DELETE FROM CourseLectures WHERE CourseID = @courseID`);
+                // Delete all comments associated with the sub-lectures of the course
+                await request.query(`
+                    DELETE FROM Comments
+                    WHERE subLectureID IN (
+                        SELECT SubLectureID FROM SubLectures
+                        WHERE LectureID IN (${lectureIdsString})
+                    )
+                `);
 
-        // Delete all lectures associated with the course
-        await request.query(`
-            DELETE FROM Lectures
-            WHERE LectureID IN (
-                SELECT LectureID FROM CourseLectures WHERE CourseID = @courseID
-            )
-        `);
+                // Delete all entries in User_Sub_Lectures associated with the sub-lectures of the course
+                await request.query(`
+                    DELETE FROM User_Sub_Lectures
+                    WHERE sub_lecture_id IN (
+                        SELECT SubLectureID FROM SubLectures
+                        WHERE LectureID IN (${lectureIdsString})
+                    )
+                `);
 
-        // Finally, delete the course itself
-        await request.query(`DELETE FROM Courses WHERE CourseID = @courseID`);
+                // Delete all sub-lectures associated with the lectures of the course
+                await request.query(`
+                    DELETE FROM SubLectures
+                    WHERE LectureID IN (${lectureIdsString})
+                `);
 
-        await transaction.commit();  // Commit the transaction
+                // Delete all entries in CourseLectures associated with the course
+                await request.query(`
+                    DELETE FROM CourseLectures WHERE CourseID = @courseID
+                `);
 
-        return true;  // Return true to indicate success
-    } catch (error) {
-        if (transaction) {
-            await transaction.rollback();  // Rollback the transaction in case of error
+                // Delete all lectures associated with the course
+                await request.query(`
+                    DELETE FROM Lectures
+                    WHERE LectureID IN (${lectureIdsString})
+                `);
+            }
+
+            // Delete all entries in User_Completed_Courses associated with the course
+            await request.query(`DELETE FROM User_Completed_Courses WHERE course_id = @courseID`);
+
+            // Finally, delete the course itself
+            await request.query(`DELETE FROM Courses WHERE CourseID = @courseID`);
+
+            await transaction.commit();  // Commit the transaction
+
+            return true;  // Return true to indicate success
+        } catch (error) {
+            if (transaction) {
+                await transaction.rollback();  // Rollback the transaction in case of error
+            }
+            throw error;  // Throw the error
+        } finally {
+            connection.close();  // Close the database connection
         }
-        throw error;  // Throw the error
-    } finally {
-        connection.close();  // Close the database connection
     }
-    }
+
 
     // Method to search for courses in the database
     static async searchCourses(searchTerm) {
