@@ -95,20 +95,26 @@ async function loadProfile(){
         //there are courses to display
         completedCourses.innerHTML += `<div class = "course-seperator"></div>`
         data.completed_courses.forEach((completedCourse) => {
+            //match course by id
             const course = courses.filter(x => x.courseID === completedCourse.course_id)[0]
-            const html = `
-            <div id = "course" style="width: 100%">
-                <div class = "d-flex course-content" onclick = "location.href = 'course-chapters.html?courseID=${completedCourse.course_id}'">
-                    <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
-                    <div class = "d-flex flex-column justify-content-between" style = "margin-left: 2vw;">
-                        <div class = "poppins-medium course-title">${course.title}</div>
-                        <div class = "poppins-medium course-complete-date">Completed on: ${readableDate(completedCourse.date_completed)}</div>
+            //if course doesnt exist, skip it
+            //in theory this should never happen
+            //TODO: switch to regular loop instead of forEach, use (!course) continue instead of nesting it in the if statement
+            if (course){
+                const html = `
+                <div id = "course" style="width: 100%">
+                    <div class = "d-flex course-content" onclick = "location.href = 'course-chapters.html?courseID=${completedCourse.course_id}'">
+                        <img src="data:image/png;base64,${arrayBufferToBase64(course.thumbnail)}" class = "course-thumbnail">
+                        <div class = "d-flex flex-column justify-content-between" style = "margin-left: 2vw;">
+                            <div class = "poppins-medium course-title">${course.title}</div>
+                            <div class = "poppins-medium course-complete-date">Completed on: ${readableDate(completedCourse.date_completed)}</div>
+                        </div>
                     </div>
+                    <div class = "course-seperator"></div>
                 </div>
-                <div class = "course-seperator"></div>
-            </div>
-            `
-            completedCourses.innerHTML += html
+                `
+                completedCourses.innerHTML += html
+            }
         })
     }
 
