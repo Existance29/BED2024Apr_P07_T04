@@ -30,18 +30,20 @@ async function fetchComments() {
   
 fetchComments(); // Call the function to fetch and display comment data
 
-function displayComments(comments) {
-  const commentList = document.getElementById("comment-list");
-  commentList.innerHTML = '';
-  comments.forEach(comment => {
-    const commentDiv = document.createElement('div');
-    commentDiv.className = 'comment';
-    commentDiv.innerHTML = `
-      <div class="review">
-        <h2>${comment.commentID}</h2>
-        <p>${comment.message}</p>
-      </div>
-    `;
-    commentList.appendChild(commentsDiv);
-  });
+async function displayComments(comments) {
+  const response = await fetch("/comments");
+    const data = await response.json();
+    const commentList = document.getElementById("comment-list");
+    commentList.innerHTML = '';
+    data.forEach(comment => {
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'comment';
+      commentDiv.innerHTML = `
+        <div class="review">
+          <h2>${comment.commentID}</h2>
+          <p>${comment.message}</p>
+        </div>
+      `;
+      commentList.appendChild(commentsDiv);
+    });
 }
