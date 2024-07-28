@@ -84,7 +84,7 @@ async function loadProfile(){
 
     //get courses
     const courses = await (await get("/courses/without-video")).json()
-
+    console.log(courses)
     //display completed courses
     //check if completed_courses is null (user has not completed any courses)
     const completedCourses = document.getElementById("course-section")
@@ -95,7 +95,7 @@ async function loadProfile(){
         //there are courses to display
         completedCourses.innerHTML += `<div class = "course-seperator"></div>`
         data.completed_courses.forEach((completedCourse) => {
-            const course = courses[completedCourse.course_id-1]
+            const course = courses.filter(x => x.courseID === completedCourse.course_id)[0]
             const html = `
             <div id = "course" style="width: 100%">
                 <div class = "d-flex course-content" onclick = "location.href = 'course-chapters.html?courseID=${completedCourse.course_id}'">
