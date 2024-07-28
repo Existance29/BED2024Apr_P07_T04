@@ -18,7 +18,7 @@ const authenticateToken = (req,res,next) => {
             'GET /users/verifyjwt': ['student', 'lecturer'],
 
             'POST /courses': ['lecturer'], // only lecturers can create courses
-            'POST /lectures': ['lecturer'], // only lecturers can create sub-lectures
+            'POST /lectures': ['lecturer'], // only lecturers can create lectures
             'POST /lectures/:lectureID/sublectures': ['lecturer'], // only lecturers can create sub-lectures
             'PUT /courses/:id': ['lecturer'], // only lecturers can edit courses
             'PUT /lectures/:id': ['lecturer'], // only lecturers can edit lectures

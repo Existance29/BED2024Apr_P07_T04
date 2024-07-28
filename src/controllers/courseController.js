@@ -286,19 +286,18 @@ const deleteCourse = async (req, res) => {
         description: 'Success, course deleted. Returns an empty json',
         schema: {}
     } */
-    const id = parseInt(req.params.id);  // Extract the course ID from the request parameters
+    const courseID = parseInt(req.params.id);  // Extract the course ID from the request parameters
     try {
-        const success = await Course.deleteCourse(id);  // Delete the course from the database
+        const success = await Course.deleteCourse(courseID);  // Delete the course from the database
         if (!success) {
             return res.status(404).send("Course not found");  // Respond with a 404 status if the course is not found
         }
         res.status(204).send();  // Respond with a 204 status to indicate successful deletion
     } catch (error) {
-        console.error(error);  // Log any errors
+        console.error(error);
         res.status(500).send("Error deleting course");  // Respond with an error message
     }
 };
-
 
 // Controller function to search for courses
 const searchCourses = async (req, res) => {
