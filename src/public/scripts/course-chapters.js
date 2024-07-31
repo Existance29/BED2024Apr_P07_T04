@@ -1,28 +1,28 @@
-guardLoginPage();
-const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
-const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+guardLoginPage(); // Ensure the user is logged in before accessing the page
+const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken"); // Retrieve the access token
+const role = sessionStorage.getItem("role") || localStorage.getItem("role"); // Retrieve the user role
 let editMode = false; // Initialize editMode to false
 let currentLectureID = null; // Store the current lecture ID for editing
 let currentSubLectureID = null; // Store the current sub-lecture ID for editing
 
-console.log('Role:', role); // Debugging log
+console.log('Role:', role); // Debugging log to check the user role
 
 // Function to toggle edit mode 
 function toggleEditMode() {
-    editMode = !editMode;
-    loadCourseDetails();
+    editMode = !editMode; // Toggle edit mode
+    loadCourseDetails(); // Reload course details
 }
 
 // Fetch course details including lectures
 async function fetchCourseDetailsWithLectures(courseID) {
     try {
-        const response = await fetch(`/courses/${courseID}/lectures/without-video`);
+        const response = await fetch(`/courses/${courseID}/lectures/without-video`); // Fetch course details with lectures
         if (!response.ok) throw new Error('Failed to fetch course details with lectures');
-        const courseWithLectures = await response.json();
+        const courseWithLectures = await response.json(); // Parse the response JSON
         console.log('Course with Lectures:', courseWithLectures);  // Log for debugging
         return courseWithLectures[0]; // Access the first course in the array
     } catch (error) {
-        console.error('Error fetching course details with lectures:', error);
+        console.error('Error fetching course details with lectures:', error); // Log error
         return null;
     }
 }
@@ -33,24 +33,24 @@ async function fetchBasicCourseDetails(courseID) {
         const response = await fetch(`/courses/${courseID}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}` // Include the access token in the request
             }
         });
         if (!response.ok) throw new Error('Failed to fetch basic course details');
-        const course = await response.json();
+        const course = await response.json(); // Parse the response JSON
         console.log('Basic Course Details:', course);  // Log for debugging
         return course;
     } catch (error) {
-        console.error('Error fetching basic course details:', error);
+        console.error('Error fetching basic course details:', error); // Log error
         return null;
     }
 }
 
 // Load course details and lectures
 async function loadCourseDetails() {
-    const params = new URLSearchParams(window.location.search);
-    const courseID = params.get('courseID');
-    
+    const params = new URLSearchParams(window.location.search); // Get URL parameters
+    const courseID = params.get('courseID'); // Get the course ID from URL
+
     if (!courseID) {
         console.error('No course ID found in URL');
         return;
@@ -58,34 +58,31 @@ async function loadCourseDetails() {
 
     console.log('Course ID:', courseID);  // Log the course ID
 
-    // Fetch course details including lectures
-    const courseWithLectures = await fetchCourseDetailsWithLectures(courseID);
+    const courseWithLectures = await fetchCourseDetailsWithLectures(courseID); // Fetch course details including lectures
     if (!courseWithLectures || !Array.isArray(courseWithLectures.lectures) || courseWithLectures.lectures.length === 0) {
         console.error('No lecture in the course, fetching basic course details');
-        const basicCourseDetails = await fetchBasicCourseDetails(courseID);
+        const basicCourseDetails = await fetchBasicCourseDetails(courseID); // Fetch basic course details if no lectures found
         if (!basicCourseDetails) {
             console.error('Failed to load basic course details');
             return;
         }
 
-        updateCourseDetails(basicCourseDetails);
-        document.getElementById('chapter-grid').innerHTML = '<p>No lectures found for this course.</p>';
+        updateCourseDetails(basicCourseDetails); // Update course details on the page
+        document.getElementById('chapter-grid').innerHTML = '<p>No lectures found for this course.</p>'; // Display message if no lectures
         fetchYouTubeVideos(basicCourseDetails.title); // Automatically search for YouTube videos based on the course title
         return;
     }
 
     console.log('Loaded course with lectures:', courseWithLectures);
 
-    updateCourseDetails(courseWithLectures);
+    updateCourseDetails(courseWithLectures); // Update course details on the page
     fetchYouTubeVideos(courseWithLectures.title); // Automatically search for YouTube videos based on the course title
 
-    // Ensure lectures are sorted by LectureID
-    const lectures = courseWithLectures.lectures.sort((a, b) => a.lectureID - b.lectureID);
+    const lectures = courseWithLectures.lectures.sort((a, b) => a.lectureID - b.lectureID); // Sort lectures by LectureID
 
-    // Ensure sub-lectures within each lecture are sorted by SubLectureID
     lectures.forEach(lecture => {
         if (lecture.subLectures && lecture.subLectures.length > 0) {
-            lecture.subLectures.sort((a, b) => a.subLectureID - b.subLectureID);
+            lecture.subLectures.sort((a, b) => a.subLectureID - b.subLectureID); // Sort sub-lectures by SubLectureID
         }
     });
 
@@ -137,17 +134,17 @@ async function loadCourseDetails() {
                 ${subLectureHTML}
                 
             </div>`;
-        chapterGrid.innerHTML += lectureHTML;
+        chapterGrid.innerHTML += lectureHTML; // Add lecture HTML to the grid
     });
 }
 
 // Update course details (title, description, video)
 function updateCourseDetails(course) {
-    document.getElementById('title').innerText = course.title;
-    document.getElementById('header-desc').innerText = course.description;
+    document.getElementById('title').innerText = course.title; // Update course title
+    document.getElementById('header-desc').innerText = course.description; // Update course description
     if (course.video && course.video.data) {
-        const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(course.video.data)}`;
-        document.getElementById('course-video').src = videoSrc;
+        const videoSrc = `data:video/mp4;base64,${arrayBufferToBase64(course.video.data)}`; // Convert video to base64
+        document.getElementById('course-video').src = videoSrc; // Set video source
     }
 }
 
@@ -168,37 +165,37 @@ function arrayBufferToBase64(buffer) {
 }
 
 function redirectToUploadLecture() {
-    const params = new URLSearchParams(window.location.search);
-    const courseID = params.get('courseID');
-    window.location.href = `upload-lecture.html?courseID=${courseID}`;
+    const params = new URLSearchParams(window.location.search); // Get URL parameters
+    const courseID = params.get('courseID'); // Get the course ID from URL
+    window.location.href = `upload-lecture.html?courseID=${courseID}`; // Redirect to upload lecture page
 }
 
 // Open edit lecture modal and populate the form with lecture details
 async function openEditLectureModal(lectureID) {
-    const lecture = await fetchLectureById(lectureID);
-    currentLectureID = lectureID;
-    document.getElementById('editLectureName').value = lecture.name;
+    const lecture = await fetchLectureById(lectureID); // Fetch lecture details by ID
+    currentLectureID = lectureID; // Set current lecture ID
+    document.getElementById('editLectureName').value = lecture.name; // Populate form with lecture details
     document.getElementById('editLectureDescription').value = lecture.description;
     document.getElementById('editLectureCategory').value = lecture.category;
     document.getElementById('editLectureDuration').value = lecture.duration;
-    $('#editLectureModal').modal('show');
+    $('#editLectureModal').modal('show'); // Show the modal
 }
 
 // Open edit sub-lecture modal and populate the form with sub-lecture details
 async function openEditSubLectureModal(lectureID, subLectureID) {
-    console.log('Editing Sub-Lecture:', { lectureID, subLectureID });  // Log lecture and sub-lecture IDs for debugging
-    const subLecture = await fetchSubLectureById(lectureID, subLectureID);
-    console.log('Fetched Sub-Lecture:', subLecture);  // Log fetched sub-lecture data for debugging
+    console.log('Editing Sub-Lecture:', { lectureID, subLectureID });  // Log for debugging
+    const subLecture = await fetchSubLectureById(lectureID, subLectureID); // Fetch sub-lecture details by ID
+    console.log('Fetched Sub-Lecture:', subLecture);  // Log for debugging
 
-    currentLectureID = lectureID;
-    currentSubLectureID = subLectureID;
+    currentLectureID = lectureID; // Set current lecture ID
+    currentSubLectureID = subLectureID; // Set current sub-lecture ID
 
     if (subLecture) {
-        document.getElementById('editSubLectureName').value = subLecture.Name;
+        document.getElementById('editSubLectureName').value = subLecture.Name; // Populate form with sub-lecture details
         document.getElementById('editSubLectureDescription').value = subLecture.Description;
         document.getElementById('editSubLectureDuration').value = subLecture.Duration;
 
-        $('#editSubLectureModal').modal('show');
+        $('#editSubLectureModal').modal('show'); // Show the modal
     } else {
         console.error('Sub-Lecture not found');
     }
@@ -207,11 +204,11 @@ async function openEditSubLectureModal(lectureID, subLectureID) {
 // Fetch lecture details by ID
 async function fetchLectureById(lectureID) {
     try {
-        const response = await fetch(`/lectures/${lectureID}`);
-        const lecture = await response.json();
+        const response = await fetch(`/lectures/${lectureID}`); // Fetch lecture details
+        const lecture = await response.json(); // Parse response JSON
         return lecture;
     } catch (error) {
-        console.error('Error fetching lecture details:', error);
+        console.error('Error fetching lecture details:', error); // Log error
         return null;
     }
 }
@@ -219,30 +216,30 @@ async function fetchLectureById(lectureID) {
 /// Fetch sub-lecture details by ID
 async function fetchSubLectureById(lectureID, subLectureID) {
     try {
-        console.log('Fetching Sub-Lecture:', { lectureID, subLectureID });  // Log IDs before fetching
-        const response = await fetch(`/lectures/${lectureID}/sublectures/${subLectureID}`);
-        const subLecture = await response.json();
+        console.log('Fetching Sub-Lecture:', { lectureID, subLectureID });  // Log IDs for debugging
+        const response = await fetch(`/lectures/${lectureID}/sublectures/${subLectureID}`); // Fetch sub-lecture details
+        const subLecture = await response.json(); // Parse response JSON
         console.log('Fetched Sub-Lecture Data:', subLecture);  // Log the fetched data
         return subLecture;
     } catch (error) {
-        console.error('Error fetching sub-lecture details:', error);
+        console.error('Error fetching sub-lecture details:', error); // Log error
         return null;
     }
 }
 
 // Close edit lecture modal
 function closeEditLectureModal() {
-    $('#editLectureModal').modal('hide');
+    $('#editLectureModal').modal('hide'); // Hide the modal
 }
 
 // Close edit sub-lecture modal
 function closeEditSubLectureModal() {
-    $('#editSubLectureModal').modal('hide');
+    $('#editSubLectureModal').modal('hide'); // Hide the modal
 }
 
 // Update lecture details
 async function editLecture() {
-    const name = document.getElementById('editLectureName').value;
+    const name = document.getElementById('editLectureName').value; // Get form values
     const description = document.getElementById('editLectureDescription').value;
     const category = document.getElementById('editLectureCategory').value;
     const duration = document.getElementById('editLectureDuration').value;
@@ -261,15 +258,22 @@ async function editLecture() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(updatedLectureData)
+            body: JSON.stringify(updatedLectureData) // Convert data to JSON
         });
 
         if (response.ok) {
             console.log('Lecture updated successfully');
-            $('#editLectureModal').modal('hide');
-            loadCourseDetails();
+            $('#editLectureModal').modal('hide'); // Hide the modal
+            loadCourseDetails(); // Reload course details
         } else {
-            console.error('Error updating lecture:', response.statusText);
+            const errorData = await response.json(); // Parse the error response
+            console.error('Error response from server:', errorData); // Log the error
+            if (errorData.message.includes("Lecture name already exists")) {
+                alert("Lecture name already exists. Please choose a different name.");
+            } else {
+                alert(`Error uploading lecture: ${errorData.message}`);  // Display an alert with the error message
+            }
+            return;
         }
     } catch (error) {
         console.error('Error updating lecture:', error);
@@ -278,7 +282,7 @@ async function editLecture() {
 
 /// Update sub-lecture details
 async function editSubLecture() {
-    const name = document.getElementById('editSubLectureName').value;
+    const name = document.getElementById('editSubLectureName').value; // Get form values
     const description = document.getElementById('editSubLectureDescription').value;
     const duration = document.getElementById('editSubLectureDuration').value;
 
@@ -295,26 +299,32 @@ async function editSubLecture() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(updatedSubLectureData)
+            body: JSON.stringify(updatedSubLectureData) // Convert data to JSON
         });
 
         if (response.ok) {
             console.log('Sub-lecture updated successfully');
-            $('#editSubLectureModal').modal('hide');
-            loadCourseDetails();
+            $('#editSubLectureModal').modal('hide'); // Hide the modal
+            loadCourseDetails(); // Reload course details
         } else {
-            console.error('Error updating sub-lecture:', response.statusText);
+            const errorData = await response.json(); // Parse the error response
+                console.error('Error response from server:', errorData); // Log the error
+                if (errorData.message.includes("Sub-lecture name already exists")) {
+                    alert("Sub-lecture name already exists for this lecture. Please choose a different name.");
+                } else {
+                    alert(`Error uploading sub-lecture: ${errorData.message}`); // Display an alert with the error message
+                }
+                return;
         }
     } catch (error) {
         console.error('Error updating sub-lecture:', error);
     }
 }
 
-
 // Function to delete lecture
 async function deleteLecture(lectureID) {
     console.log('Delete Lecture:', lectureID);  // Log for debugging
-    const isConfirmed = confirm("Are you sure you want to delete this lecture?");
+    const isConfirmed = confirm("Are you sure you want to delete this lecture?"); // Confirm deletion
     if (isConfirmed) {
         try {
             const response = await fetch(`/lectures/${lectureID}`, {
@@ -339,7 +349,7 @@ async function deleteLecture(lectureID) {
 // Function to delete sub-lecture
 async function deleteSubLecture(lectureID, subLectureID) {
     console.log('Delete Sub-Lecture:', subLectureID);  // Log for debugging
-    const isConfirmed = confirm("Are you sure you want to delete this sub-lecture?");
+    const isConfirmed = confirm("Are you sure you want to delete this sub-lecture?"); // Confirm deletion
     if (isConfirmed) {
         try {
             const response = await fetch(`/lectures/${lectureID}/sublectures/${subLectureID}`, {
@@ -363,28 +373,75 @@ async function deleteSubLecture(lectureID, subLectureID) {
 
 // Function to hide buttons if the user is not a lecturer
 function hideButtonsIfNotLecturer() {
-    const uploadButtonContainer = document.getElementById('upload-button');
-    const editButton = document.querySelector('img[onclick="toggleEditMode()"]');
+    const uploadButtonContainer = document.getElementById('upload-button'); // Get the upload button element
+    const editButton = document.querySelector('img[onclick="toggleEditMode()"]'); // Get the edit button element
 
     if (role !== 'lecturer') {
-        if (uploadButtonContainer) uploadButtonContainer.style.display = 'none';
-        if (editButton) editButton.style.display = 'none';
+        if (uploadButtonContainer) uploadButtonContainer.style.display = 'none'; // Hide upload button
+        if (editButton) editButton.style.display = 'none'; // Hide edit button
+    }
+}
+
+// Function to create a new sub-lecture
+async function createNewSubLecture() {
+    const name = document.getElementById('newSubLectureName').value;
+    const description = document.getElementById('newSubLectureDescription').value;
+    const duration = document.getElementById('newSubLectureDuration').value;
+    const video = document.getElementById('newSubLectureVideo').files[0];
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('duration', duration);
+    formData.append('video', video);
+    formData.append('lectureID', currentLectureID);
+
+    try {
+        const response = await fetch(`/lectures/${currentLectureID}/sublectures`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            $('#createSubLectureModal').modal('hide');
+            loadCourseDetails(); // Reload course details
+        } else {
+            const errorData = await response.json();
+            alert(`Error creating sub-lecture: ${errorData.message}`);
+        }
+    } catch (error) {
+        console.error('Error creating sub-lecture:', error);
+        alert('Failed to create sub-lecture: ' + error.message);
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    hideButtonsIfNotLecturer();
-    loadCourseDetails();
+    hideButtonsIfNotLecturer(); // Hide buttons if the user is not a lecturer
+    loadCourseDetails(); // Load course details
 
     // Handle edit lecture form submission
     $('#editLectureForm').submit(async function(event) {
         event.preventDefault();
-        await editLecture();
+        await editLecture(); // Update lecture details
     });
 
     // Handle edit sub-lecture form submission
     $('#editSubLectureForm').submit(async function(event) {
         event.preventDefault();
-        await editSubLecture();
+        await editSubLecture(); // Update sub-lecture details
+    });
+
+    // Show the create new sub-lecture modal
+    document.getElementById('createNewSubLectureButton').addEventListener('click', () => {
+        $('#createSubLectureModal').modal('show');
+    });
+
+    // Handle new sub-lecture form submission
+    $('#newSubLectureForm').submit(async function(event) {
+        event.preventDefault();
+        await createNewSubLecture(); // Create new sub-lecture
     });
 });

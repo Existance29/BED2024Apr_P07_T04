@@ -1,6 +1,6 @@
 /*apply the select effect for the filter with the active class*/
 #search-filters .active{
-    border-radius: 15px;
+    border-radius: 10px;
     background-color: #FFFFFF85;
 }
 
@@ -12,17 +12,8 @@
     align-items: center; /* Align vertical */
 }
 
-.course-result{
-    background: white;
-    border-radius: 20px;
-    width: 90%;
-    padding: 2vw 2vw;
-    cursor: pointer;
-    margin-top: 1vw;
-}
-
 .course-img{
-    width: 6.5%;
+    width: 5%;
     object-fit: contain;
 }
 
@@ -44,4 +35,55 @@
     border-radius: 50%;
     height: 2.8vw;
     width: 2.8vw;
+}
+
+/*gignite stuff*/
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    margin-bottom: 32px;
+}
+
+.card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer; /*added for hover effect*/
+    margin-top: 1.5vw; /*added for spacing between elements. Doesnt affect actual element*/
+}
+.avatar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.avatarImage {
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    margin-right: 16px;
+}
+.avatarFallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #e5e7eb;
+    width: 48px;
+    height: 48px;
+    margin-right: 16px;
+}
+.cardTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+.cardDescription {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+.cardFooter {
+    display: flex;
+    gap: 8px;
 }

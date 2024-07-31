@@ -20,3 +20,23 @@ h2{
     font-size: 1.9vw !important;
     font-weight:600 !important;
 }
+
+#loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+.loading-animation {
+    width: 100px;
+    height: 100px;
+}
+
+#loading-screen h2 {
+    margin-top: 150px;
+    color: #333;
+}

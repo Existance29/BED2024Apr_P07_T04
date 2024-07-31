@@ -17,17 +17,21 @@ const authenticateToken = (req,res,next) => {
             'GET /users/private': ['student', 'lecturer'],
             'GET /users/verifyjwt': ['student', 'lecturer'],
 
-            'POST /courses': ['lecturer'],
-            'PUT /courses/:id': ['lecturer'],
-            'PUT /lectures/:id': ['lecturer'],
-            'PUT /lectures/:lectureID/sublectures/:subLectureID': ['lecturer'],
-            'DELETE /courses/:id': ['lecturer'],
-            'DELETE /lectures/:id': ['lecturer'],
-            'DELETE /lectures/:lectureID/sublectures/:subLectureID': ['lecturer'],
-
-            'POST /lectures': ['lecturer'],
-            'POST /lectures/:lectureID/sublectures': ['lecturer'],
+            'POST /courses': ['lecturer'], // only lecturers can create courses
+            'POST /lectures': ['lecturer'], // only lecturers can create lectures
+            'POST /lectures/:lectureID/sublectures': ['lecturer'], // only lecturers can create sub-lectures
+            'PUT /courses/:id': ['lecturer'], // only lecturers can edit courses
+            'PUT /lectures/:id': ['lecturer'], // only lecturers can edit lectures
+            'PUT /lectures/:lectureID/sublectures/:subLectureID': ['lecturer'], // only lecturers can edit sub-lectures
+            'DELETE /courses/:id': ['lecturer'], // only lecturers can delete courses
+            'DELETE /lectures/:id': ['lecturer'], // only lecturers can delete lectures
+            'DELETE /lectures/:lectureID/sublectures/:subLectureID': ['lecturer'], // only lecturers can delete sub-lectures
             
+            'DELETE /quizzes/:id': ['lecturer'],  
+            'POST /quizzes': ['lecturer'],
+            'POST /quizzes/:quizID/questions': ['lecturer'],
+            'PUT /quizzes': ['lecturer'],
+            'PUT /quizzes/:quizID/questions': ['lecturer']
 
         };
         
