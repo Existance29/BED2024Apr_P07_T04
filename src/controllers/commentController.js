@@ -10,6 +10,20 @@ const getAllComments = async (req, res) => {
     }
 }
 
+const getCommentByID = async (req, res) => {
+    const id = parseInt(req.params.id);
+    try {
+        const comment = await Comment.getCommentByID(id);
+        if (!comment) {
+            return res.status(404).send("Comment not found");
+        }
+        res.json(comment);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving comment");
+    }
+}
+
 const createComment = async (req, res) => {
     const newComment = req.body;
     console.log(newComment)
@@ -26,7 +40,7 @@ const editComment = async (req, res) => {
     const id = parseInt(req.params.id);
     const updatedData = req.body;
     try {
-        const editedComment = await Comment.updateComment(id, updatedData);
+        const editedComment = await Comment.editComment(id, updatedData);
         if (!editedComment) {
             return res.status(404).send("Comment not found");
         }
@@ -40,5 +54,7 @@ const editComment = async (req, res) => {
 module.exports = {
     createComment,
     getAllComments,
+    getCommentByID,
     editComment,
+    //deleteComment,
 };

@@ -19,12 +19,28 @@ class Comment {
             (row) => new Comment(row.CommentID, row.Message, row.Rating)
         );
     }
+    
+    static async getCommentByID(commentID) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `SELECT * FROM Comments WHERE CommentID = @commentID`;
+        const request = connection.request();
+        request.input("commentID", sql.Int, commentID);
+        const result = await request.query(sqlQuery);
+        connection.close();
+
+        if (result.recordset.length > 0) {
+            const row = result.recordset[0];
+            return new Comment(row.CommentID, row.Message, row.Rating);
+        } else {
+            return null;
+        }
+    }
 
     static async createComment(newCommentData) {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `
-            INSERT INTO Comments (Message, Rating)
-            VALUES (@message, @rating);
+            INSERT INTO Comments (UserID, subLectureID, Message, Rating)
+            VALUES (1, 1, @message, @rating);
             SELECT SCOPE_IDENTITY() AS CommentID;
         `;
         const request = connection.request();
@@ -35,13 +51,13 @@ class Comment {
 
         connection.close();
 
-        return this.getCommentById(result.recordset[0].CommentID);
+        return result.recordset[0].CommentID;
     }
 
     static async editComment(commentID, newCommentData) {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `
-            UPDATE Comment SET
+            UPDATE Comments SET
                 Message = @message,
                 Rating = @rating
             WHERE CommentID = @commentID;
@@ -55,7 +71,7 @@ class Comment {
 
         connection.close();
 
-        return this.getCommentById(commentID);
+        return this.getCommentByID(commentID);
     }
 }
 
