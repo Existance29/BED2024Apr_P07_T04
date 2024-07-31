@@ -73,6 +73,19 @@ class Comment {
 
         return this.getCommentByID(commentID);
     }
+
+    static async deleteComment(commentID) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `DELETE FROM Comments WHERE CommentID = @commentID`;
+        const request = connection.request();
+        request.input("commentID", sql.Int, commentID);
+
+        const result = await request.query(sqlQuery);
+        
+        connection.close();
+
+        return result.rowsAffected[0] > 0; // Returns true if a row was deleted
+    }
 }
 
 module.exports = Comment

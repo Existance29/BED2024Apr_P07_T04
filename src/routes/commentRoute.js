@@ -7,7 +7,7 @@ const commentRoute = (app) => {
     app.get("/comments/:id", commentController.getCommentByID);
     app.post("/comments", commentController.createComment);
     app.put("/comments/:id", commentController.editComment);
-    //app.delete("/comments/:id", commentController.deleteComment);
+    app.delete("/comments/:id", commentController.deleteComment);
 };
 
 module.exports = commentRoute;
