@@ -14,15 +14,21 @@
 <body>
     <!-- Navbar -->
     <div class="nav-placeholder"></div>
-    <!--loading animation-->
-    <div id = "loading-screen">
-        <dotlottie-player src="./assets/general/Animation - 1705413706609.json" class = "loading-animation" background="transparent" speed="1" loop autoplay></dotlottie-player>
+    
+    <!-- Loading animation -->
+    <div id="loading-screen">
+        <dotlottie-player src="./assets/general/Animation - 1705413706609.json" class="loading-animation" background="transparent" speed="1" loop autoplay></dotlottie-player>
     </div>
-    <!--The actual page content-->
-    <main id = "loading-main">
+
+    <!-- The actual page content -->
+    <main id="loading-main">
+        
         <!-- Header -->
         <header class="header">
-            <h1 id="course-title">Course Title</h1>
+            <div class="d-flex align-items-center" style="width: 100%;">
+                <a href="./course-chapters.html?courseID=" class="btn section-text" type="button" style="border-radius: 25px; padding-left: 1vw; padding-right: 1vw; background-color: white; color: #245D51; margin-right: 20px;">Back</a>
+                <h1 id="course-title" class="mb-0">Course Title</h1>
+            </div>
         </header>
 
         <!-- Main Content -->
@@ -43,23 +49,10 @@
                         <!-- Course details text will be populated here -->
                     </div>
                 </div>
-                <button class="btn btn-secondary">Add a comment...</button>
+                <a href="./newcomment.html" type="button" class="btn btn-secondary">Add a comment...</a>
                 <h3>Learner Reviews</h3>
-                <div>
-                    <span>4.5 out of 5 stars</span>
-                    <span>1,025 ratings</span>
-                    <div class="review">
-                        <h4>Fahmeetha Fathima</h4>
-                        <p>Senior Software Engineer at FIS</p>
-                        <p>5/5 - May 23, 2023</p>
-                        <p>The best learning platform you can find!</p>
-                    </div>
-                    <div class="review">
-                        <h4>Hazel Khosravi</h4>
-                        <p>UI/UX Designer</p>
-                        <p>5/5 - May 23, 2023</p>
-                        <p>The best learning platform you can find!</p>
-                    </div>
+                <div id="comment-list" class="comment-list">
+                    <!--Comments will be populated here-->
                 </div>
             </div>
         </div>
@@ -70,6 +63,7 @@
 
     <script src="./scripts/common.js"></script>
     <script src="./scripts/lectures.js"></script>
+    <script src="./scripts/comments.js"></script>
     <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>

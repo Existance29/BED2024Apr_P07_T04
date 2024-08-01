@@ -1,7 +1,13 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+main{
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-style: normal;
+  }
+
+h2{
+    font-size: 1.9vw !important;
+    font-weight:600 !important;
 }
+
 h1 {
     font-size: 2em;
 }
