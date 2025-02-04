@@ -30,7 +30,7 @@ app.put('/books/:id/availability', verifyJWT, bookController.updateBookAvailabil
 // get all books for both member and librarian
 app.get('/books', verifyJWT, bookController.getAllBooks);
 
-app.listen(port, async () => {
+app.listen(port, '0.0.0.0', async () => {
   try {
     // Connect to the database
     await sql.connect(dbConfig)
